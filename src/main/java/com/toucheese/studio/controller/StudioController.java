@@ -18,11 +18,6 @@ public class StudioController {
 
 	private final StudioService studioService;
 
-	@GetMapping
-	public Page<StudioResponse> getStudios(@RequestParam int page) {
-		return studioService.getStudiosOrderByName(page);
-	}
-
 	@GetMapping("/search")
 	public List<StudioSearchResponse> searchStudios(@RequestParam String keyword) {
 		return studioService.searchStudios(keyword);

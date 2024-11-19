@@ -34,19 +34,6 @@ public class StudioService {
 	}
 
 	/**
-	 * 스튜디오 목록을 이름순 (오름차순)으로 정렬하여 페이지로 조회한다.
-	 * @param page 현재 페이지
-	 * @return 이름순 (오름차순)으로 정렬한 스튜디오 목록 페이지
-	 */
-	public Page<StudioResponse> getStudiosOrderByName(int page) {
-		Pageable pageable = PageRequest.of(page, PAGE_SIZE);
-		studioRepository.findAll(pageable);
-		Page<Studio> studios = studioRepository.findAllByOrderByName(pageable);
-
-		return studios.map(StudioResponse::of);
-	}
-
-	/**
 	 * 필터링 된 스튜디오 목록을 이름으로 정렬하여 조회한다.
 	 * @param page 현재 페이지
 	 * @param price 가격순 필터링 요소
