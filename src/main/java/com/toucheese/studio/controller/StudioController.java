@@ -4,7 +4,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-import com.toucheese.studio.dto.StudioSearchResultDTO;
+import com.toucheese.studio.dto.StudioSearchResponse;
 import com.toucheese.studio.service.StudioService;
 
 @RestController
@@ -13,13 +13,12 @@ public class StudioController {
 
 	private final StudioService studioService;
 
-
 	public StudioController(StudioService studioService) {
 		this.studioService = studioService;
 	}
 
 	@GetMapping("/search")
-	public List<StudioSearchResultDTO> searchStudios(@RequestParam String keyword) {
+	public List<StudioSearchResponse> searchStudios(@RequestParam String keyword) {
 		return studioService.searchStudios(keyword);
 	}
 }
