@@ -8,9 +8,8 @@ import lombok.NoArgsConstructor;
 
 import java.util.List;
 
-@Entity
+@Entity @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Getter
 public class Studio {
 
     @Id
@@ -30,7 +29,8 @@ public class Studio {
     private String address;
 
     @Column(nullable = false)
-    private String location;
+    @Enumerated(EnumType.STRING)
+    private Location location;
 
     @OneToMany(mappedBy = "studio", fetch = FetchType.LAZY)
     private List<Image> images;
