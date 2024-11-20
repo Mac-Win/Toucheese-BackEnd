@@ -26,7 +26,6 @@ public class StudioController {
 	/**
 	 * 필터링 한 스튜디오 목록을 조회한다.
 	 * @param page 현재 페이지
-	 * @param concept 선택 된 컨셉
 	 * @param request 필터링 조건 (가격, 인기, 지역)
 	 * @return 현재 페이지에 해당하는 필터링 된 스튜디오 목록
 	 */

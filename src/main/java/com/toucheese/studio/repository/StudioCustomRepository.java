@@ -17,7 +17,7 @@ public interface StudioCustomRepository {
      * @param price 가격순 필터링을 위한 요소
      * @param rating 인기순 필터링을 위한 요소
      * @param locations 지역 필터링을 위한 요소
-     * @param conceptId 현재 선택 된 컨셉 요소
+     * @param conceptId 선택된 컨셉 요소 아이디
      * @param pageable 페이지 객체
      * @return 각 요소에 따른 필터링 된 스튜디오 목록을 페이지로 반환한다.
      */

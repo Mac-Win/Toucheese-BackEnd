@@ -36,6 +36,7 @@ public class StudioService {
 	/**
 	 * 필터링 된 스튜디오 목록을 이름으로 정렬하여 조회한다.
 	 * @param page 현재 페이지
+	 * @param conceptId 선택된 컨셉 요소 아이디
 	 * @param price 가격순 필터링 요소
 	 * @param rating 인기순 필터링 요소
 	 * @param locations 지역 필터링 요소

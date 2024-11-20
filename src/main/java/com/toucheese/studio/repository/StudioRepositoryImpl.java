@@ -36,7 +36,7 @@ public class StudioRepositoryImpl implements StudioCustomRepository{
      * @param rating 인기 필터링을 위한 요소
      * @param locations 지역 필터링을 위한 요소
      * @param pageable 페이지 객체
-     * @param concept 현재 선택된 컨셉 아이디
+     * @param conceptId 선택된 컨셉 요소 아이디
      * @return 현재 페이지에 해당되는 필터링 후 정렬된 스튜디오 목록
      */
     @Override
@@ -59,7 +59,7 @@ public class StudioRepositoryImpl implements StudioCustomRepository{
 
     /**
      * 필터링 조건을 확인하고 동적으로 조건을 추가하기 위한 메서드
-     * @param conceptId 컨셉, 해당 아이디에 해당하는 필터링
+     * @param conceptId 컨셉, 해당 컨셉 아이디에 해당하는 데이터 필터링
      * @param price 가격, 해당 값 이하(less than or equal to; loe) 데이터 필터링 / 20만 이상일 때는 이상 필터링
      * @param rating 별점, 해당 값 이상(greater than or equal to; goe) 데이터 필터링
      * @param locations 지역, 해당 값에 해당하는 데이터 필터링
@@ -78,7 +78,7 @@ public class StudioRepositoryImpl implements StudioCustomRepository{
 
     /**
      * 컨셉별 요소 확인 메서드
-     * @param conceptId 선택된 컨셉 조건
+     * @param conceptId 선택된 컨셉 요소 아이디
      * @param booleanBuilder 조건 설정 빌더
      */
     private void checkTargetConceptId (Long conceptId, BooleanBuilder booleanBuilder) {
