@@ -4,6 +4,7 @@ import com.toucheese.concept.entity.Concept;
 import com.toucheese.studio.entity.Studio;
 import jakarta.persistence.*;
 
+@Entity
 public class ConceptStudio {
 
     @Id
@@ -14,7 +15,7 @@ public class ConceptStudio {
     @JoinColumn(name = "concept_id")
     private Concept concept;
 
-    @ManyToOne(targetEntity = Concept.class, fetch = FetchType.LAZY)
+    @ManyToOne(targetEntity = Studio.class, fetch = FetchType.LAZY)
     @JoinColumn(name = "studio_id")
     private Studio studio;
 }

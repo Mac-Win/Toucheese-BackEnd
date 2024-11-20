@@ -22,6 +22,8 @@ public class QStudio extends EntityPathBase<Studio> {
 
     public final StringPath address = createString("address");
 
+    public final ListPath<com.toucheese.conceptstudio.entity.ConceptStudio, com.toucheese.conceptstudio.entity.QConceptStudio> conceptStudios = this.<com.toucheese.conceptstudio.entity.ConceptStudio, com.toucheese.conceptstudio.entity.QConceptStudio>createList("conceptStudios", com.toucheese.conceptstudio.entity.ConceptStudio.class, com.toucheese.conceptstudio.entity.QConceptStudio.class, PathInits.DIRECT2);
+
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
     public final ListPath<com.toucheese.image.entity.Image, com.toucheese.image.entity.QImage> images = this.<com.toucheese.image.entity.Image, com.toucheese.image.entity.QImage>createList("images", com.toucheese.image.entity.Image.class, com.toucheese.image.entity.QImage.class, PathInits.DIRECT2);

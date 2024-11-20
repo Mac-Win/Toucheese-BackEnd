@@ -1,5 +1,7 @@
 package com.toucheese.studio.entity;
 
+import com.toucheese.concept.entity.Concept;
+import com.toucheese.conceptstudio.entity.ConceptStudio;
 import com.toucheese.image.entity.Image;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -34,4 +36,7 @@ public class Studio {
 
     @OneToMany(mappedBy = "studio", fetch = FetchType.LAZY)
     private List<Image> images;
+
+    @OneToMany(mappedBy = "studio", fetch = FetchType.LAZY)
+    private List<ConceptStudio> conceptStudios;
 }
