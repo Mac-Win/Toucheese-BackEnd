@@ -3,6 +3,8 @@ package com.toucheese.studio.repository;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.toucheese.concept.entity.QConcept;
+import com.toucheese.conceptstudio.entity.QConceptStudio;
 import com.toucheese.studio.entity.Location;
 import com.toucheese.studio.entity.QStudio;
 import com.toucheese.studio.entity.Studio;
@@ -20,7 +22,9 @@ public class StudioRepositoryImpl implements StudioCustomRepository{
 
     private final JPAQueryFactory jpaQueryFactory;
 
-    private static final QStudio QSTUDIO = QStudio.studio;
+    private static final QStudio Q_STUDIO = QStudio.studio;
+    private static final QConcept Q_CONCEPT = QConcept.concept;
+    private static final QConceptStudio Q_CONCEPT_STUDIO = QConceptStudio.conceptStudio;
     private static final Integer PRICE_CONDITION = 200_000;
 
     /**
@@ -31,17 +35,20 @@ public class StudioRepositoryImpl implements StudioCustomRepository{
      * @param rating 인기 필터링을 위한 요소
      * @param locations 지역 필터링을 위한 요소
      * @param pageable 페이지 객체
+     * @param concept 선택된 컨셉
      * @return 현재 페이지에 해당되는 필터링 후 정렬된 스튜디오 목록
      */
     @Override
-    public Page<Studio> getFilteredStudiosOrderByName(Integer price, Float rating, List<Location> locations, Pageable pageable) {
+    public Page<Studio> getFilteredStudiosOrderByName(Integer price, Float rating, List<Location> locations, String concept, Pageable pageable) {
         BooleanBuilder booleanBuilder = checkFilteringComponent(price, rating, locations);
 
-        JPAQuery<Studio> query = jpaQueryFactory.selectFrom(QSTUDIO)
+        JPAQuery<Studio> query = jpaQueryFactory.selectFrom(Q_STUDIO)
+                .leftJoin(Q_STUDIO.conceptStudios, Q_CONCEPT_STUDIO)
+                .leftJoin(Q_CONCEPT_STUDIO.concept, Q_CONCEPT)
                 .where(booleanBuilder)
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
-                .orderBy(QSTUDIO.name.asc());
+                .orderBy(Q_STUDIO.name.asc());
 
         List<Studio> studios = query.fetch();
 
@@ -59,26 +66,49 @@ public class StudioRepositoryImpl implements StudioCustomRepository{
     private BooleanBuilder checkFilteringComponent(Integer price, Float rating, List<Location> locations) {
         BooleanBuilder booleanBuilder = new BooleanBuilder();
 
-        // 지역 필터링 요소 확인
-        if (locations != null && !locations.isEmpty()) {
-            booleanBuilder.and(QSTUDIO.location.in(locations));
-        }
-
-        // 인기 필터링 요소 확인
-        if (rating != null) {
-            booleanBuilder.and(QSTUDIO.rating.goe(rating));
-        }
-
-        // 가격 필터링 요소 확인
-        if (price != null) {
-            if (price < PRICE_CONDITION) {
-                booleanBuilder.and(QSTUDIO.price.loe(price));
-            } else {
-                booleanBuilder.and(QSTUDIO.price.goe(price));
-            }
-        }
+        checkTargetLocations(locations, booleanBuilder);
+        checkTargetPrice(price, booleanBuilder);
+        checkTargetRating(rating, booleanBuilder);
 
         return booleanBuilder;
     }
 
+
+    /**
+     * 지역별 필터링 요소 확인 메서드
+     * @param targetLocations 선택된 지역 리스트 조건
+     * @param booleanBuilder 조건 설정 빌더
+     */
+    private void checkTargetLocations(List<Location> targetLocations, BooleanBuilder booleanBuilder) {
+        if (targetLocations != null && !targetLocations.isEmpty()) {
+            booleanBuilder.and(Q_STUDIO.location.in(targetLocations));
+        }
+    }
+
+    /**
+     * 별점 필터링 요소 확인 메서드
+     * @param targetRating 선택된 별점 조건
+     * @param booleanBuilder 조건 설정 빌더
+     */
+    private void checkTargetRating(Float targetRating, BooleanBuilder booleanBuilder) {
+        if (targetRating != null) {
+            float epsilon = 0.0001f; // 허용 오차 설정
+            booleanBuilder.and(Q_STUDIO.rating.goe(targetRating - epsilon));
+        }
+    }
+
+    /**
+     * 가격 필터링 요소 확인 메서드
+     * @param targetPrice 선택된 가격 조건
+     * @param booleanBuilder 조건 설정 빌더
+     */
+    public void checkTargetPrice(Integer targetPrice, BooleanBuilder booleanBuilder) {
+        if (targetPrice != null) {
+            if (targetPrice < PRICE_CONDITION) {
+                booleanBuilder.and(Q_STUDIO.price.loe(targetPrice));
+            } else {
+                booleanBuilder.and(Q_STUDIO.price.goe(targetPrice));
+            }
+        }
+    }
 }

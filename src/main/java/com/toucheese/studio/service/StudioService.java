@@ -41,9 +41,9 @@ public class StudioService {
 	 * @param locations 지역 필터링 요소
 	 * @return 현재 페이지에 해당하는 필터링 후 정렬된 스튜디오 목록
 	 */
-	public Page<StudioResponse> getFilteredStudiosOrderByName(int page, Integer price, Float rating, List<Location> locations) {
+	public Page<StudioResponse> getFilteredStudiosOrderByName(int page, String concept, Integer price, Float rating, List<Location> locations) {
 		Pageable pageable = PageRequest.of(page, PAGE_SIZE);
-		return studioRepositoryImpl.getFilteredStudiosOrderByName(price, rating, locations, pageable)
+		return studioRepositoryImpl.getFilteredStudiosOrderByName(price, rating, locations, concept, pageable)
 				.map(StudioResponse::of);
 	}
 }
