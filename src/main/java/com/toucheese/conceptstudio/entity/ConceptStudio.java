@@ -5,9 +5,7 @@ import com.toucheese.studio.entity.Studio;
 import jakarta.persistence.*;
 import lombok.Getter;
 
-@Entity
-@Getter
-@Table(name = "conceptstudio")
+@Entity @Getter
 public class ConceptStudio {
 
     @Id
