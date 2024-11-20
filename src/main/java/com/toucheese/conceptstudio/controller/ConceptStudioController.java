@@ -23,8 +23,8 @@ public class ConceptStudioController {
     @GetMapping("/{conceptId}/studios")
     public Page<ConceptStudioResponse> getStudiosByConceptId(
             @PathVariable Long conceptId,
-            Pageable pageable
+            @RequestParam int page
     ) {
-        return conceptStudioService.getStudiosByConceptId(conceptId,pageable);
+        return conceptStudioService.getStudiosByConceptId(conceptId,page);
     }
 }
