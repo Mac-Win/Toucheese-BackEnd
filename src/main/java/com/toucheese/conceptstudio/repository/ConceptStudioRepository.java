@@ -11,6 +11,5 @@ import java.util.List;
 
 @Repository
 public interface ConceptStudioRepository extends JpaRepository<ConceptStudio, Long> {
-    //List<ConceptStudio> findByConceptId(Long conceptId);
     Page<ConceptStudio> findByConceptId(Long conceptId, Pageable pageable);
 }

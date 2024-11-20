@@ -14,13 +14,4 @@ public class ConceptController {
 
     public ConceptController(ConceptService conceptService) {this.conceptService = conceptService;}
 
-    @GetMapping
-    public List<Concept> getAllConcepts() {
-        return conceptService.getAllConcepts();
-    }
-
-    @GetMapping("/{id}")
-    public Concept getConceptById(@PathVariable("id") Long id) {
-        return conceptService.getConceptById(id);
-    }
 }

@@ -23,15 +23,6 @@ public class ConceptStudioController {
         this.conceptStudioService = conceptStudioService;
     }
 
-
-    /*
-    // concept_id에 해당하는 StudioSearchResponse를 반환
-    @GetMapping("/{conceptId}/studios")
-    public List<StudioSearchResponse> getStudiosByConceptId(@PathVariable Long conceptId) {
-        return conceptStudioService.getStudiosByConceptId(conceptId);
-    }
-     */
-
     @GetMapping("/{conceptId}/studios")
     public Page<StudioSearchResponse> getStudiosByConceptId(
             @PathVariable Long conceptId,

@@ -13,12 +13,4 @@ public class ConceptService {
 
     public ConceptService(ConceptRepository conceptRepository) {this.conceptRepository = conceptRepository;}
 
-    // 전체 Concept 불러오기
-    public List<Concept> getAllConcepts() {
-        return conceptRepository.findAll();
-    }
-    //{id} 별 Concept 불러오기
-    public Concept getConceptById(Long id) {
-        return conceptRepository.findById(id).orElse(null);
-    }
 }

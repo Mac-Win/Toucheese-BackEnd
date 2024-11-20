@@ -29,29 +29,6 @@ public class ConceptStudioService {
         this.studioRepository = studioRepository;
     }
 
-    /*
-    public List<StudioSearchResponse> getStudiosByConceptId(Long conceptId) {
-        // concept_id에 해당하는 ConceptStudio 데이터 조회
-        List<ConceptStudio> conceptStudios = conceptStudioRepository.findByConceptId(conceptId);
-        System.out.println("concept_id = " + conceptId);
-
-        List<StudioSearchResponse> studioSearchResponses = new ArrayList<>();
-        for (ConceptStudio conceptStudio : conceptStudios) {
-            // ConceptStudio에서 studio 객체 가져오기
-            Studio studio = conceptStudio.getStudio();
-
-            // Studio 정보를 DTO로 변환
-            if (studio != null) {
-                studioSearchResponses.add(StudioSearchResponse.of(studio));
-            }
-        }
-
-        System.out.println("studioSearchResponses=" + studioSearchResponses);
-        return studioSearchResponses;
-    }
-
-
-     */
     public Page<StudioSearchResponse> getStudiosByConceptId(Long conceptId, Pageable pageable) {
         Page<ConceptStudio> conceptStudios = conceptStudioRepository.findByConceptId(conceptId,pageable);
 
