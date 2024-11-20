@@ -1,6 +1,7 @@
 package com.toucheese.conceptstudio.service;
 
 import com.toucheese.concept.entity.Concept;
+import com.toucheese.conceptstudio.dto.ConceptStudioResponse;
 import com.toucheese.conceptstudio.entity.ConceptStudio;
 import com.toucheese.conceptstudio.repository.ConceptStudioRepository;
 import com.toucheese.studio.dto.StudioSearchResponse;
@@ -25,15 +26,17 @@ public class ConceptStudioService {
     private final ConceptStudioRepository conceptStudioRepository;
     private final StudioRepository studioRepository;
 
-    public Page<StudioSearchResponse> getStudiosByConceptId(Long conceptId, Pageable pageable) {
-        Page<ConceptStudio> conceptStudios = conceptStudioRepository.findByConceptId(conceptId,pageable);
+    public Page<ConceptStudioResponse> getStudiosByConceptId(Long conceptId, Pageable pageable) {
+        Page<ConceptStudio> conceptStudios = conceptStudioRepository.findByConceptId(conceptId, pageable);
 
         return conceptStudios.map(cs -> {
             Studio studio = cs.getStudio();
-            return StudioSearchResponse.of(studio);
+
+            List<String> imageUrls = studio.getImages().stream()
+                .map(image -> image.getUrl())
+                .collect(Collectors.toList());
+
+            return ConceptStudioResponse.of(studio, imageUrls);
         });
     }
-
-
-
 }

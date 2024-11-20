@@ -2,8 +2,9 @@ package com.toucheese.image.entity;
 
 import com.toucheese.studio.entity.Studio;
 import jakarta.persistence.*;
+import lombok.Getter;
 
-@Entity
+@Entity @Getter
 public class Image {
 
     @Id
