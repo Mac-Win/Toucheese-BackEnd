@@ -2,10 +2,15 @@ package com.toucheese.concept.entity;
 
 import com.toucheese.conceptstudio.entity.ConceptStudio;
 import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
 @Entity
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Getter
 public class Concept {
 
     @Id
