@@ -1,6 +1,7 @@
 package com.toucheese.conceptstudio.controller;
 
 import com.toucheese.concept.entity.Concept;
+import com.toucheese.conceptstudio.dto.ConceptStudioResponse;
 import com.toucheese.conceptstudio.entity.ConceptStudio;
 import com.toucheese.conceptstudio.service.ConceptStudioService;
 import com.toucheese.studio.dto.StudioSearchResponse;
@@ -20,10 +21,10 @@ public class ConceptStudioController {
     private final ConceptStudioService conceptStudioService;
 
     @GetMapping("/{conceptId}/studios")
-    public Page<StudioSearchResponse> getStudiosByConceptId(
+    public Page<ConceptStudioResponse> getStudiosByConceptId(
             @PathVariable Long conceptId,
-            Pageable pageable
+            @RequestParam int page
     ) {
-        return conceptStudioService.getStudiosByConceptId(conceptId,pageable);
+        return conceptStudioService.getStudiosByConceptId(conceptId,page);
     }
 }
