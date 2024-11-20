@@ -34,9 +34,6 @@ public class ConceptStudioService {
 
         return conceptStudios.map(cs -> {
             Studio studio = cs.getStudio();
-            if( studio == null) {
-                throw new IllegalStateException("스튜디오 없음" + cs.getId());
-            }
             return StudioSearchResponse.of(studio);
         });
     }
