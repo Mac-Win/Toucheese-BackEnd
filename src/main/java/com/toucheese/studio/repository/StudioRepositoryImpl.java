@@ -30,17 +30,18 @@ public class StudioRepositoryImpl implements StudioCustomRepository{
     /**
      * 필터링 후 이름으로 정렬된 스튜디오 목록을 반환한다.
      * 각 요소가 null인 경우는 필터링이 제외된 경우로 함.
+     * (+ 임시로 concept 아이디가 없을 경우 전체 리스트에서 조회할 수 있도록 함)
      *
      * @param price 가격 필터링을 위한 요소
      * @param rating 인기 필터링을 위한 요소
      * @param locations 지역 필터링을 위한 요소
      * @param pageable 페이지 객체
-     * @param concept 선택된 컨셉
+     * @param concept 현재 선택된 컨셉 아이디
      * @return 현재 페이지에 해당되는 필터링 후 정렬된 스튜디오 목록
      */
     @Override
-    public Page<Studio> getFilteredStudiosOrderByName(Integer price, Float rating, List<Location> locations, String concept, Pageable pageable) {
-        BooleanBuilder booleanBuilder = checkFilteringComponent(price, rating, locations);
+    public Page<Studio> getFilteredStudiosOrderByName(Integer price, Float rating, List<Location> locations, Long conceptId, Pageable pageable) {
+        BooleanBuilder booleanBuilder = checkFilteringComponent(conceptId, price, rating, locations);
 
         JPAQuery<Studio> query = jpaQueryFactory.selectFrom(Q_STUDIO)
                 .leftJoin(Q_STUDIO.conceptStudios, Q_CONCEPT_STUDIO)
@@ -58,14 +59,16 @@ public class StudioRepositoryImpl implements StudioCustomRepository{
 
     /**
      * 필터링 조건을 확인하고 동적으로 조건을 추가하기 위한 메서드
+     * @param conceptId 컨셉, 해당 아이디에 해당하는 필터링
      * @param price 가격, 해당 값 이하(less than or equal to; loe) 데이터 필터링 / 20만 이상일 때는 이상 필터링
      * @param rating 별점, 해당 값 이상(greater than or equal to; goe) 데이터 필터링
      * @param locations 지역, 해당 값에 해당하는 데이터 필터링
      * @return 각 필터링 요소를 확인하여 생성된 조건
      */
-    private BooleanBuilder checkFilteringComponent(Integer price, Float rating, List<Location> locations) {
+    private BooleanBuilder checkFilteringComponent(Long conceptId, Integer price, Float rating, List<Location> locations) {
         BooleanBuilder booleanBuilder = new BooleanBuilder();
 
+        checkTargetConceptId(conceptId, booleanBuilder);
         checkTargetLocations(locations, booleanBuilder);
         checkTargetPrice(price, booleanBuilder);
         checkTargetRating(rating, booleanBuilder);
@@ -73,6 +76,16 @@ public class StudioRepositoryImpl implements StudioCustomRepository{
         return booleanBuilder;
     }
 
+    /**
+     * 컨셉별 요소 확인 메서드
+     * @param conceptId 선택된 컨셉 조건
+     * @param booleanBuilder 조건 설정 빌더
+     */
+    private void checkTargetConceptId (Long conceptId, BooleanBuilder booleanBuilder) {
+        if (conceptId != null) {
+            booleanBuilder.and(Q_CONCEPT_STUDIO.concept.id.eq(conceptId));
+        }
+    }
 
     /**
      * 지역별 필터링 요소 확인 메서드
@@ -102,7 +115,7 @@ public class StudioRepositoryImpl implements StudioCustomRepository{
      * @param targetPrice 선택된 가격 조건
      * @param booleanBuilder 조건 설정 빌더
      */
-    public void checkTargetPrice(Integer targetPrice, BooleanBuilder booleanBuilder) {
+    private void checkTargetPrice(Integer targetPrice, BooleanBuilder booleanBuilder) {
         if (targetPrice != null) {
             if (targetPrice < PRICE_CONDITION) {
                 booleanBuilder.and(Q_STUDIO.price.loe(targetPrice));
@@ -111,4 +124,5 @@ public class StudioRepositoryImpl implements StudioCustomRepository{
             }
         }
     }
+
 }

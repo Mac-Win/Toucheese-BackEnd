@@ -7,9 +7,10 @@ import java.util.List;
 
 @Builder
 public record FilteringStudioRequest(
-    Integer price,
-    Float rating,
-    List<Location> locations
+        Long conceptId,
+        Integer price,
+        Float rating,
+        List<Location> locations
 ) {
 
 }

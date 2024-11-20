@@ -31,9 +31,9 @@ public class StudioController {
 	 * @return 현재 페이지에 해당하는 필터링 된 스튜디오 목록
 	 */
 	@GetMapping("/filters")
-	public Page<StudioResponse> getFilteredStudios(@RequestParam int page, @RequestParam String concept, @RequestBody FilteringStudioRequest request) {
+	public Page<StudioResponse> getFilteredStudios(@RequestParam int page, @RequestBody FilteringStudioRequest request) {
 		return studioService.getFilteredStudiosOrderByName(
-				page, concept, request.price(), request.rating(), request.locations()
+				page, request.conceptId(), request.price(), request.rating(), request.locations()
 		);
 	}
 
