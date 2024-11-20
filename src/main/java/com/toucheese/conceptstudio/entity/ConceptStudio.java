@@ -18,7 +18,7 @@ public class ConceptStudio {
     @JoinColumn(name = "concept_id")
     private Concept concept;
 
-    @ManyToOne(targetEntity = Studio.class, fetch = FetchType.EAGER)
+    @ManyToOne(targetEntity = Studio.class, fetch = FetchType.LAZY)
     @JoinColumn(name = "studio_id")
     private Studio studio;
 
