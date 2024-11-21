@@ -48,7 +48,6 @@ public class StudioRepositoryImpl implements StudioCustomRepository{
                 .leftJoin(Q_CONCEPT_STUDIO.concept, Q_CONCEPT)
                 .where(booleanBuilder)
                 .offset(pageable.getOffset())
-                .limit(pageable.getPageSize())
                 .orderBy(Q_STUDIO.name.asc());
 
         List<Studio> studios = query.fetch();
