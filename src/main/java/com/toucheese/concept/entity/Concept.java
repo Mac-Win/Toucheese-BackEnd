@@ -20,6 +20,4 @@ public class Concept {
     @Column(nullable = false)
     private String name;
 
-    @OneToMany(mappedBy = "concept", fetch = FetchType.LAZY)
-    private List<ConceptStudio> conceptStudios;
 }
