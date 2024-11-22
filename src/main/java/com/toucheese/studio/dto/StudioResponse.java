@@ -9,19 +9,21 @@ import java.util.stream.Collectors;
 
 @Builder
 public record StudioResponse(
+    Long id,
     String name,
     String profileImage,
-    Integer price,
     Float rating,
+    Integer price,
     List<String> imageUrls
 ) {
 
     public static StudioResponse of(Studio studio) {
         return builder()
+            .id(studio.getId())
             .name(studio.getName())
             .profileImage(studio.getProfileImage())
-            .price(studio.getPrice())
             .rating(studio.getRating())
+            .price(studio.getPrice())
             .imageUrls(studio.getImages().stream()
                 .map(Image::getUrl)
                 .collect(Collectors.toList())
