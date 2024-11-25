@@ -1,7 +1,7 @@
 package com.toucheese.conceptstudio.controller;
 
 import com.toucheese.conceptstudio.service.ConceptStudioService;
-import com.toucheese.studio.dto.StudioResponse;
+import com.toucheese.conceptstudio.dto.StudioResponse;
 import com.toucheese.studio.entity.Location;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;

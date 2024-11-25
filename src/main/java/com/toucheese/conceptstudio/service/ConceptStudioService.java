@@ -1,8 +1,7 @@
 package com.toucheese.conceptstudio.service;
 
-import com.toucheese.conceptstudio.entity.ConceptStudio;
 import com.toucheese.conceptstudio.repository.ConceptStudioRepository;
-import com.toucheese.studio.dto.StudioResponse;
+import com.toucheese.conceptstudio.dto.StudioResponse;
 import com.toucheese.studio.entity.Location;
 import com.toucheese.studio.repository.StudioRepositoryImpl;
 import lombok.RequiredArgsConstructor;
