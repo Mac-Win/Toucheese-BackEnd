@@ -81,7 +81,7 @@ public class StudioRepositoryImpl implements StudioCustomRepository{
      * @param booleanBuilder 조건 설정 빌더
      */
     private void checkTargetConceptId (Long conceptId, BooleanBuilder booleanBuilder) {
-        if (conceptId != null) {
+        if (conceptId != null && conceptId != 0) {
             booleanBuilder.and(Q_CONCEPT_STUDIO.concept.id.eq(conceptId));
         }
     }
