@@ -1,4 +1,4 @@
-package com.toucheese.studio.dto;
+package com.toucheese.conceptstudio.dto;
 
 import com.toucheese.image.entity.Image;
 import com.toucheese.studio.entity.Studio;
