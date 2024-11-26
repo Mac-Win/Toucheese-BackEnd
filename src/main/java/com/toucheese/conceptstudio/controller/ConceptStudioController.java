@@ -11,7 +11,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/concepts")
+@RequestMapping("/v1/concepts")
 public class ConceptStudioController {
     private final ConceptStudioService conceptStudioService;
 

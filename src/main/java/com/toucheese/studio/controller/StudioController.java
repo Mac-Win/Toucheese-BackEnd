@@ -11,13 +11,13 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/studios")
+@RequestMapping("/v1/studios")
 @RequiredArgsConstructor
 public class StudioController {
 
 	private final StudioService studioService;
 
-	@GetMapping("/search")
+	@GetMapping
 	public List<StudioSearchResponse> searchStudios(@RequestParam String keyword) {
 		return studioService.searchStudios(keyword);
 	}

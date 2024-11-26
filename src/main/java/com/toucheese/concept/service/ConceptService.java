@@ -18,7 +18,7 @@ public class ConceptService {
     public List<ConceptDTO> getAllConcepts() {
         List<Concept> concepts = conceptRepository.findAll();
         return concepts.stream()
-                .map(concept -> new ConceptDTO(concept.getId(), concept.getName()))
+                .map(ConceptDTO::of)
                 .collect(Collectors.toList());
     }
 }
