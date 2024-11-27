@@ -19,8 +19,8 @@ public class ReviewService {
 
         return reviews.stream()
                 .map(review -> {
-                    String firstImage = (review.getReview_Images() != null && !review.getReview_Images().isEmpty())
-                            ? review.getReview_Images().get(0).getUrl()
+                    String firstImage = (review.getReviewImages() != null && !review.getReviewImages().isEmpty())
+                            ? review.getReviewImages().get(0).getUrl()
                             : null;
 
                     ReviewDTO reviewDTO = ReviewDTO.of(review);
@@ -46,8 +46,8 @@ public class ReviewService {
 
         return reviews.stream()
                 .map(review -> {
-                    String firstImage = (review.getReview_Images() != null && !review.getReview_Images().isEmpty())
-                            ? review.getReview_Images().get(0).getUrl()
+                    String firstImage = (review.getReviewImages() != null && !review.getReviewImages().isEmpty())
+                            ? review.getReviewImages().get(0).getUrl()
                             : null;
 
                     ReviewDTO reviewDTO = ReviewDTO.of(review);

@@ -30,7 +30,7 @@ public class QReview extends EntityPathBase<Review> {
 
     public final NumberPath<Float> rating = createNumber("rating", Float.class);
 
-    public final ListPath<com.toucheese.image.entity.ReviewImage, com.toucheese.image.entity.QReviewImage> review_Images = this.<com.toucheese.image.entity.ReviewImage, com.toucheese.image.entity.QReviewImage>createList("review_Images", com.toucheese.image.entity.ReviewImage.class, com.toucheese.image.entity.QReviewImage.class, PathInits.DIRECT2);
+    public final ListPath<com.toucheese.image.entity.ReviewImage, com.toucheese.image.entity.QReviewImage> reviewImages = this.<com.toucheese.image.entity.ReviewImage, com.toucheese.image.entity.QReviewImage>createList("reviewImages", com.toucheese.image.entity.ReviewImage.class, com.toucheese.image.entity.QReviewImage.class, PathInits.DIRECT2);
 
     public final com.toucheese.studio.entity.QStudio studio;
 

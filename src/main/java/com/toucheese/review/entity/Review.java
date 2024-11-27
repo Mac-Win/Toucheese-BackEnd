@@ -3,7 +3,6 @@ package com.toucheese.review.entity;
 import java.util.List;
 
 import com.toucheese.image.entity.ReviewImage;
-import com.toucheese.image.entity.StudioImage;
 import com.toucheese.product.entity.Product;
 import com.toucheese.studio.entity.Studio;
 
@@ -43,5 +42,5 @@ public class Review {
 	private Product product;
 
 	@OneToMany(mappedBy = "review", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-	private List<ReviewImage> review_Images;
+	private List<ReviewImage> reviewImages;
 }

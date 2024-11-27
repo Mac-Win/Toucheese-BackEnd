@@ -12,14 +12,14 @@ public record ReviewDTO(
         Long id,
         String content,
         Float rating,
-        List<String> review_Images
+        List<String> reviewImages
 ) {
     public static ReviewDTO of(Review review) {
         return ReviewDTO.builder()
                 .id(review.getId())
                 .content(review.getContent())
                 .rating(review.getRating())
-                .review_Images(review.getReview_Images().stream()
+                .reviewImages(review.getReviewImages().stream()
                         .map(ReviewImage::getUrl)
                         .collect(Collectors.toList()))
                 .build();
