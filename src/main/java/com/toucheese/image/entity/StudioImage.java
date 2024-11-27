@@ -3,9 +3,10 @@ package com.toucheese.image.entity;
 import com.toucheese.studio.entity.Studio;
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity @Getter
-public class Image {
+public class StudioImage {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

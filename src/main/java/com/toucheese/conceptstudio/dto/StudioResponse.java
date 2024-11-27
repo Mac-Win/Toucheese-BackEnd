@@ -1,6 +1,6 @@
 package com.toucheese.conceptstudio.dto;
 
-import com.toucheese.image.entity.Image;
+import com.toucheese.image.entity.StudioImage;
 import com.toucheese.studio.entity.Studio;
 import lombok.Builder;
 
@@ -24,8 +24,8 @@ public record StudioResponse(
             .profileImage(studio.getProfileImage())
             .rating(studio.getRating())
             .price(studio.getPrice())
-            .imageUrls(studio.getImages().stream()
-                .map(Image::getUrl)
+            .imageUrls(studio.getStudioImages().stream()
+                .map(StudioImage::getUrl)
                 .collect(Collectors.toList())
             )
             .build();
