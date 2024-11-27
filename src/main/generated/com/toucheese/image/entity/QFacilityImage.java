@@ -11,16 +11,16 @@ import com.querydsl.core.types.dsl.PathInits;
 
 
 /**
- * QImage is a Querydsl query type for Image
+ * QFacilityImage is a Querydsl query type for FacilityImage
  */
 @Generated("com.querydsl.codegen.DefaultEntitySerializer")
-public class QImage extends EntityPathBase<Image> {
+public class QFacilityImage extends EntityPathBase<FacilityImage> {
 
-    private static final long serialVersionUID = -1803536179L;
+    private static final long serialVersionUID = 643036650L;
 
     private static final PathInits INITS = PathInits.DIRECT2;
 
-    public static final QImage image = new QImage("image");
+    public static final QFacilityImage facilityImage = new QFacilityImage("facilityImage");
 
     public final StringPath filename = createString("filename");
 
@@ -30,23 +30,23 @@ public class QImage extends EntityPathBase<Image> {
 
     public final StringPath url = createString("url");
 
-    public QImage(String variable) {
-        this(Image.class, forVariable(variable), INITS);
+    public QFacilityImage(String variable) {
+        this(FacilityImage.class, forVariable(variable), INITS);
     }
 
-    public QImage(Path<? extends Image> path) {
+    public QFacilityImage(Path<? extends FacilityImage> path) {
         this(path.getType(), path.getMetadata(), PathInits.getFor(path.getMetadata(), INITS));
     }
 
-    public QImage(PathMetadata metadata) {
+    public QFacilityImage(PathMetadata metadata) {
         this(metadata, PathInits.getFor(metadata, INITS));
     }
 
-    public QImage(PathMetadata metadata, PathInits inits) {
-        this(Image.class, metadata, inits);
+    public QFacilityImage(PathMetadata metadata, PathInits inits) {
+        this(FacilityImage.class, metadata, inits);
     }
 
-    public QImage(Class<? extends Image> type, PathMetadata metadata, PathInits inits) {
+    public QFacilityImage(Class<? extends FacilityImage> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
         this.studio = inits.isInitialized("studio") ? new com.toucheese.studio.entity.QStudio(forProperty("studio")) : null;
     }

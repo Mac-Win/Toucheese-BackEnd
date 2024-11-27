@@ -26,17 +26,23 @@ public class QStudio extends EntityPathBase<Studio> {
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
-    public final ListPath<com.toucheese.image.entity.Image, com.toucheese.image.entity.QImage> images = this.<com.toucheese.image.entity.Image, com.toucheese.image.entity.QImage>createList("images", com.toucheese.image.entity.Image.class, com.toucheese.image.entity.QImage.class, PathInits.DIRECT2);
-
     public final EnumPath<Location> location = createEnum("location", Location.class);
 
     public final StringPath name = createString("name");
 
+    public final StringPath notice = createString("notice");
+
     public final NumberPath<Integer> price = createNumber("price", Integer.class);
+
+    public final ListPath<com.toucheese.product.entity.Product, com.toucheese.product.entity.QProduct> products = this.<com.toucheese.product.entity.Product, com.toucheese.product.entity.QProduct>createList("products", com.toucheese.product.entity.Product.class, com.toucheese.product.entity.QProduct.class, PathInits.DIRECT2);
 
     public final StringPath profileImage = createString("profileImage");
 
     public final NumberPath<Float> rating = createNumber("rating", Float.class);
+
+    public final ListPath<com.toucheese.review.entity.Review, com.toucheese.review.entity.QReview> reviews = this.<com.toucheese.review.entity.Review, com.toucheese.review.entity.QReview>createList("reviews", com.toucheese.review.entity.Review.class, com.toucheese.review.entity.QReview.class, PathInits.DIRECT2);
+
+    public final ListPath<com.toucheese.image.entity.StudioImage, com.toucheese.image.entity.QStudioImage> studioImages = this.<com.toucheese.image.entity.StudioImage, com.toucheese.image.entity.QStudioImage>createList("studioImages", com.toucheese.image.entity.StudioImage.class, com.toucheese.image.entity.QStudioImage.class, PathInits.DIRECT2);
 
     public QStudio(String variable) {
         super(Studio.class, forVariable(variable));
