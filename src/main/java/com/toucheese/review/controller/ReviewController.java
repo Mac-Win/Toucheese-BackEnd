@@ -12,7 +12,17 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/studios/{studioId}")
 public class ReviewController {
     private final ReviewService reviewService;
 
+    @GetMapping("/reviews")
+    public List<ReviewDTO> getReviews(@PathVariable("studioId") Long studioId) {
+        return reviewService.getReviewsByStudioId(studioId);
+    }
+
+    @GetMapping("/reviews/{reviewId}")
+    public ReviewDTO getReviewDetail(@PathVariable("reviewId") Long reviewId) {
+        return reviewService.getReviewById(reviewId);
+    }
 }

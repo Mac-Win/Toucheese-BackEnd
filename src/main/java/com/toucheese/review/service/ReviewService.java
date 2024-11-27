@@ -14,4 +14,19 @@ import java.util.stream.Collectors;
 public class ReviewService {
     private final ReviewRepository reviewRepository;
 
+    public List<ReviewDTO> getReviewsByStudioId(Long studioId) {
+        List<Review> reviews = reviewRepository.findAllByStudioId(studioId);
+
+        return reviews.stream()
+                .map(ReviewDTO::of)
+                .collect(Collectors.toList());
+    }
+
+    public ReviewDTO getReviewById(Long reviewId) {
+        Review review = reviewRepository.findById(reviewId)
+                .orElseThrow(() -> new IllegalArgumentException(("리뷰 없음" + reviewId)));
+
+        return ReviewDTO.of(review);
+
+    }
 }
