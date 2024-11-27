@@ -1,8 +1,10 @@
 package com.toucheese.studio.entity;
 
-import com.toucheese.concept.entity.Concept;
 import com.toucheese.conceptstudio.entity.ConceptStudio;
-import com.toucheese.image.entity.Image;
+import com.toucheese.image.entity.StudioImage;
+import com.toucheese.product.entity.Product;
+import com.toucheese.review.entity.Review;
+
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -25,18 +27,28 @@ public class Studio {
 
     private Integer price;
 
-    private Float rating;
-
     @Column(nullable = false)
     private String address;
+
+    private Float rating;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private Location location;
 
-    @OneToMany(mappedBy = "studio", fetch = FetchType.LAZY)
-    private List<Image> images;
+    @Column(columnDefinition = "TEXT")
+    private String notice;
 
-    @OneToMany(mappedBy = "studio", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "studio", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<StudioImage> studioImages;
+
+    @OneToMany(mappedBy = "studio", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<ConceptStudio> conceptStudios;
+
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "studio_id")
+    private List<Product> products;
+
+    @OneToMany(mappedBy = "studio", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<Review> reviews;
 }
