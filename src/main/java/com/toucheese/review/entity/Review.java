@@ -1,8 +1,13 @@
 package com.toucheese.review.entity;
 
+import java.util.List;
+
+import com.toucheese.image.entity.ReviewImage;
+import com.toucheese.image.entity.StudioImage;
 import com.toucheese.product.entity.Product;
 import com.toucheese.studio.entity.Studio;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -11,6 +16,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -35,4 +41,7 @@ public class Review {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "product_id", nullable = true)
 	private Product product;
+
+	@OneToMany(mappedBy = "review", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	private List<ReviewImage> review_Images;
 }

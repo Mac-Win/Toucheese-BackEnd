@@ -1,6 +1,7 @@
 package com.toucheese.studio.entity;
 
 import com.toucheese.conceptstudio.entity.ConceptStudio;
+import com.toucheese.image.entity.FacilityImage;
 import com.toucheese.image.entity.StudioImage;
 import com.toucheese.product.entity.Product;
 import com.toucheese.review.entity.Review;
@@ -41,6 +42,9 @@ public class Studio {
 
     @OneToMany(mappedBy = "studio", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<StudioImage> studioImages;
+
+    @OneToMany(mappedBy = "studio", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<FacilityImage> FacilityImages;
 
     @OneToMany(mappedBy = "studio", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<ConceptStudio> conceptStudios;
