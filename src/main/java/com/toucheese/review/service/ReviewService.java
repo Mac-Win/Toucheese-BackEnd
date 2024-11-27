@@ -18,8 +18,21 @@ public class ReviewService {
         List<Review> reviews = reviewRepository.findAllByStudioId(studioId);
 
         return reviews.stream()
-                .map(ReviewDTO::of)
+                .map(review -> {
+                    String firstImage = (review.getReview_Images() != null && !review.getReview_Images().isEmpty())
+                            ? review.getReview_Images().get(0).getUrl()
+                            : null;
+
+                    ReviewDTO reviewDTO = ReviewDTO.of(review);
+                    return new ReviewDTO(
+                            reviewDTO.id(),
+                            reviewDTO.content(),
+                            reviewDTO.rating(),
+                            List.of(firstImage)
+                    );
+                })
                 .collect(Collectors.toList());
+
     }
 
     public ReviewDTO getReviewById(Long reviewId) {
