@@ -20,7 +20,7 @@ public class ProductAddOption {
 	private long id;
 
 	@Column(nullable = false)
-	private String add_option_price;
+	private Integer addOptionPrice;
 
 	@ManyToOne
 	@JoinColumn(name = "add_option_id", nullable = false)

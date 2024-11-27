@@ -1,10 +1,6 @@
 package com.toucheese.product.entity;
 
-import java.util.List;
-
 import com.toucheese.review.entity.Review;
-import com.toucheese.studio.entity.Studio;
-
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -13,8 +9,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -28,22 +24,22 @@ public class Product {
 	private Long id;
 
 	@Column(nullable = false)
-	private String product_name;
+	private String name;
 
-	private String product_description;
+	private String description;
 
 	@Column(nullable = false)
-	private Integer product_price;
+	private Integer price;
 
 	@Column(nullable = false)
 	private Integer standard;
 
 	@Column(nullable = false)
-	private String product_image;
+	private String productImage;
 
 	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JoinColumn(name = "product_id")
-	private List<ProductAddOption> products_add_options;
+	private List<ProductAddOption> productAddOptions;
 
 	@OneToMany(mappedBy = "product", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private List<Review> reviews;
