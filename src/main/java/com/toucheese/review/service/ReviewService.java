@@ -26,7 +26,7 @@ public class ReviewService {
     }
 
     @Transactional(readOnly = true)
-    public ReviewDetailResponse getReviewById(Long reviewId) {
+    public ReviewDetailResponse findReviewById(Long reviewId) {
         Review review = reviewRepository.findById(reviewId)
                 .orElseThrow(() -> new IllegalArgumentException(("리뷰 없음" + reviewId)));
 

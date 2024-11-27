@@ -23,8 +23,8 @@ public class ReviewController {
     }
 
     @GetMapping("/reviews/{reviewId}")
-    public ReviewDetailResponse getStudioReviewDetail(@PathVariable("reviewId") Long reviewId) {
-        return reviewService.getReviewById(reviewId);
+    public ReviewDetailResponse findStudioReviewDetail(@PathVariable("reviewId") Long reviewId) {
+        return reviewService.findReviewById(reviewId);
     }
 
     @GetMapping("/products/{productId}/reviews")
