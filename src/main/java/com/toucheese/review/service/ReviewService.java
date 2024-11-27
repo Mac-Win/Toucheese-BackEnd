@@ -42,14 +42,5 @@ public class ReviewService {
                 .collect(Collectors.toList());
     }
 
-    @Transactional(readOnly = true)
-    public ReviewDetailResponse getReviewByProductId(Long studioId, Long productId, Long reviewId) {
-        Review review = reviewRepository.findByStudioIdAndProductIdAndId(studioId, productId, reviewId)
-                .orElseThrow(()-> new IllegalArgumentException("리뷰 없어요"));
-
-        return ReviewDetailResponse.of(review);
-    }
-
-
 
 }

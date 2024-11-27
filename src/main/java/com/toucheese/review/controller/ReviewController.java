@@ -31,11 +31,4 @@ public class ReviewController {
     public List<ReviewResponse> getProductReviews(@PathVariable("productId") Long productId) {
         return reviewService.getReviewsByProductId(productId);
     }
-
-    @GetMapping("/products/{productId}/reviews/{reviewId}")
-    public ReviewDetailResponse getProductReviewDetail(@PathVariable("studioId") Long studioId,
-                                                       @PathVariable("productId") Long productId,
-                                                       @PathVariable("reviewId") Long reviewId) {
-        return reviewService.getReviewByProductId(studioId, productId, reviewId);
-    }
 }
