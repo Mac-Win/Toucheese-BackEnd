@@ -17,12 +17,24 @@ public class ReviewController {
     private final ReviewService reviewService;
 
     @GetMapping("/reviews")
-    public List<ReviewDTO> getReviews(@PathVariable("studioId") Long studioId) {
+    public List<ReviewDTO> getStudioReviews(@PathVariable("studioId") Long studioId) {
         return reviewService.getReviewsByStudioId(studioId);
     }
 
     @GetMapping("/reviews/{reviewId}")
-    public ReviewDTO getReviewDetail(@PathVariable("reviewId") Long reviewId) {
+    public ReviewDTO getStudioReviewDetail(@PathVariable("reviewId") Long reviewId) {
         return reviewService.getReviewById(reviewId);
+    }
+
+    @GetMapping("/products/{productId}/reviews")
+    public List<ReviewDTO> getProductReviews(@PathVariable("productId") Long productId) {
+        return reviewService.getReviewsByProductId(productId);
+    }
+
+    @GetMapping("/products/{productId}/reviews/{reviewId}")
+    public ReviewDTO getProductReviewDetail(@PathVariable("studioId") Long studioId,
+                                            @PathVariable("productId") Long productId,
+                                            @PathVariable("reviewId") Long reviewId) {
+        return reviewService.getReviewByProductId(studioId, productId, reviewId);
     }
 }
