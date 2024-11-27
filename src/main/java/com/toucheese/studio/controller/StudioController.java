@@ -1,9 +1,11 @@
 package com.toucheese.studio.controller;
 
+import com.toucheese.studio.dto.StudioDetailResponse;
 import com.toucheese.studio.dto.StudioSearchResponse;
 import com.toucheese.studio.service.StudioService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -20,6 +22,11 @@ public class StudioController {
 	@GetMapping
 	public List<StudioSearchResponse> searchStudios(@RequestParam String keyword) {
 		return studioService.searchStudios(keyword);
+	}
+
+	@GetMapping("/{studioId}")
+	public StudioDetailResponse findStudioDetailById(@PathVariable Long studioId) {
+		return studioService.findStudioDetailById(studioId);
 	}
 
 }
