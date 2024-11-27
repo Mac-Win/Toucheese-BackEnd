@@ -24,6 +24,11 @@ public class StudioController {
 		return studioService.searchStudios(keyword);
 	}
 
+	/**
+	 * 스튜디오 상세 정보를 조회한다.
+	 * @param studioId 스튜디오 아이디
+	 * @return 아이디에 해당하는 스튜디오 상세 정보
+	 */
 	@GetMapping("/{studioId}")
 	public StudioDetailResponse findStudioDetailById(@PathVariable Long studioId) {
 		return studioService.findStudioDetailById(studioId);
