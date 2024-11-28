@@ -28,6 +28,7 @@ public class Review {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
+	@Column(columnDefinition = "TEXT")
 	private String content;
 
 	@Column(nullable = false)
