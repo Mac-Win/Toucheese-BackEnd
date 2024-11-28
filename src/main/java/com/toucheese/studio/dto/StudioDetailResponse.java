@@ -1,5 +1,6 @@
 package com.toucheese.studio.dto;
 
+import com.toucheese.image.entity.FacilityImage;
 import com.toucheese.product.dto.ProductResponse;
 import com.toucheese.studio.entity.Studio;
 import java.util.List;
@@ -16,6 +17,7 @@ public record StudioDetailResponse(
     String operationHour,
     String address,
     String notice,
+    List<String> facilityImageUrls,
     List<ProductResponse> products
 ) {
 
@@ -30,6 +32,10 @@ public record StudioDetailResponse(
                 .operationHour(studio.getOperationHour())
                 .address(studio.getAddress())
                 .notice(studio.getNotice())
+                .facilityImageUrls(studio.getFacilityImages().stream()
+                        .map(FacilityImage::getUrl)
+                        .toList()
+                )
                 .products(studio.getProducts().stream()
                         .map(ProductResponse::of)
                         .toList()
