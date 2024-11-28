@@ -19,7 +19,7 @@ public class QAddOption extends EntityPathBase<AddOption> {
 
     public static final QAddOption addOption = new QAddOption("addOption");
 
-    public final StringPath add_option_name = createString("add_option_name");
+    public final StringPath addOptionName = createString("addOptionName");
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 

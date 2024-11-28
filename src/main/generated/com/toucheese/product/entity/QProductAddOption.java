@@ -22,9 +22,9 @@ public class QProductAddOption extends EntityPathBase<ProductAddOption> {
 
     public static final QProductAddOption productAddOption = new QProductAddOption("productAddOption");
 
-    public final StringPath add_option_price = createString("add_option_price");
-
     public final QAddOption addOption;
+
+    public final NumberPath<Integer> addOptionPrice = createNumber("addOptionPrice", Integer.class);
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 

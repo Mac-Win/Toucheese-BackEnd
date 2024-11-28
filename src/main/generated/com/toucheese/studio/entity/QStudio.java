@@ -24,6 +24,8 @@ public class QStudio extends EntityPathBase<Studio> {
 
     public final ListPath<com.toucheese.conceptstudio.entity.ConceptStudio, com.toucheese.conceptstudio.entity.QConceptStudio> conceptStudios = this.<com.toucheese.conceptstudio.entity.ConceptStudio, com.toucheese.conceptstudio.entity.QConceptStudio>createList("conceptStudios", com.toucheese.conceptstudio.entity.ConceptStudio.class, com.toucheese.conceptstudio.entity.QConceptStudio.class, PathInits.DIRECT2);
 
+    public final StringPath description = createString("description");
+
     public final ListPath<com.toucheese.image.entity.FacilityImage, com.toucheese.image.entity.QFacilityImage> FacilityImages = this.<com.toucheese.image.entity.FacilityImage, com.toucheese.image.entity.QFacilityImage>createList("FacilityImages", com.toucheese.image.entity.FacilityImage.class, com.toucheese.image.entity.QFacilityImage.class, PathInits.DIRECT2);
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
@@ -33,6 +35,8 @@ public class QStudio extends EntityPathBase<Studio> {
     public final StringPath name = createString("name");
 
     public final StringPath notice = createString("notice");
+
+    public final StringPath operationHour = createString("operationHour");
 
     public final NumberPath<Integer> price = createNumber("price", Integer.class);
 
