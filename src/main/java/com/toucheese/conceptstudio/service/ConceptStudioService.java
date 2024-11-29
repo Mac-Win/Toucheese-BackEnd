@@ -9,6 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -21,6 +22,7 @@ public class ConceptStudioService {
 
 	private static final int PAGE_SIZE = 10;
 
+	@Transactional(readOnly = true)
 	public Page<StudioResponse> getStudiosByConceptId(Long conceptId, int page) {
 		Pageable pageable = PageRequest.of(page, PAGE_SIZE);
 		return conceptStudioRepository.findByConceptId(conceptId, pageable).map( conceptStudio ->
@@ -37,6 +39,7 @@ public class ConceptStudioService {
 	 * @param locations 지역 필터링 요소
 	 * @return 현재 페이지에 해당하는 필터링 후 정렬된 스튜디오 목록
 	 */
+	@Transactional(readOnly = true)
 	public Page<StudioResponse> getFilteredStudiosOrderByName(int page, Long conceptId, Integer price, Float rating, List<Location> locations) {
 		Pageable pageable = PageRequest.of(page, PAGE_SIZE);
 		return studioRepositoryImpl.getFilteredStudiosOrderByName(price, rating, locations, conceptId, pageable)

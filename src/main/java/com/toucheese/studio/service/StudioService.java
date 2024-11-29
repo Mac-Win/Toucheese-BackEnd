@@ -17,6 +17,7 @@ public class StudioService {
 
 	private final StudioRepository studioRepository;
 
+	@Transactional(readOnly = true)
 	public List<StudioSearchResponse> searchStudios(String keyword) {
 		List<Studio> studios = studioRepository.findByNameContaining(keyword);
 
