@@ -1,7 +1,6 @@
 package com.toucheese.concept.controller;
 
-import com.toucheese.concept.dto.ConceptDTO;
-import com.toucheese.concept.entity.Concept;
+import com.toucheese.concept.dto.ConceptResponse;
 import com.toucheese.concept.service.ConceptService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -28,7 +27,7 @@ public class ConceptController {
             + "4. 내추럴 화보 느낌, "
             + "5. 선명하고 인형같은 느낌, "
             + "6. 필터 / 수채화 그림체 느낌")
-    public List<ConceptDTO> getAllConcepts() {
+    public List<ConceptResponse> getAllConcepts() {
         return conceptService.getAllConcepts();
     }
 }

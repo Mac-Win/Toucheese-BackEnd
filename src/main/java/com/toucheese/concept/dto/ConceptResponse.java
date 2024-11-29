@@ -4,10 +4,10 @@ import com.toucheese.concept.entity.Concept;
 import lombok.Builder;
 
 @Builder
-public record ConceptDTO(Long id, String name) {
+public record ConceptResponse(Long id, String name) {
 
-    public static ConceptDTO of(Concept concept) {
-        return ConceptDTO.builder()
+    public static ConceptResponse of(Concept concept) {
+        return ConceptResponse.builder()
                 .id(concept.getId())
                 .name(concept.getName())
                 .build();
