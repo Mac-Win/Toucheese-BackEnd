@@ -21,7 +21,8 @@ public record ReviewDetailResponse(
                 .rating(review.getRating())
                 .reviewImages(review.getReviewImages().stream()
                         .map(ReviewImage::getUrl)
-                        .collect(Collectors.toList()))
+                        .toList()
+                )
                 .build();
 
     }

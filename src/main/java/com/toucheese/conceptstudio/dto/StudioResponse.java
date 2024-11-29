@@ -25,8 +25,8 @@ public record StudioResponse(
             .rating(studio.getRating())
             .price(studio.getPrice())
             .imageUrls(studio.getStudioImages().stream()
-                .map(StudioImage::getUrl)
-                .collect(Collectors.toList())
+                    .map(StudioImage::getUrl)
+                    .toList()
             )
             .build();
     }

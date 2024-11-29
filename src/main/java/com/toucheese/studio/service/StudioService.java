@@ -22,8 +22,8 @@ public class StudioService {
 		List<Studio> studios = studioRepository.findByNameContaining(keyword);
 
 		return studios.stream()
-			.map(StudioSearchResponse::of)
-			.collect(Collectors.toList());
+				.map(StudioSearchResponse::of)
+				.toList();
 	}
 
 	/**

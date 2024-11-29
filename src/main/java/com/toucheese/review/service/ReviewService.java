@@ -23,7 +23,7 @@ public class ReviewService {
 
         return reviews.stream()
                 .map(ReviewResponse::of)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Transactional(readOnly = true)
@@ -40,7 +40,7 @@ public class ReviewService {
 
         return reviews.stream()
                 .map(ReviewResponse::of)
-                .collect(Collectors.toList());
+                .toList();
     }
 
 
