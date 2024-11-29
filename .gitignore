@@ -41,3 +41,6 @@ out/
 ._.DS_Store
 **/.DS_Store
 **/._.DS_Store
+
+# QueryDSL generated
+/src/main/generated/
