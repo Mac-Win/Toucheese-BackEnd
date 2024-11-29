@@ -1,5 +1,6 @@
 package com.toucheese.review.service;
 
+import com.toucheese.global.exception.ToucheeseBadRequestException;
 import com.toucheese.review.dto.ReviewDetailResponse;
 import com.toucheese.review.dto.ReviewResponse;
 import com.toucheese.review.entity.Review;
@@ -28,7 +29,7 @@ public class ReviewService {
     @Transactional(readOnly = true)
     public ReviewDetailResponse findReviewById(Long reviewId) {
         Review review = reviewRepository.findById(reviewId)
-                .orElseThrow(() -> new IllegalArgumentException(("리뷰 없음" + reviewId)));
+                .orElseThrow(() -> new ToucheeseBadRequestException(reviewId + "번 리뷰가 없습니다."));
 
         return ReviewDetailResponse.of(review);
     }
