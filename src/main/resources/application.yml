@@ -1,4 +1,6 @@
 spring:
+  config:
+    import: classpath:application-secret.yml
   datasource:
     url: jdbc:mysql://localhost:3306/toucheese_db
     username: root
