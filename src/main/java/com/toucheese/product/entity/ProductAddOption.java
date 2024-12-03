@@ -17,7 +17,7 @@ public class ProductAddOption {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private long id;
+	private Long id;
 
 	@Column(nullable = false)
 	private Integer addOptionPrice;
