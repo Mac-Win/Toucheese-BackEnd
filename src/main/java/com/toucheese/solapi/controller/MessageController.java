@@ -2,6 +2,7 @@ package com.toucheese.solapi.controller;
 
 import com.toucheese.solapi.dto.MessageRequest;
 import com.toucheese.solapi.service.MessageService;
+import lombok.RequiredArgsConstructor;
 import net.nurigo.sdk.message.exception.NurigoMessageNotReceivedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -12,13 +13,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/v1/messages")
+@RequiredArgsConstructor
 public class MessageController {
     private final MessageService messageService;
-
-    @Autowired
-    public MessageController(MessageService messageService) {
-        this.messageService = messageService;
-    }
 
     @PostMapping("/send")
     public ResponseEntity<String> sendMessage(@RequestBody MessageRequest messageRequest) {

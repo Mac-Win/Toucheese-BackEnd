@@ -9,23 +9,27 @@ import org.springframework.stereotype.Service;
 @Service
 public class MessageService {
     private final DefaultMessageService solapiService;
+    private static final String fromNumber = "고정 발신 번호"; // 고정 발신 번호
 
     public MessageService() {
         this.solapiService = NurigoApp.INSTANCE.initialize(
-                "NCSE0CV4QQKN79LE",
-                "80GTLY3XHFNNTCTRGPSORX5UZFUM9GJJ",
+                "APIKEY",
+                "ApiSecretKey",
                 "https://api.solapi.com"
 
         );
     }
 
     public String sendMessage(MessageRequest request) throws Exception {
+
+        String messageText = String.format("안녕하세요 , %s 님 ! 예약 접수되었습니다.", request.name());
+
         Message message = new Message();
-        message.setFrom(request.from());
+        message.setFrom(fromNumber);
         message.setTo(request.recipient());
-        message.setText(request.text());
+        message.setText(messageText);
 
         solapiService.send(message);
-        return "Message sent successfully.";
+        return "Message sent successfully." + request.name();
     }
 }
