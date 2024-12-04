@@ -4,6 +4,7 @@ import com.toucheese.global.util.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -27,9 +28,12 @@ public class SecurityConfig {
                         AbstractHttpConfigurer::disable
                 )
                 .authorizeHttpRequests(requests ->
-                        requests.requestMatchers(
-                                "/**"
-                                ).permitAll()
+                        requests.requestMatchers(HttpMethod.GET, "/v1/concepts/**").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/v1/studios/**").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/v1/products/**").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/v1/reviews/**").permitAll()
+                                .requestMatchers(HttpMethod.POST, "/v1/members/**").permitAll()
+                                .requestMatchers("/swagger", "/swagger-ui.html", "/swagger-ui/**", "/api-docs", "/api-docs/**", "/v3/api-docs/**").permitAll()
                                 .anyRequest().authenticated()
                 )
                 .sessionManagement(sessionManagement ->
