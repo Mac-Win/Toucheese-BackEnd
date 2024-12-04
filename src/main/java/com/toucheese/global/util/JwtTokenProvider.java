@@ -26,26 +26,41 @@ public class JwtTokenProvider {
         this.secretKey = Keys.hmacShaKeyFor(appConfig.getSecretKey());
     }
 
-    public String createAccessToken(String id) {
+    /**
+     * 접근 토큰 생성을 위한 메서드
+     * @param memberId subject 등록을 위한 회원 아이디
+     * @return 생성된 접근 토큰
+     */
+    public String createAccessToken(String memberId) {
         Date now = new Date();
         return Jwts.builder()
-                .subject(id)
+                .subject(memberId)
                 .signWith(secretKey)
                 .expiration(new Date(now.getTime() + (1000L * 60 * 30))) // 30분
                 .issuedAt(now)
                 .compact();
     }
 
-    public String createRefreshToken(String id) {
+    /**
+     * 갱신 토큰 생성을 위한 메서드
+     * @param memberId subject 등록을 위한 회원 아이디
+     * @return 생성된 갱신 토큰
+     */
+    public String createRefreshToken(String memberId) {
         Date now = new Date();
         return Jwts.builder()
-                .subject(id)
+                .subject(memberId)
                 .signWith(secretKey)
                 .expiration(new Date(now.getTime() + (1000L * 60 * 60 * 24 * 30 * 3))) // 3개월
                 .issuedAt(now)
                 .compact();
     }
 
+    /**
+     * 토큰 내 정보를 확인하기 위한 메서드
+     * @param token 접근 토큰 혹은 갱신 토큰
+     * @return 토큰 내 정보
+     */
     public Claims getClaims(String token) {
         try {
             return Jwts.parser()
@@ -58,6 +73,11 @@ public class JwtTokenProvider {
         }
     }
 
+    /**
+     * 토큰 검증을 위한 메서드
+     * @param token 접근 토큰 혹은 갱신 토큰
+     * @return 정상적으로 verify 된다면 true, 아니라면 false
+     */
     public boolean validateToken(String token) {
         try{
             Jwts.parser()
@@ -70,6 +90,11 @@ public class JwtTokenProvider {
         }
     }
 
+    /**
+     * 인증 정보 설정을 위한 메서드
+     * @param token 접근 토큰
+     * @return 인증 정보
+     */
     public Authentication getAuthentication(String token) {
         Claims claims = getClaims(token);
         User principal = new User(claims.getSubject(), "",  Collections.emptyList());
