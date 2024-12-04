@@ -19,14 +19,7 @@ public class MessageController {
 
     @PostMapping("/send")
     public ResponseEntity<String> sendMessage(@RequestBody MessageRequest messageRequest) {
-        try {
-            String result = messageService.sendMessage(messageRequest);
-            return ResponseEntity.ok(result);
-        } catch (NurigoMessageNotReceivedException exception) {
-            return ResponseEntity.status(500)
-                    .body("Failed to send some messages: " + exception.getFailedMessageList());
-        } catch (Exception exception) {
-            return ResponseEntity.status(500).body("Error occurred: "  + exception.getMessage());
-        }
+        String result = messageService.sendMessage(messageRequest);
+        return ResponseEntity.ok(result);
     }
 }
