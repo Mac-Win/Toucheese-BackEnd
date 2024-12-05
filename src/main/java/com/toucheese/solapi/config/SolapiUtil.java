@@ -27,6 +27,10 @@ public class SolapiUtil {
         return solapiService;
     }
 
+    private String formatMessage(String name) {
+        return String.format(MessageTemplate, name);
+    }
+
     public void send(String from, String to, String messageText) {
         Message message = new Message();
         message.setFrom(from);
