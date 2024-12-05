@@ -37,7 +37,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
             Token token = tokenService.findRefreshTokenByUserIdAndAccessToken(Long.parseLong(memberId), accessToken);
             checkRefreshToken(token.getRefreshToken()); // refreshToken 만료 확인
-            tokenService.updateAccessToken(token, jwtTokenProvider.createAccessToken(accessToken)); // 갱신 및 업데이트
+
+            String newAccessToken = jwtTokenProvider.createAccessToken(accessToken);
+            tokenService.updateAccessToken(token, newAccessToken); // 갱신 및 업데이트
+
+            response.setHeader("Authorization", "Bearer " + newAccessToken); // 새로운 accessToken을 응답 헤더에 추가
         }
 
         Authentication authentication = jwtTokenProvider.getAuthentication(accessToken);
@@ -58,7 +62,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
     /**
-     * 인증 헤더를 확인하여 AccesToken을 반환하기 위한 메서드
+     * 인증 헤더를 확인하여 AccessToken을 반환하기 위한 메서드
      * @param request 요청 정보
      * @return AccessToken
      */
