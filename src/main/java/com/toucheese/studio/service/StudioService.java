@@ -1,15 +1,17 @@
 package com.toucheese.studio.service;
 
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.toucheese.global.exception.ToucheeseBadRequestException;
 import com.toucheese.studio.dto.StudioDetailResponse;
 import com.toucheese.studio.dto.StudioSearchResponse;
 import com.toucheese.studio.entity.Studio;
 import com.toucheese.studio.repository.StudioRepository;
-import java.util.List;
-import java.util.stream.Collectors;
+
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -38,6 +40,12 @@ public class StudioService {
 				.orElseThrow(ToucheeseBadRequestException::new);
 
 		return StudioDetailResponse.of(studio);
+	}
+
+	@Transactional(readOnly = true)
+	public Studio findStudioById(Long studioId) {
+		return studioRepository.findById(studioId)
+			.orElseThrow(() -> new ToucheeseBadRequestException("Product not found"));
 	}
 
 }

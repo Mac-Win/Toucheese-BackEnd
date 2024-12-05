@@ -17,7 +17,7 @@ public class ProductAddOption {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private long id;
+	private Long id;
 
 	@Column(nullable = false)
 	private Integer addOptionPrice;
@@ -25,4 +25,8 @@ public class ProductAddOption {
 	@ManyToOne
 	@JoinColumn(name = "add_option_id", nullable = false)
 	private AddOption addOption;
+
+	@ManyToOne
+	@JoinColumn(name = "product_id", nullable = false)
+	private Product product;
 }
