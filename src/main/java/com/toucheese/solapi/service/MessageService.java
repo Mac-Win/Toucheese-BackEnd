@@ -23,9 +23,7 @@ public class MessageService {
 
     public String sendMessage(MessageRequest request) {
         try {
-            String messageText = String.format(SolapiUtil.MessageTemplate, request.name());
-
-            solapiUtil.send(fromNumber, request.recipient(), messageText);
+            solapiUtil.send(fromNumber, request.recipient(), String.format(SolapiUtil.MessageTemplate, request.name()));
 
             return "Message sent successfully to " + request.name();
         } catch (Exception exception) {
