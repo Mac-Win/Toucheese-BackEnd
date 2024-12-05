@@ -1,7 +1,6 @@
 package com.toucheese.member.service;
 
 import com.toucheese.global.exception.ToucheeseBadRequestException;
-import com.toucheese.member.dto.LoginResponse;
 import com.toucheese.member.entity.Member;
 import com.toucheese.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -28,16 +27,13 @@ public class MemberService {
      * @return 로그인 시 생성 된 접근 토큰
      */
     @Transactional
-    public LoginResponse loginMember(String username, String password) {
+    public String loginMember(String username, String password) {
         Member member = memberRepository.findByUsername(username)
                 .orElseThrow(() -> new ToucheeseBadRequestException("아이디 혹은 비밀번호가 잘못되었습니다."));
 
         checkMemberPassword(member, password);
 
-        String accessToken = tokenService.saveToken(member);
-        return LoginResponse.builder()
-                .accessToken(accessToken)
-                .build();
+        return tokenService.saveToken(member);
     }
 
     /**

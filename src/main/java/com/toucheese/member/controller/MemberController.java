@@ -1,11 +1,12 @@
 package com.toucheese.member.controller;
 
+import com.toucheese.global.data.ApiResponse;
 import com.toucheese.member.dto.LoginRequest;
-import com.toucheese.member.dto.LoginResponse;
 import com.toucheese.member.service.MemberService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -27,8 +28,10 @@ public class MemberController {
      */
     @PostMapping
     @Operation(summary = "회원 로그인", description = "username, password로 로그인 합니다.")
-    public LoginResponse login(@RequestBody @Validated LoginRequest loginRequest) {
-        return memberService.loginMember(loginRequest.username(), loginRequest.password());
+    public ResponseEntity<?> login(@RequestBody @Validated LoginRequest loginRequest) {
+        return ApiResponse.accessTokenResponse(
+                memberService.loginMember(loginRequest.username(), loginRequest.password())
+        );
     }
 
 }
