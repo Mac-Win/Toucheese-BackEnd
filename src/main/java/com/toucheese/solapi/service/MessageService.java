@@ -20,26 +20,17 @@ public class MessageService {
 
     @Value("${solapi.from-number}")
     private String fromNumber; // 고정 발신 번호
-    @Value("${message.template}")
-    private String messageTemplate;
 
     public String sendMessage(MessageRequest request) {
         try {
-            String messageText = String.format(messageTemplate, request.name());
+            String messageText = String.format(SolapiUtil.MessageTemplate, request.name());
 
-            Message message = new Message();
-            message.setFrom(fromNumber);
-            message.setTo(request.recipient());
-            message.setText(messageText);
+            solapiUtil.send(fromNumber, request.recipient(), messageText);
 
-            solapiUtil.getSolapiService().send(message);
-            return "Message sent successfully." + request.name();
-        } catch (NurigoMessageNotReceivedException exception) {
-            throw new ToucheeseBadRequestException("Faild messages: " + exception.getFailedMessageList());
+            return "Message sent successfully to " + request.name();
         } catch (Exception exception) {
             throw new ToucheeseInternalServerErrorException("An unexpected error occurred:" + exception.getMessage());
         }
-
 
     }
 }
