@@ -23,14 +23,14 @@ public class MemberController {
 
     /**
      * 로그인 요청을 처리하는 메서드
-     * @param loginRequest 로그인 요청 정보 (username, password)
+     * @param loginRequest 로그인 요청 정보 (email, password)
      * @return 로그인 시 생성 된 접근 토큰 (accessToken)
      */
     @PostMapping
-    @Operation(summary = "회원 로그인", description = "username, password로 로그인 합니다.")
+    @Operation(summary = "회원 로그인", description = "email, password로 로그인 합니다.")
     public ResponseEntity<?> login(@RequestBody @Validated LoginRequest loginRequest) {
         return ApiResponse.accessTokenResponse(
-                memberService.loginMember(loginRequest.username(), loginRequest.password())
+                memberService.loginMember(loginRequest.email(), loginRequest.password())
         );
     }
 
