@@ -11,6 +11,7 @@ import java.util.Collections;
 import java.util.Date;
 import javax.crypto.SecretKey;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.User;
@@ -21,6 +22,12 @@ import org.springframework.stereotype.Component;
 public class JwtTokenProvider {
 
     private final SecretKey secretKey;
+
+    @Value("${jwt.access-token-expiration}")
+    private Long accessTokenExpiration;
+    @Value("${jwt.refresh-token-expiration}")
+    private Long refreshTokenExpiration;
+
 
     public JwtTokenProvider(AppConfig appConfig) {
         this.secretKey = Keys.hmacShaKeyFor(appConfig.getSecretKey());
@@ -36,7 +43,7 @@ public class JwtTokenProvider {
         return Jwts.builder()
                 .subject(memberId)
                 .signWith(secretKey)
-                .expiration(new Date(now.getTime() + (1000L * 60 * 30))) // 30분
+                .expiration(new Date(now.getTime() + accessTokenExpiration)) // 30분
                 .issuedAt(now)
                 .compact();
     }
@@ -51,7 +58,7 @@ public class JwtTokenProvider {
         return Jwts.builder()
                 .subject(memberId)
                 .signWith(secretKey)
-                .expiration(new Date(now.getTime() + (1000L * 60 * 60 * 24 * 30 * 3))) // 3개월
+                .expiration(new Date(now.getTime() + refreshTokenExpiration)) // 3개월
                 .issuedAt(now)
                 .compact();
     }
