@@ -1,6 +1,8 @@
 package com.toucheese.solapi.service;
 
 import com.toucheese.global.exception.ToucheeseBadRequestException;
+import com.toucheese.global.exception.ToucheeseInternalServerErrorException;
+import com.toucheese.solapi.config.SolapiUtil;
 import com.toucheese.solapi.dto.MessageRequest;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
@@ -14,35 +16,28 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class MessageService {
-    private DefaultMessageService solapiService;
-    @Value("${solapi.api-key}")
-    private String apiKey;
-    @Value("${solapi.api-secret-key}")
-    private String apiSecretKey;
-    @Value("${solapi.base-url}")
-    private String baseUrl;
-    private static final String fromNumber = "고정발신번호(유진님전화번호)"; // 고정 발신 번호
+    private final SolapiUtil solapiUtil;
 
-    @PostConstruct
-    public void init() {
-        this.solapiService = NurigoApp.INSTANCE.initialize(apiKey, apiSecretKey, baseUrl);
-    }
+    @Value("${solapi.from-number}")
+    private String fromNumber; // 고정 발신 번호
+    @Value("${message.template}")
+    private String messageTemplate;
 
     public String sendMessage(MessageRequest request) {
         try {
-            String messageText = String.format("안녕하세요 , %s 님 ! 예약 접수되었습니다.", request.name());
+            String messageText = String.format(messageTemplate, request.name());
 
             Message message = new Message();
             message.setFrom(fromNumber);
             message.setTo(request.recipient());
             message.setText(messageText);
 
-            solapiService.send(message);
+            solapiUtil.getSolapiService().send(message);
             return "Message sent successfully." + request.name();
         } catch (NurigoMessageNotReceivedException exception) {
             throw new ToucheeseBadRequestException("Faild messages: " + exception.getFailedMessageList());
         } catch (Exception exception) {
-            throw new ToucheeseBadRequestException("Error" + exception.getMessage());
+            throw new ToucheeseInternalServerErrorException("An unexpected error occurred:" + exception.getMessage());
         }
 
 
