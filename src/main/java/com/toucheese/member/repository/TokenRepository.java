@@ -6,5 +6,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface TokenRepository extends JpaRepository<Token, Long> {
 
-    Optional<Token> findByMemberIdAndAccessToken(Long memberId, String token);
+    Optional<Token> findByAccessToken(String token);
 }

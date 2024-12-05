@@ -18,13 +18,12 @@ public class TokenService {
 
     /**
      * 갱신 토큰 검색을 위한 메서드
-     * @param userId 회원 아이디
      * @param accessToken 접근 토큰
      * @return 해당하는 토큰 정보
      */
     @Transactional(readOnly = true)
-    public Token findRefreshTokenByUserIdAndAccessToken(Long userId, String accessToken) {
-        return tokenRepository.findByMemberIdAndAccessToken(userId, accessToken)
+    public Token findRefreshTokenByAccessToken(String accessToken) {
+        return tokenRepository.findByAccessToken(accessToken)
                 .orElseThrow(ToucheeseUnAuthorizedException::new);
     }
 

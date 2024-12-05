@@ -1,6 +1,8 @@
 package com.toucheese.global.util;
 
+import com.toucheese.global.data.JwtValidateStatus;
 import com.toucheese.global.exception.ToucheeseTokenInvalidException;
+import com.toucheese.global.exception.ToucheeseUnAuthorizedException;
 import com.toucheese.member.entity.Token;
 import com.toucheese.member.service.TokenService;
 import jakarta.servlet.FilterChain;
@@ -32,11 +34,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             return;
         }
 
-        if (!jwtTokenProvider.validateToken(accessToken)){ // accessToken 인증 되지 않은 경우
-            String memberId = jwtTokenProvider.getClaims(accessToken).getSubject();
+        JwtValidateStatus validateStatus = jwtTokenProvider.validateToken(accessToken);
 
-            Token token = tokenService.findRefreshTokenByUserIdAndAccessToken(Long.parseLong(memberId), accessToken);
-            checkRefreshToken(token.getRefreshToken()); // refreshToken 만료 확인
+        if (validateStatus == JwtValidateStatus.DENIED) {
+            throw new ToucheeseUnAuthorizedException();
+        } else if (validateStatus == JwtValidateStatus.EXPIRED) {
+            Token token = tokenService.findRefreshTokenByAccessToken(accessToken);
+            checkRefreshToken(token.getRefreshToken()); // refreshToken 확인
 
             String newAccessToken = jwtTokenProvider.createAccessToken(accessToken);
             tokenService.updateAccessToken(token, newAccessToken); // 갱신 및 업데이트
@@ -51,13 +55,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
     /**
-     * RefreshToken의 만료를 확인 및 처리하기 위한 메서드
+     * RefreshToke을 검증하기 위한 토큰
      * @param refreshToken 갱신 토큰
      * @throws ToucheeseTokenInvalidException 갱신 토큰 또한 만료되었을 경우 재로그인 요청
      */
     private void checkRefreshToken(String refreshToken) {
-        if (!jwtTokenProvider.validateToken(refreshToken)) {
-            throw new ToucheeseTokenInvalidException();
+        switch (jwtTokenProvider.validateToken(refreshToken)) {
+            case EXPIRED, DENIED -> throw new ToucheeseTokenInvalidException();
         }
     }
 

@@ -1,21 +1,22 @@
 package com.toucheese.global.util;
 
 import com.toucheese.global.config.AppConfig;
-import com.toucheese.global.exception.ToucheeseUnAuthorizedException;
+import com.toucheese.global.data.JwtValidateStatus;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
-import java.util.Collections;
-import java.util.Date;
-import javax.crypto.SecretKey;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Component;
+
+import javax.crypto.SecretKey;
+import java.util.Collections;
+import java.util.Date;
 
 @Slf4j
 @Component
@@ -69,31 +70,32 @@ public class JwtTokenProvider {
      * @return 토큰 내 정보
      */
     public Claims getClaims(String token) {
-        try {
-            return Jwts.parser()
-                    .verifyWith(secretKey)
-                    .build()
-                    .parseSignedClaims(token)
-                    .getPayload();
-        } catch (ExpiredJwtException e) {
-            throw new ToucheeseUnAuthorizedException();
-        }
+        return Jwts.parser()
+                .verifyWith(secretKey)
+                .build()
+                .parseSignedClaims(token)
+                .getPayload();
     }
 
     /**
      * 토큰 검증을 위한 메서드
      * @param token 접근 토큰 혹은 갱신 토큰
-     * @return 정상적으로 verify 된다면 true, 아니라면 false
+     * @return JwtValidateStatus
+     *  ACCEPTED 검증 완료
+     *  EXPIRED 만료
+     *  DENIED 검증 실패
      */
-    public boolean validateToken(String token) {
-        try{
+    public JwtValidateStatus validateToken(String token) {
+        try {
             Jwts.parser()
                     .verifyWith(secretKey)
                     .build()
                     .parseSignedClaims(token);
-            return true;
-        } catch(JwtException e) {
-            return false;
+            return JwtValidateStatus.ACCEPTED;
+        } catch (ExpiredJwtException e){
+            return JwtValidateStatus.EXPIRED;
+        } catch (JwtException e) {
+            return JwtValidateStatus.DENIED;
         }
     }
 
