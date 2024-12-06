@@ -36,6 +36,7 @@ public class ProductController {
 	}
 
 	@GetMapping("/{productId}/times")
+	@Operation(summary = "예약 가능한 시간 조회", description = "캘린더 클릭 시 date 값을 받습니다. <br> date = 2024-12-06 <br> date값에 해당하는 예약 가능한 시간을 List형태로 반환합니다.")
 	public List<String> getAvailableTimes(
 		@PathVariable Long productId,
 		@RequestParam(required = false) String date
