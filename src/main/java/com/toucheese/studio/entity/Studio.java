@@ -17,7 +17,6 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -43,8 +42,7 @@ public class Studio {
 
     private Float rating;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "studio_id")
+    @OneToMany(mappedBy = "studio", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<OperatingHour> operatingHours;
 
     @Column(nullable = false)

@@ -1,12 +1,8 @@
 package com.toucheese.product.controller;
 
-import java.time.LocalDate;
-import java.util.List;
-
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.toucheese.product.dto.ProductDetailResponse;
@@ -33,18 +29,5 @@ public class ProductController {
 	@Operation(summary = "상품 상세 조회", description = "상품 클릭 시 상품 상세 조회")
 	public ProductDetailResponse findProductDetailById(@PathVariable("productId") Long productId) {
 		return productService.findProductDetailById(productId);
-	}
-
-	@GetMapping("/{productId}/times")
-	@Operation(summary = "예약 가능한 시간 조회", description = "캘린더 클릭 시 date 값을 받습니다. <br> date = 2024-12-06 <br> date값에 해당하는 예약 가능한 시간을 List형태로 반환합니다.")
-	public List<String> getAvailableTimes(
-		@PathVariable Long productId,
-		@RequestParam(required = false) String date
-	) {
-		if (date == null || date.isEmpty()) {
-			date = LocalDate.now().toString();
-		}
-
-		return productService.getAvailableTimes(productId, date);
 	}
 }

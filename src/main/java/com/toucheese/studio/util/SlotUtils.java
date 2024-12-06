@@ -1,4 +1,4 @@
-package com.toucheese.product.util;
+package com.toucheese.studio.util;
 
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
