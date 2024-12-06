@@ -1,6 +1,7 @@
 package com.toucheese.studio.service;
 
 import java.time.LocalDate;
+import java.time.YearMonth;
 import java.time.ZoneId;
 import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
@@ -55,21 +56,20 @@ public class StudioService {
 	 * 특정 월의 휴무일과 영업시간을 반환
 	 *
 	 * @param studioId 스튜디오 ID
-	 * @param year 연도
-	 * @param month 월
+	 * @param yearMonth 2024-12 연도월
 	 * @return 날짜별 상태 리스트
 	 */
 	@Transactional(readOnly = true)
-	public List<CalendarDayResponse> getMonthlyCalendar(Long studioId, Integer year, Integer month) {
+	public List<CalendarDayResponse> getMonthlyCalendar(Long studioId, String yearMonth) {
 		// 연도와 월 기본값 설정 (서울 기준 현재 날짜)
-		LocalDate currentDate = LocalDate.now(ZoneId.of("Asia/Seoul"));
-		int targetYear = (year != null) ? year : currentDate.getYear();
-		int targetMonth = (month != null) ? month : currentDate.getMonthValue();
+		YearMonth targetYearMonth = (yearMonth != null && !yearMonth.isEmpty())
+			? YearMonth.parse(yearMonth) // "2024-12" → YearMonth 객체로 변환
+			: YearMonth.now(ZoneId.of("Asia/Seoul")); // 입력값 없으면 현재 날짜 기준
 
 		List<CalendarDayResponse> calendarDays = new ArrayList<>();
 
 		// 해당 월의 시작일과 종료일 계산
-		LocalDate firstDay = LocalDate.of(targetYear, targetMonth, 1);
+		LocalDate firstDay = targetYearMonth.atDay(1);
 		LocalDate lastDay = firstDay.with(TemporalAdjusters.lastDayOfMonth());
 
 		// 날짜별 처리

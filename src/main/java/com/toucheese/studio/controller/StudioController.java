@@ -51,9 +51,8 @@ public class StudioController {
 		description = "상품 예약시 캘린더 클릭하였을때 휴무일과 영업일의 스튜디오 영업시간 기준 예약 희망 시간 조회")
 	public List<CalendarDayResponse> getMonthlyCalendar(
 		@PathVariable Long studioId,
-		@RequestParam(required = false) Integer year,
-		@RequestParam(required = false) Integer month
+		@RequestParam(required = false) String yearMonth
 	) {
-		return studioService.getMonthlyCalendar(studioId, year, month);
+		return studioService.getMonthlyCalendar(studioId, yearMonth);
 	}
 }
