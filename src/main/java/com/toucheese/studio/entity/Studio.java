@@ -1,10 +1,13 @@
 package com.toucheese.studio.entity;
 
+import java.util.List;
+
 import com.toucheese.conceptstudio.entity.ConceptStudio;
 import com.toucheese.image.entity.FacilityImage;
 import com.toucheese.image.entity.StudioImage;
 import com.toucheese.product.entity.Product;
 import com.toucheese.review.entity.Review;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -16,7 +19,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
-import java.util.List;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -41,7 +43,9 @@ public class Studio {
 
     private Float rating;
 
-    private String operationHour;
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "studio_id")
+    private List<OperatingHour> operatingHours;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
@@ -62,8 +66,7 @@ public class Studio {
     @OneToMany(mappedBy = "studio", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<ConceptStudio> conceptStudios;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "studio_id")
+    @OneToMany(mappedBy = "studio", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Product> products;
 
     @OneToMany(mappedBy = "studio", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
