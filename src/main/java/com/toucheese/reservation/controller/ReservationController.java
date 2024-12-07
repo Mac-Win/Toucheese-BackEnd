@@ -37,7 +37,7 @@ public class ReservationController {
 			createDate = 예약날짜, <br>
 			createTime = 예약시간 예시 -> 14:30, <br>
 			personnel = 예약 인원수, <br>
-			addOptions = 추가 상품에서 id는 productAddOptionId 필요 <br>
+			addOptions = 추가 상품에서 id는 AddOptionId 필요 <br>
 			<br>
 			예시 데이터 : <br>
 			{<br>
@@ -49,21 +49,9 @@ public class ReservationController {
 			createDate: 2024-12-04, <br>
 			createTime: 09:30, <br>
 			personnel: 2, <br>
-			addOptions: [ <br>
-			<pre>
-			    { <br>
-			        id: 1, << 이부분의 id는 productAddOptionId<br>
-			        addOptionPrice: 20000 <br>
-			    }, <br>
-			    {<br>
-			        id: 2, <br>
-			        addOptionPrice: 30000 <br>
-			    } <br>
-			  ] 
-			</pre>
-			} <br>
+			addOptions: [1, 2, 3] <br>
+			}
 			"""
-
 	)
 	public ResponseEntity<ReservationRequest> reservationCreate(
 		@Valid @RequestBody ReservationRequest reservationRequest) {

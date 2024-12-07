@@ -1,5 +1,14 @@
 package com.toucheese.studio.controller;
 
+import java.util.List;
+
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.toucheese.studio.dto.CalendarDayResponse;
 import com.toucheese.studio.dto.StudioDetailResponse;
 import com.toucheese.studio.dto.StudioSearchResponse;
 import com.toucheese.studio.service.StudioService;
@@ -8,13 +17,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/v1/studios")
@@ -44,4 +46,13 @@ public class StudioController {
 		return studioService.findStudioDetailById(studioId);
 	}
 
+	@GetMapping("/{studioId}/calendars")
+	@Operation(summary = "캘린더 휴무일 및 예약 희망 시간",
+		description = "상품 예약시 캘린더 클릭하였을때 휴무일과 영업일의 스튜디오 영업시간 기준 예약 희망 시간 조회")
+	public List<CalendarDayResponse> getMonthlyCalendar(
+		@PathVariable Long studioId,
+		@RequestParam(required = false) String yearMonth
+	) {
+		return studioService.getMonthlyCalendar(studioId, yearMonth);
+	}
 }
