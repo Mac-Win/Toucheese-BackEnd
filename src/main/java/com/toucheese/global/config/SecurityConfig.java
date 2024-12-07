@@ -53,7 +53,7 @@ public class SecurityConfig {
 	@Bean
 	public CorsConfigurationSource corsConfigurationSource() {
 		CorsConfiguration configuration = new CorsConfiguration();
-		configuration.addAllowedOriginPattern("*"); // 모든 Origin 허용
+		configuration.addAllowedOrigin("https://www.toucheese-macwin.store");
 		configuration.addAllowedMethod("*"); // 모든 HTTP 메서드 허용
 		configuration.addAllowedHeader("*"); // 모든 헤더 허용
 		configuration.setAllowCredentials(true); // 인증 정보 허용
