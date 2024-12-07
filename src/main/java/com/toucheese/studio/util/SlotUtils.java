@@ -10,7 +10,7 @@ public class SlotUtils {
 	public static List<String> createStartTimeSlots(String openTime, String closeTime, Integer term) {
 		List<String> startTimeSlots = new ArrayList<>();
 
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("H:mm");
 		LocalTime start = LocalTime.parse(openTime, formatter);
 		LocalTime end = LocalTime.parse(closeTime, formatter);
 
