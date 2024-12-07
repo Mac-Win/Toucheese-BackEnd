@@ -49,6 +49,7 @@ dependencies {
 	// Spring Security
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	testImplementation 'org.springframework.security:spring-security-test'
+	implementation 'org.springframework.security:spring-security-config:6.1.4'
 
 	// JWT
 	implementation 'io.jsonwebtoken:jjwt-api:0.12.6'
