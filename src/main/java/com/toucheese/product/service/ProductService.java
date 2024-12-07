@@ -11,8 +11,6 @@ import com.toucheese.product.entity.Product;
 import com.toucheese.product.entity.ProductAddOption;
 import com.toucheese.product.repository.ProductAddOptionRepository;
 import com.toucheese.product.repository.ProductRepository;
-import com.toucheese.product.util.DateUtils;
-import com.toucheese.product.util.SlotUtils;
 
 import lombok.RequiredArgsConstructor;
 
@@ -50,25 +48,5 @@ public class ProductService {
     @Transactional(readOnly = true)
     public List<ProductAddOption> findProductAddOptionsByProductIdAndAddOptionIds(Long productId, List<Long> addOptionIds) {
         return productAddOptionRepository.findByProduct_IdAndAddOption_IdIn(productId, addOptionIds);
-    }
-
-    @Transactional(readOnly = true)
-    public List<String> getAvailableTimes(Long productId, String date) {
-        // 상품 조회
-        Product product = productRepository.findById(productId)
-            .orElseThrow(() -> new ToucheeseBadRequestException("Product not found"));
-
-        // 날짜를 기반으로 요일 계산
-        String dayOfWeek = DateUtils.getDayOfWeekFromDate(date);
-
-        // 해당 요일의 영업시간 필터링
-        return product.getStudio().getOperatingHours().stream()
-            .filter(hour -> hour.getDayOfWeek().equals(dayOfWeek)) // 요일 필터링
-            .flatMap(hour -> SlotUtils.createStartTimeSlots(
-                hour.getOpenTime(),
-                hour.getCloseTime(),
-                hour.getTerm()
-            ).stream())
-            .toList(); // 예약 가능한 시간 리스트 반환
     }
 }
