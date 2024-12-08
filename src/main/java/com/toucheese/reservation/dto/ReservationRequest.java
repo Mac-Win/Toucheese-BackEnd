@@ -9,18 +9,14 @@ import java.util.stream.Collectors;
 import com.toucheese.reservation.entity.Reservation;
 import com.toucheese.reservation.entity.ReservationProductAddOption;
 
-import jakarta.validation.constraints.NotBlank;
 import lombok.Builder;
 
 @Builder
 public record ReservationRequest(
 	Long productId,
 	Long studioId,
+	Long memberId,
 	Integer totalPrice,
-	@NotBlank(message = "이름은 필수 값입니다.")
-	String name,
-	@NotBlank(message = "전화번호는 필수 값입니다.")
-	String phone,
 	LocalDate createDate,
 	LocalTime createTime,
 	Integer personnel,
@@ -31,9 +27,8 @@ public record ReservationRequest(
 		return ReservationRequest.builder()
 			.productId(reservation.getProduct().getId())
 			.studioId(reservation.getStudio().getId())
+			.memberId(reservation.getMember().getId())
 			.totalPrice(reservation.getTotalPrice())
-			.name(reservation.getName())
-			.phone(reservation.getPhone())
 			.createDate(reservation.getCreateDate())
 			.createTime(reservation.getCreateTime())
 			.personnel(reservation.getPersonnel())

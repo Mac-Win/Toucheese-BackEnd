@@ -5,6 +5,8 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
+import com.toucheese.member.entity.Member;
+import com.toucheese.member.service.MemberService;
 import com.toucheese.product.entity.Product;
 import com.toucheese.product.entity.ProductAddOption;
 import com.toucheese.product.service.ProductService;
@@ -25,12 +27,15 @@ public class ReservationService {
 	private final ReservationRepository reservationRepository;
 	private final StudioService studioService;
 	private final ProductService productService;
+	private final MemberService memberService;
 
 	@Transactional
 	public void createReservation(ReservationRequest reservationRequest) {
 		Product product = productService.findProductById(reservationRequest.productId());
 
 		Studio studio = studioService.findStudioById(reservationRequest.studioId());
+
+		Member member = memberService.findMemberById(reservationRequest.memberId());
 
 		List<ProductAddOption> productAddOptions = productService.findProductAddOptionsByProductIdAndAddOptionIds(
 			reservationRequest.productId(),
@@ -44,9 +49,8 @@ public class ReservationService {
 		Reservation reservation = Reservation.builder()
 			.product(product)
 			.studio(studio)
+			.member(member)
 			.totalPrice(reservationRequest.totalPrice())
-			.name(reservationRequest.name())
-			.phone(reservationRequest.phone())
 			.createDate(reservationRequest.createDate())
 			.createTime(reservationRequest.createTime())
 			.personnel(reservationRequest.personnel())
