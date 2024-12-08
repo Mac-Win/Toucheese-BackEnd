@@ -57,6 +57,7 @@ public class SecurityConfig {
 		configuration.addAllowedOrigin("http://localhost:3000");
 		configuration.addAllowedMethod("*"); // 모든 HTTP 메서드 허용
 		configuration.addAllowedHeader("*"); // 모든 헤더 허용
+		configuration.addExposedHeader("Authorization"); // Authorization 헤더 접근 허용
 		configuration.setAllowCredentials(true); // 인증 정보 허용
 
 		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
