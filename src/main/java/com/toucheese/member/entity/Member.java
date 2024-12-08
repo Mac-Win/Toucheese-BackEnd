@@ -1,9 +1,17 @@
 package com.toucheese.member.entity;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import com.toucheese.reservation.entity.Cart;
+import com.toucheese.reservation.entity.Reservation;
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,5 +31,11 @@ public class Member {
     private String name;
 
     private String phone;
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Cart> carts = new ArrayList<>();
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Reservation> reservations = new ArrayList<>();
 
 }
