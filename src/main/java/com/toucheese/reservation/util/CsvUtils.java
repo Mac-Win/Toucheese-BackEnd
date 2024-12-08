@@ -10,6 +10,9 @@ public class CsvUtils {
 	}
 
 	public static List<Long> fromCsv(String csv) {
+		if (csv == null || csv.isEmpty()) {
+			return List.of();
+		}
 		return Arrays.stream(csv.split(","))
 			.map(Long::valueOf)
 			.collect(Collectors.toList());

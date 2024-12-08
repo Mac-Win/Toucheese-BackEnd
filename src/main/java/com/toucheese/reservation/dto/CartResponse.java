@@ -2,28 +2,19 @@ package com.toucheese.reservation.dto;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
 
-import com.toucheese.reservation.entity.Reservation;
-
-import lombok.Builder;
-
-@Builder
-public record CartResponse (
-	Long studioId,
-	Long productId,
-	Integer personnel,
-	LocalDate createDate,
-	LocalTime createTime,
-	Integer totalPrice
-){
-	public static CartResponse of (Reservation reservation) {
-		return CartResponse.builder()
-			.studioId(reservation.getStudio().getId())
-			.productId(reservation.getProduct().getId())
-			.personnel(reservation.getPersonnel())
-			.createDate(reservation.getCreateDate())
-			.createTime(reservation.getCreateTime())
-			.totalPrice(reservation.getTotalPrice())
-			.build();
-	}
+public record CartResponse(
+	String studioName,          // 스튜디오 이름
+	String productName,         // 상품 이름
+	Integer personnel,          // 예약 인원
+	LocalDate reservationDate,  // 예약 날짜
+	LocalTime reservationTime,  // 예약 시간
+	Integer totalPrice,         // 전체 가격
+	List<AddOptionResponse> addOptions // 추가 옵션 정보
+) {
+	public record AddOptionResponse(
+		String optionName,       // 옵션 이름
+		Integer optionPrice      // 옵션 가격
+	) {}
 }

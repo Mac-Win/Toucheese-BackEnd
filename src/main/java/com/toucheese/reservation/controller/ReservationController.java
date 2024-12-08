@@ -1,13 +1,18 @@
 package com.toucheese.reservation.controller;
 
+import java.util.List;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.toucheese.reservation.dto.CartRequest;
+import com.toucheese.reservation.dto.CartResponse;
 import com.toucheese.reservation.dto.ReservationRequest;
 import com.toucheese.reservation.service.CartService;
 import com.toucheese.reservation.service.ReservationService;
@@ -18,7 +23,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/v1/reservations")
+@RequestMapping("/v1/members")
 @RequiredArgsConstructor
 @Tag(name = "예약 API")
 public class ReservationController {
@@ -51,7 +56,7 @@ public class ReservationController {
 			}
 			"""
 	)
-	@PostMapping()
+	@PostMapping("/reservations")
 	public ResponseEntity<ReservationRequest> reservationCreate(
 		@Valid @RequestBody ReservationRequest reservationRequest) {
 
@@ -60,7 +65,7 @@ public class ReservationController {
 		return ResponseEntity.status(HttpStatus.CREATED).build();
 	}
 
-	@Operation(description = """
+	@Operation(summary = "장바구니 저장 기능(회원)", description = """
 		{
 		 <br>   "productId": 1,
 		 <br>   "studioId": 1,
@@ -71,12 +76,36 @@ public class ReservationController {
 		 <br>   "personnel": 2,
 		 <br>   "addOptions": [1, 2, 3]
 		 <br> }""")
-	@PostMapping("/cart")
+	@PostMapping("/carts")
 	public ResponseEntity<CartRequest> cartCreate(
 		@Valid @RequestBody CartRequest cartRequest) {
 
 		cartService.createCart(cartRequest);
 
 		return ResponseEntity.status(HttpStatus.CREATED).build();
+	}
+
+	@Operation(summary = "장바구니 목록 조회(회원)",
+		description = """
+        {
+            "studioName": "스튜디오 이름",
+            "productName": "상품 이름",
+            "personnel": 예약 인원,
+            "reservationDate": "예약 날짜",
+            "reservationTime": "예약 시간",
+            "totalPrice": 전체 가격,
+            "addOptions": [
+                {
+                    "optionName": "옵션 이름",
+                    "optionPrice": 옵션 가격
+                }
+            ]
+        }
+    """
+	)
+	@GetMapping("/carts/{memberId}")
+	public ResponseEntity<List<CartResponse>> getCartList(@PathVariable Long memberId) {
+		List<CartResponse> cartList = cartService.getCartList(memberId);
+		return ResponseEntity.ok(cartList);
 	}
 }
