@@ -105,9 +105,19 @@ public class CartService {
 	}
 
 	@Transactional
-	public void updateCart(Long cartId, CartUpdateRequest request) {
+	public void updateCart(Long cartId, CartUpdateRequest request, Long memberId) {
 		Cart cart = cartRepository.findById(cartId)
 			.orElseThrow(() -> new NoSuchElementException("장바구니 항목을 찾을 수 없습니다."));
+
+		Member cartOwner = cartRepository.findMemberByCartId(cartId);
+
+		if (cartOwner == null) {
+			throw new ToucheeseBadRequestException("장바구니를 찾을 수 없습니다.");
+		}
+
+		if (!cartOwner.getId().equals(memberId)) {
+			throw new ToucheeseBadRequestException("해당 장바구니를 변경할 권한이 없습니다.");
+		}
 
 		if (request.totalPrice() != null) {
 			cart.updateTotalPrice(request.totalPrice());
