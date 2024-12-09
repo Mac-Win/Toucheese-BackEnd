@@ -1,0 +1,9 @@
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/toucheese_db
+    username: root
+    password: ${secret.dev-password}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+springdoc:
+  request-url: ${secret.dev-request-url}

@@ -1,12 +1,7 @@
 spring:
-  config:
-    import: classpath:application-secret.yml
-  datasource:
-    url: jdbc:mysql://localhost:3306/toucheese_db
-    username: root
-    password:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-
+  profiles:
+    active: dev
+    include: secret
   jpa:
     hibernate:
       ddl-auto: update
