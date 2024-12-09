@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -103,9 +104,17 @@ public class ReservationController {
         }
     """
 	)
-	@GetMapping("/carts/{memberId}")
+	@GetMapping("/{memberId}/carts")
 	public ResponseEntity<List<CartResponse>> getCartList(@PathVariable Long memberId) {
 		List<CartResponse> cartList = cartService.getCartList(memberId);
 		return ResponseEntity.ok(cartList);
+	}
+
+	@Operation(summary = "해당 장바구니 삭제", description = "해당하는 장바구니를 삭제합니다.")
+	@DeleteMapping("/carts/{cartId}")
+	public ResponseEntity<?> deleteCart(@PathVariable Long cartId) {
+		cartService.deleteCart(cartId);
+
+		return ResponseEntity.ok("장바구니 항목이 삭제되었습니다.");
 	}
 }

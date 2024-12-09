@@ -2,9 +2,11 @@ package com.toucheese.reservation.service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.toucheese.member.entity.Member;
 import com.toucheese.member.service.MemberService;
@@ -20,7 +22,6 @@ import com.toucheese.reservation.util.CsvUtils;
 import com.toucheese.studio.entity.Studio;
 import com.toucheese.studio.service.StudioService;
 
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -55,6 +56,7 @@ public class CartService {
 		cartRepository.save(cart);
 	}
 
+	@Transactional(readOnly = true)
 	public List<CartResponse> getCartList(Long memberId) {
 		Member member = memberService.findMemberById(memberId);
 		List<Cart> carts = cartRepository.findByMember(member);
@@ -90,5 +92,13 @@ public class CartService {
 				addOptionResponses
 			);
 		}).toList();
+	}
+
+	@Transactional
+	public void deleteCart(Long cartId) {
+		Cart cart = cartRepository.findById(cartId)
+			.orElseThrow(() -> new NoSuchElementException("장바구니 항목이 존재하지 않습니다."));
+
+		cartRepository.delete(cart);
 	}
 }
