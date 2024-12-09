@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.toucheese.reservation.dto.CartRequest;
 import com.toucheese.reservation.dto.CartResponse;
+import com.toucheese.reservation.dto.CartUpdateRequest;
 import com.toucheese.reservation.dto.ReservationRequest;
 import com.toucheese.reservation.service.CartService;
 import com.toucheese.reservation.service.ReservationService;
@@ -116,5 +118,13 @@ public class ReservationController {
 		cartService.deleteCart(cartId);
 
 		return ResponseEntity.ok("장바구니 항목이 삭제되었습니다.");
+	}
+
+	@Operation(summary = "장바구니 옵션 및 인원 변경", description = "장바구니의 옵션과 인원수를 수정합니다.")
+	@PatchMapping("/carts/{cartId}")
+	public ResponseEntity<?> updateCart(@PathVariable Long cartId,
+		@Valid @RequestBody CartUpdateRequest request) {
+		cartService.updateCart(cartId, request);
+		return ResponseEntity.ok("장바구니가 성공적으로 업데이트되었습니다.");
 	}
 }

@@ -50,4 +50,16 @@ public class Cart {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "studio_id")
 	private Studio studio;
+
+	public void updatePersonnel(Integer personnel) {
+		this.personnel = personnel;
+	}
+
+	public void updateAddOptions(String addOptions) {
+		this.addOptions = addOptions;
+	}
+
+	public void updateTotalPrice(Integer totalPrice) {
+		this.totalPrice = totalPrice;
+	}
 }

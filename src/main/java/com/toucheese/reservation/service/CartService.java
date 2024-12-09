@@ -16,6 +16,7 @@ import com.toucheese.product.entity.ProductAddOption;
 import com.toucheese.product.service.ProductService;
 import com.toucheese.reservation.dto.CartRequest;
 import com.toucheese.reservation.dto.CartResponse;
+import com.toucheese.reservation.dto.CartUpdateRequest;
 import com.toucheese.reservation.entity.Cart;
 import com.toucheese.reservation.repository.CartRepository;
 import com.toucheese.reservation.util.CsvUtils;
@@ -100,5 +101,28 @@ public class CartService {
 			.orElseThrow(() -> new NoSuchElementException("장바구니 항목이 존재하지 않습니다."));
 
 		cartRepository.delete(cart);
+	}
+
+	@Transactional
+	public void updateCart(Long cartId, CartUpdateRequest request) {
+		Cart cart = cartRepository.findById(cartId)
+			.orElseThrow(() -> new NoSuchElementException("장바구니 항목을 찾을 수 없습니다."));
+
+		if (request.totalPrice() != null) {
+			cart.updateTotalPrice(request.totalPrice());
+		}
+
+		if (request.personnel() != null) {
+			cart.updatePersonnel(request.personnel());
+		}
+
+		if (request.addOptions() != null) {
+			String optionsAsCsv = CsvUtils.toCsv(request.addOptions());
+			cart.updateAddOptions(optionsAsCsv);
+		} else {
+			cart.updateAddOptions("");
+		}
+
+		cartRepository.save(cart);
 	}
 }
