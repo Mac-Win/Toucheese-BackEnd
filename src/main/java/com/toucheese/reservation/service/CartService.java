@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.toucheese.global.exception.ToucheeseBadRequestException;
 import com.toucheese.member.entity.Member;
 import com.toucheese.member.service.MemberService;
 import com.toucheese.product.entity.AddOption;
@@ -124,5 +125,17 @@ public class CartService {
 		}
 
 		cartRepository.save(cart);
+	}
+
+	public void checkCartOwner(Long cartId, Long memberId) {
+		Member cartOwner = cartRepository.findMemberByCartId(cartId);
+
+		if (cartOwner == null) {
+			throw new ToucheeseBadRequestException("장바구니를 찾을 수 없습니다.");
+		}
+
+		if (!cartOwner.getId().equals(memberId)) {
+			throw new ToucheeseBadRequestException("해당 장바구니를 삭제할 권한이 없습니다.");
+		}
 	}
 }

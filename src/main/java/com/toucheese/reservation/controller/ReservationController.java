@@ -1,5 +1,6 @@
 package com.toucheese.reservation.controller;
 
+import java.security.Principal;
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
@@ -106,15 +107,21 @@ public class ReservationController {
         }
     """
 	)
-	@GetMapping("/{memberId}/carts")
-	public ResponseEntity<List<CartResponse>> getCartList(@PathVariable Long memberId) {
-		List<CartResponse> cartList = cartService.getCartList(memberId);
+	@GetMapping("/carts/list")
+	public ResponseEntity<List<CartResponse>> getCartList(Principal principal) {
+		String memberId = principal.getName();
+
+		List<CartResponse> cartList = cartService.getCartList(Long.parseLong(memberId));
 		return ResponseEntity.ok(cartList);
 	}
 
 	@Operation(summary = "해당 장바구니 삭제", description = "해당하는 장바구니를 삭제합니다.")
 	@DeleteMapping("/carts/{cartId}")
-	public ResponseEntity<?> deleteCart(@PathVariable Long cartId) {
+	public ResponseEntity<?> deleteCart(@PathVariable Long cartId, Principal principal) {
+
+		String memberId = principal.getName();
+
+		cartService.checkCartOwner(cartId, Long.parseLong(memberId));
 		cartService.deleteCart(cartId);
 
 		return ResponseEntity.ok("장바구니 항목이 삭제되었습니다.");
