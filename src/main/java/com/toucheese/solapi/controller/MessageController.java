@@ -1,5 +1,6 @@
 package com.toucheese.solapi.controller;
 
+import com.toucheese.global.exception.ToucheeseUnAuthorizedException;
 import com.toucheese.solapi.dto.MessageRequest;
 import com.toucheese.solapi.service.MessageService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -8,10 +9,8 @@ import lombok.RequiredArgsConstructor;
 import net.nurigo.sdk.message.exception.NurigoMessageNotReceivedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/v1/messages")
@@ -21,9 +20,26 @@ public class MessageController {
     private final MessageService messageService;
 
     @PostMapping
+    @PreAuthorize("isAuthenticated()")
     @Operation(summary = "문자 메세지 예약 접수 발송", description = "이름, 전화번호를 포함한 요청을 받아 예약 접수 메세지 발송 ")
-    public ResponseEntity<String> sendMessage(@RequestBody MessageRequest messageRequest) {
-        String result = messageService.sendMessage(messageRequest);
+    public ResponseEntity<String> sendMessage(
+            @RequestHeader("Authorization") String authorizationHeader
+    ) {
+        String accessToken = extractAccessToken(authorizationHeader);
+
+        String result = messageService.sendMessageForLoggedInUser(accessToken);
         return ResponseEntity.ok(result);
+    }
+
+    /**
+     * Authorization 헤더에서 accesstoken 추출
+     * @param authorizationHeader Authorization 헤더 값
+     * @return 추출된 액세스 토큰
+     */
+    private String extractAccessToken(String authorizationHeader) {
+        if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
+            throw new ToucheeseUnAuthorizedException("Missing or invalid Authorization header");
+        }
+        return authorizationHeader.replace("Bearer", "").trim();
     }
 }
