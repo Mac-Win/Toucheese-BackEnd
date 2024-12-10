@@ -86,6 +86,7 @@ public class CartService {
 
 			return new CartResponse(
 				cart.getId(),
+				cart.getStudio().getProfileImage(),
 				cart.getStudio().getName(),
 				cart.getProduct().getProductImage(),
 				cart.getProduct().getName(),

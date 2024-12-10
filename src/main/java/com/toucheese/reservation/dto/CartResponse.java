@@ -6,6 +6,7 @@ import java.util.List;
 
 public record CartResponse(
 	Long cartId,
+	String studioImage,
 	String studioName,          // 스튜디오 이름
 	String productImage,        // 상품이미지
 	String productName,         // 상품 이름
