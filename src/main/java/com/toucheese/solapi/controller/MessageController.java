@@ -21,7 +21,7 @@ public class MessageController {
     @PostMapping
     @PreAuthorize("isAuthenticated()")
     @Operation(summary = "문자 메세지 예약 접수 발송", description = "이름, 전화번호를 포함한 요청을 받아 예약 접수 메세지 발송 ")
-    public ResponseEntity<String> sendReservationMessage(
+    public ResponseEntity<String> sendMessage(
             @RequestHeader("Authorization") String authorizationHeader
     ) {
         String accessToken = authorizationHeader.replace("Bearer", "").trim();

@@ -1,4 +1,4 @@
-package com.toucheese.solapi.config;
+package com.toucheese.solapi.util;
 
 import com.toucheese.global.exception.ToucheeseBadRequestException;
 import com.toucheese.global.exception.ToucheeseInternalServerErrorException;
@@ -14,13 +14,8 @@ public class SolapiUtil {
     private final DefaultMessageService solapiService;
 
     public static final String messageTemplate = "안녕하세요, %s 님 ! 예약 접수되었습니다.";
-
-    public SolapiUtil(
-            @Value("${solapi.api-key}") String apiKey,
-            @Value("${solapi.api-secret-key}") String apiSecretKey,
-            @Value("${solapi.base-url}") String baseUrl
-    ) {
-        this.solapiService = NurigoApp.INSTANCE.initialize(apiKey, apiSecretKey, baseUrl);
+    public SolapiUtil(DefaultMessageService solapiService) {
+        this.solapiService = solapiService;
     }
 
     public DefaultMessageService getSolapiService() {

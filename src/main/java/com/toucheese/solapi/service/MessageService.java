@@ -1,23 +1,13 @@
 package com.toucheese.solapi.service;
 
-import com.toucheese.global.exception.ToucheeseBadRequestException;
-import com.toucheese.global.exception.ToucheeseInternalServerErrorException;
 import com.toucheese.global.exception.ToucheeseUnAuthorizedException;
 import com.toucheese.member.entity.Member;
 import com.toucheese.member.entity.Token;
 import com.toucheese.member.repository.MemberRepository;
 import com.toucheese.member.repository.TokenRepository;
-import com.toucheese.solapi.config.SolapiUtil;
-import com.toucheese.solapi.dto.MessageRequest;
-import jakarta.annotation.PostConstruct;
+import com.toucheese.solapi.util.SolapiUtil;
 import lombok.RequiredArgsConstructor;
-import net.nurigo.sdk.NurigoApp;
-import net.nurigo.sdk.message.exception.NurigoMessageNotReceivedException;
-import net.nurigo.sdk.message.model.Message;
-import net.nurigo.sdk.message.service.DefaultMessageService;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 @Service
