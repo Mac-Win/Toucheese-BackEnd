@@ -36,12 +36,11 @@ public class CartService {
 	private final MemberService memberService;
 
 	@Transactional
-	public void createCart(CartRequest cartRequest) {
+	public void createCart(CartRequest cartRequest, Long memberId) {
 
 		Product product = productService.findProductById(cartRequest.productId());
 		Studio studio = studioService.findStudioById(cartRequest.studioId());
-		Member member = memberService.findMemberById(cartRequest.memberId());
-
+		Member member = memberService.findMemberById(memberId);
 		String addOptionsCsv = CsvUtils.toCsv(cartRequest.addOptions());
 
 		Cart cart = Cart.builder()

@@ -73,7 +73,6 @@ public class ReservationController {
 		{
 		 <br>   "productId": 1,
 		 <br>   "studioId": 1,
-		 <br>   "memberId": 1,
 		 <br>   "totalPrice": 100000,
 		 <br>   "createDate": "2024-12-04",
 		 <br>   "createTime": "09:30",
@@ -82,9 +81,10 @@ public class ReservationController {
 		 <br> }""")
 	@PostMapping("/carts")
 	public ResponseEntity<CartRequest> cartCreate(
-		@Valid @RequestBody CartRequest cartRequest) {
+		@Valid @RequestBody CartRequest cartRequest, Principal principal) {
 
-		cartService.createCart(cartRequest);
+		Long memberId = Long.parseLong(principal.getName());
+		cartService.createCart(cartRequest, memberId);
 
 		return ResponseEntity.status(HttpStatus.CREATED).build();
 	}
@@ -110,9 +110,9 @@ public class ReservationController {
 	)
 	@GetMapping("/carts/list")
 	public ResponseEntity<List<CartResponse>> getCartList(Principal principal) {
-		String memberId = principal.getName();
+		Long memberId = Long.parseLong(principal.getName());
 
-		List<CartResponse> cartList = cartService.getCartList(Long.parseLong(memberId));
+		List<CartResponse> cartList = cartService.getCartList(memberId);
 		return ResponseEntity.ok(cartList);
 	}
 
