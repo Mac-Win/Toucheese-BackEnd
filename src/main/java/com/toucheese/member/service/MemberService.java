@@ -1,13 +1,15 @@
 package com.toucheese.member.service;
 
-import com.toucheese.global.exception.ToucheeseBadRequestException;
-import com.toucheese.member.dto.LoginMemberResponse;
-import com.toucheese.member.dto.LoginResponse;
-import com.toucheese.member.entity.Member;
-import com.toucheese.member.repository.MemberRepository;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import com.toucheese.global.exception.ToucheeseBadRequestException;
+import com.toucheese.member.dto.LoginMemberResponse;
+import com.toucheese.member.dto.MemberContactInfoResponse;
+import com.toucheese.member.entity.Member;
+import com.toucheese.member.repository.MemberRepository;
+
+import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
@@ -54,4 +56,10 @@ public class MemberService {
         }
     }
 
+    @Transactional(readOnly = true)
+    public MemberContactInfoResponse findMemberContactInfo(Long memberId) {
+        Member member = memberRepository.findById(memberId)
+            .orElseThrow(ToucheeseBadRequestException::new);
+        return MemberContactInfoResponse.of(member);
+    }
 }
