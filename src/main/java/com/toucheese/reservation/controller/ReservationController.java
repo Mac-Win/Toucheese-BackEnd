@@ -92,6 +92,7 @@ public class ReservationController {
 	@Operation(summary = "장바구니 목록 조회(회원)",
 		description = """
         {
+        	"cartId": 장바구니 id값,
             "studioName": "스튜디오 이름",
             "productName": "상품 이름",
             "personnel": 예약 인원,
