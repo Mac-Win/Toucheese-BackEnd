@@ -5,6 +5,7 @@ import java.time.LocalTime;
 import java.util.List;
 
 public record CartResponse(
+	Long cartId,
 	String studioName,          // 스튜디오 이름
 	String productName,         // 상품 이름
 	Integer personnel,          // 예약 인원

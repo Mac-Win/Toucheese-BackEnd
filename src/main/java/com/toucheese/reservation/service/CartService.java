@@ -85,6 +85,7 @@ public class CartService {
 				}).toList();
 
 			return new CartResponse(
+				cart.getId(),
 				cart.getStudio().getName(),
 				cart.getProduct().getName(),
 				cart.getPersonnel(),
