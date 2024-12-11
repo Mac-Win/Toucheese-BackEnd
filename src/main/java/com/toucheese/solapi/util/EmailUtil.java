@@ -1,5 +1,6 @@
 package com.toucheese.solapi.util;
 
+import com.toucheese.global.exception.ToucheeseBadRequestException;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -17,6 +18,10 @@ public class EmailUtil {
     public static final String FROM_EMAIL = "toucheeese@gmail.com";
 
     public void sendEmail(String to, String subject, String body) {
+        if (!isValidEmail(to)) {
+            throw new ToucheeseBadRequestException("잘못된 이메일 형식입니다: " + to);
+        }
+
         MimeMessage message = mailSender.createMimeMessage();
         try {
             MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
@@ -31,4 +36,10 @@ public class EmailUtil {
 
         }
     }
+
+    private boolean isValidEmail(String email) {
+        // 이메일 형식 검증 (정규 표현식 사용)
+        return email.matches("^[A-Za-z0-9+_.-]+@(.+)$");
+    }
+
 }
