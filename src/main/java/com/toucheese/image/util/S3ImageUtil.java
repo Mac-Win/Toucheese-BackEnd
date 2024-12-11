@@ -16,21 +16,17 @@ public class S3ImageUtil {
     @Value("${cloud.aws.bucket-name}")
     private String bucketName;
 
-    @Value("${cloud.aws.studio-path}")
-    private String imagePath;
+    @Value("${cloud.aws.upload-path}")
+    private String uploadPath;
 
     public void uploadImage(ObjectMetadata metadata, String filename, ServletInputStream stream) {
         s3Config.amazonS3Client()
                 .putObject(
-                        bucketName + imagePath,
+                        bucketName + uploadPath,
                         filename,
                         stream,
                         metadata
                 );
-    }
-
-    private String getExtension(String fileName) {
-        return fileName.substring(fileName.lastIndexOf('.'));
     }
 
 }
