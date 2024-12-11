@@ -2,7 +2,6 @@ package com.toucheese.reservation.service;
 
 import java.util.List;
 import java.util.Map;
-import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
@@ -11,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.toucheese.global.exception.ToucheeseBadRequestException;
 import com.toucheese.member.entity.Member;
 import com.toucheese.member.service.MemberService;
+import com.toucheese.product.dto.ProductDetailResponse;
 import com.toucheese.product.entity.AddOption;
 import com.toucheese.product.entity.Product;
 import com.toucheese.product.entity.ProductAddOption;
@@ -74,14 +74,17 @@ public class CartService {
 				.map(productService::findAddOptionById)
 				.collect(Collectors.toMap(AddOption::getId, addOption -> addOption));
 
-			List<CartResponse.AddOptionResponse> addOptionResponses = productAddOptions.stream()
+			List<CartResponse.SelectAddOptionResponse> SelectAddOptionResponse = productAddOptions.stream()
 				.map(productAddOption -> {
 					AddOption addOption = addOptionCache.get(productAddOption.getAddOption().getId());
-					return new CartResponse.AddOptionResponse(
+					return new CartResponse.SelectAddOptionResponse(
+						addOption.getId(),
 						addOption.getAddOptionName(),
 						productAddOption.getAddOptionPrice()
 					);
 				}).toList();
+
+			ProductDetailResponse productDetailResponse = productService.findProductDetailById(cart.getProduct().getId());
 
 			return new CartResponse(
 				cart.getId(),
@@ -89,11 +92,13 @@ public class CartService {
 				cart.getStudio().getName(),
 				cart.getProduct().getProductImage(),
 				cart.getProduct().getName(),
+				cart.getProduct().getStandard(),
 				cart.getPersonnel(),
 				cart.getCreateDate(),
 				cart.getCreateTime(),
 				cart.getTotalPrice(),
-				addOptionResponses
+				SelectAddOptionResponse,
+				productDetailResponse.addOptions()
 			);
 		}).toList();
 	}
@@ -101,7 +106,7 @@ public class CartService {
 	@Transactional
 	public void deleteCart(Long cartId) {
 		Cart cart = cartRepository.findById(cartId)
-			.orElseThrow(() -> new NoSuchElementException("장바구니 항목이 존재하지 않습니다."));
+			.orElseThrow(() -> new ToucheeseBadRequestException("장바구니 항목이 존재하지 않습니다."));
 
 		cartRepository.delete(cart);
 	}
@@ -109,7 +114,7 @@ public class CartService {
 	@Transactional
 	public void updateCart(Long cartId, CartUpdateRequest request, Long memberId) {
 		Cart cart = cartRepository.findById(cartId)
-			.orElseThrow(() -> new NoSuchElementException("장바구니 항목을 찾을 수 없습니다."));
+			.orElseThrow(() -> new ToucheeseBadRequestException("장바구니 항목을 찾을 수 없습니다."));
 
 		Member cartOwner = cartRepository.findMemberByCartId(cartId);
 
