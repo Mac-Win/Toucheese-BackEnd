@@ -93,6 +93,7 @@ public class CartService {
 				cart.getProduct().getProductImage(),
 				cart.getProduct().getName(),
 				cart.getProduct().getStandard(),
+				cart.getProduct().getPrice(),
 				cart.getPersonnel(),
 				cart.getCreateDate(),
 				cart.getCreateTime(),
