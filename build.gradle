@@ -34,6 +34,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
+	implementation 'org.springframework.boot:spring-boot-starter-mail'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
@@ -67,6 +68,10 @@ dependencies {
 
 	//Solapi
 	implementation 'net.nurigo:sdk:4.3.2'
+
+	// JavaMail dependencies for email sending
+	implementation 'javax.mail:javax.mail-api:1.6.2'
+	runtimeOnly 'com.sun.mail:javax.mail:1.6.2'
 }
 
 // QueryDSL Setting
