@@ -22,8 +22,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.PrePersist;
-import jakarta.persistence.PreUpdate;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -72,18 +70,4 @@ public class Reservation {
 
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
 	private LocalDateTime reservationCompletedAt;
-
-	@PrePersist
-	private void prePersist() {
-		if (this.status == null) {
-			this.status = ReservationStatus.장바구니;
-		}
-	}
-
-	@PreUpdate
-	private void preUpdate() {
-		if (this.status == ReservationStatus.예약완료) {
-			this.reservationCompletedAt = LocalDateTime.now(); // 예약 완료 시간 설정
-		}
-	}
 }

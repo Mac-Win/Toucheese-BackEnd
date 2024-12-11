@@ -18,6 +18,7 @@ import com.toucheese.product.service.ProductService;
 import com.toucheese.reservation.dto.CartRequest;
 import com.toucheese.reservation.dto.CartResponse;
 import com.toucheese.reservation.dto.CartUpdateRequest;
+import com.toucheese.reservation.dto.CheckoutCartItemsResponse;
 import com.toucheese.reservation.entity.Cart;
 import com.toucheese.reservation.repository.CartRepository;
 import com.toucheese.reservation.util.CsvUtils;
@@ -34,6 +35,7 @@ public class CartService {
 	private final StudioService studioService;
 	private final ProductService productService;
 	private final MemberService memberService;
+	private final ReservationService reservationService;
 
 	@Transactional
 	public void createCart(CartRequest cartRequest, Long memberId) {
@@ -156,4 +158,64 @@ public class CartService {
 			throw new ToucheeseBadRequestException("해당 장바구니를 삭제할 권한이 없습니다.");
 		}
 	}
+
+	@Transactional(readOnly = true)
+	public List<CheckoutCartItemsResponse> getCheckoutCartItems(Long memberId, String cartIds) {
+		List<Long> cartIdsList = CsvUtils.fromCsv(cartIds);
+
+		List<Cart> carts = cartRepository.findCartsByMemberIdAndCartIds(memberId, cartIdsList);
+
+		return carts.stream().map(cart -> {
+			List<Long> addOptionIds = CsvUtils.fromCsv(cart.getAddOptions());
+			List<ProductAddOption> productAddOptions = productService.findProductAddOptionsByProductIdAndAddOptionIds(
+				cart.getProduct().getId(),
+				addOptionIds
+			);
+
+			Map<Long, AddOption> addOptionCache = addOptionIds.stream()
+				.map(productService::findAddOptionById)
+				.collect(Collectors.toMap(AddOption::getId, addOption -> addOption));
+
+			List<CartResponse.SelectAddOptionResponse> SelectAddOptionResponse = productAddOptions.stream()
+				.map(productAddOption -> {
+					AddOption addOption = addOptionCache.get(productAddOption.getAddOption().getId());
+					return new CartResponse.SelectAddOptionResponse(
+						addOption.getId(),
+						addOption.getAddOptionName(),
+						productAddOption.getAddOptionPrice()
+					);
+				}).toList();
+
+			return new CheckoutCartItemsResponse(
+				cart.getId(),
+				cart.getStudio().getName(),
+				cart.getProduct().getProductImage(),
+				cart.getProduct().getName(),
+				cart.getProduct().getPrice(),
+				cart.getPersonnel(),
+				cart.getCreateDate(),
+				cart.getCreateTime(),
+				cart.getTotalPrice(),
+				SelectAddOptionResponse
+			);
+		}).toList();
+	}
+
+
+	@Transactional
+	public void createReservationsFromCart(Long memberId, List<Long> cartIds) {
+
+		List<Cart> carts = cartRepository.findCartsByMemberIdAndCartIds(memberId, cartIds);
+
+		if (carts.isEmpty()) {
+			throw new ToucheeseBadRequestException("선택한 장바구니 항목이 없습니다.");
+		}
+
+		reservationService.createReservationsFromCarts(carts);
+
+		cartRepository.deleteAll(carts);
+	}
 }
+
+
+

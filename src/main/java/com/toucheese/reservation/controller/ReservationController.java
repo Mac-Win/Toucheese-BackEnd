@@ -12,14 +12,19 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.toucheese.member.dto.MemberContactInfoResponse;
+import com.toucheese.member.service.MemberService;
+import com.toucheese.reservation.dto.CartIdsRequest;
 import com.toucheese.reservation.dto.CartRequest;
 import com.toucheese.reservation.dto.CartResponse;
 import com.toucheese.reservation.dto.CartUpdateRequest;
-import com.toucheese.reservation.dto.ReservationRequest;
+import com.toucheese.reservation.dto.CheckoutCartItemsResponse;
+import com.toucheese.reservation.dto.CombinedResponse;
 import com.toucheese.reservation.service.CartService;
-import com.toucheese.reservation.service.ReservationService;
+import com.toucheese.reservation.util.CsvUtils;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -31,54 +36,45 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @Tag(name = "예약 API")
 public class ReservationController {
-	private final ReservationService reservationService;
-	final private CartService cartService;
+	private final CartService cartService;
+	private final MemberService memberService;
 
 	@Operation(
-		summary = "예약 정보 저장 기능",
+		summary = "예약 기능",
 		description = """
-			필요한 예약 정보 : <br>
-			productId = 상품 id, <br>
-			studioId = 스튜디오 id, <br>
-			memberId = 회원 id, <br>
-			totalPrice = 상품 + 추가상품의 총금액, <br>
-			createDate = 예약날짜, <br>
-			createTime = 예약시간 예시 -> 14:30, <br>
-			personnel = 예약 인원수, <br>
-			addOptions = 추가 상품에서 id는 AddOptionId 필요 <br>
-			<br>
-			예시 데이터 : <br>
-			{<br>
-			productId: 1, <br>
-			studioId: 1, <br>
-			memberId: 1, <br>
-			totalPrice: 100000, <br>
-			createDate: 2024-12-04, <br>
-			createTime: 9:30, <br>
-			personnel: 2, <br>
-			addOptions: [1, 2, 3] <br>
+			선택한 장바구니를 결제하면 예약 테이블로 해당 데이터를 옮깁니다.
+			```json
+			{
+			    "cartIds": "1, 2, 3"    << String 입니다.
 			}
 			"""
 	)
 	@PostMapping("/reservations")
-	public ResponseEntity<ReservationRequest> reservationCreate(
-		@Valid @RequestBody ReservationRequest reservationRequest) {
+	public ResponseEntity<?> completeReservation(Principal principal, @RequestBody CartIdsRequest request) {
+		Long memberId = Long.parseLong(principal.getName());
 
-		reservationService.createReservation(reservationRequest);
-
-		return ResponseEntity.status(HttpStatus.CREATED).build();
+		String cartIdsString = request.cartIds();
+		List<Long> cartIds = CsvUtils.fromCsv(cartIdsString);
+		cartService.createReservationsFromCart(memberId, cartIds);
+		return ResponseEntity.ok("결제가 완료되었습니다.");
 	}
 
 	@Operation(summary = "장바구니 저장 기능(회원)", description = """
-		{
-		 <br>   "productId": 1,
-		 <br>   "studioId": 1,
-		 <br>   "totalPrice": 100000,
-		 <br>   "createDate": "2024-12-04",
-		 <br>   "createTime": "09:30",
-		 <br>   "personnel": 2,
-		 <br>   "addOptions": [1, 2, 3]
-		 <br> }""")
+			선택한 상품을 장바구니에 저장합니다.
+			```json
+			{
+			  "productId": 상품 id
+			  "studioId": 스튜디오 id
+			  "totalPrice": 상품 + 추가 상품의 총 금액
+			  "createDate": 예약 날짜 (2024-12-11)
+			  "createTime": 예약 시간 (09:30)
+			  "personnel": 예약 인원 수
+			  "addOptions": 추가 옵션에 대한 id값[
+				1, 2, 3
+			  ]
+			}
+			"""
+	)
 	@PostMapping("/carts")
 	public ResponseEntity<CartRequest> cartCreate(
 		@Valid @RequestBody CartRequest cartRequest, Principal principal) {
@@ -128,7 +124,17 @@ public class ReservationController {
 		return ResponseEntity.ok("장바구니 항목이 삭제되었습니다.");
 	}
 
-	@Operation(summary = "장바구니 옵션 및 인원 변경", description = "장바구니의 옵션과 인원수를 수정합니다.")
+	@Operation(summary = "장바구니 옵션 및 인원 변경", description = """
+		장바구니의 옵션과 인원수를 수정합니다.<br>
+		```json
+		{
+		  "totalPrice": 상품 + 선택한 옵션의 총 가격 수정,
+		  "personnel": 인원수 수정,
+		  "addOptions": 추가옵션 수정[
+		    1, 2, 3
+		  ]
+		}
+		""")
 	@PutMapping("/carts/{cartId}")
 	public ResponseEntity<?> updateCart(@PathVariable Long cartId,
 		@Valid @RequestBody CartUpdateRequest request, Principal principal) {
@@ -136,5 +142,50 @@ public class ReservationController {
 
 		cartService.updateCart(cartId, request, memberId);
 		return ResponseEntity.ok("장바구니가 성공적으로 업데이트되었습니다.");
+	}
+
+	@Operation(summary = "장바구니 결제 조회", description = """
+		선택한 장바구니를 결제화면에서 조회합니다. - 다른 회원의 장바구니에 있는 id를 넣어도 검색되지 않습니다.<br>
+		https://api.toucheese-macwin.store/v1/members/carts/checkout-items?cartIds=1,2,3
+		```
+		{
+		    "cartPaymentList": [
+		        {
+		            "cartId": 해당 장바구니 id
+		            "studioName": 스튜디오 이름
+		            "productImage": 상품 이미지
+		            "productName": 상품 이름
+		            "productPrice": 상품 가격
+		            "personnel": 상품 기준 인원
+		            "reservationDate": 예약한 날짜(year-month-day)
+		            "reservationTime": 예약한 시간
+		            "totalPrice": 상품가격 + 선택한 옵션가격
+		            "selectAddOptions": [
+		                {
+		                    "selectOptionId": 선택한 옵션 id
+		                    "selectOptionName": 선택한 옵션 이름
+		                    "selectOptionPrice": 선택한 옵션 가격
+		                }
+		            ]
+		        },
+		    ],
+		    "memberContactInfo": {
+		        "email": 해당 회원의 이메일
+		        "name": 해당 회원의 이름
+		        "phone": 해당 회원의 전화번호
+		    }
+		}
+		""")
+	@GetMapping("carts/checkout-items")
+	public ResponseEntity<CombinedResponse> getCombinedResponse(Principal principal, @RequestParam String cartIds) {
+		Long memberId = Long.parseLong(principal.getName());
+
+		List<CheckoutCartItemsResponse> checkoutCartItems = cartService.getCheckoutCartItems(memberId, cartIds);
+
+		MemberContactInfoResponse memberContactInfo = memberService.findMemberContactInfo(memberId);
+
+		CombinedResponse combinedResponse = new CombinedResponse(checkoutCartItems, memberContactInfo);
+
+		return ResponseEntity.ok(combinedResponse);
 	}
 }

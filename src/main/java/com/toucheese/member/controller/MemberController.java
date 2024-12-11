@@ -48,7 +48,7 @@ public class MemberController {
     public MemberContactInfoResponse findMemberContactInfo(Principal principal) {
 
         Long memberId = Long.parseLong(principal.getName());
-        ;
+
         return memberService.findMemberContactInfo(memberId);
     }
 
