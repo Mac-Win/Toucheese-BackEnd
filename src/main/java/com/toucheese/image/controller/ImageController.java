@@ -12,6 +12,11 @@ public class ImageController {
 
     private final ImageService imageService;
 
+    /**
+     * Stream 방식으로 이미지 업로드
+     * @param request 요청 정보 (InputStream, Metadata)
+     * @param filename 파일이름
+     */
     @PostMapping
     public void streamImageUpload(
             HttpServletRequest request,

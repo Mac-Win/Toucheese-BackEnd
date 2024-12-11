@@ -19,6 +19,12 @@ public class S3ImageUtil {
     @Value("${cloud.aws.upload-path}")
     private String uploadPath;
 
+    /**
+     * S3에 이미지 업로드
+     * @param metadata 요청 메타데이터
+     * @param filename 파일 이름
+     * @param stream InputStream (파일 전송)
+     */
     public void uploadImage(ObjectMetadata metadata, String filename, ServletInputStream stream) {
         s3Config.amazonS3Client()
                 .putObject(

@@ -17,6 +17,11 @@ public class ImageService {
     private final S3ImageUtil s3ImageUtil;
     private final StudioImageRepository studioImageRepository;
 
+    /**
+     * Stream 방식으로 이미지 업로드 하기 위한 메서드
+     * @param request 요청 정보 (InputStream, Metadata)
+     * @param filename 파일이름
+     */
     public void streamImageUpload(HttpServletRequest request, String filename) {
         ObjectMetadata metadata = new ObjectMetadata();
         metadata.setContentType(request.getContentType());
