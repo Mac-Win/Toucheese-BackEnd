@@ -25,7 +25,7 @@ public class MessageController {
 
     @PostMapping
     @PreAuthorize("isAuthenticated()")
-    @Operation(summary = "문자 메세지 예약 접수 발송", description = "이름, 전화번호를 포함한 요청을 받아 예약 접수 메세지 발송 ")
+    @Operation(summary = "메세지 예약 접수 발송", description = "로그인한 유저의 예약 접수 메세지 발송 ( 문자 , 이메일 ) ")
     public ResponseEntity<String> sendMessage(Principal principal) {
 
         if (principal == null) {

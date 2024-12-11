@@ -6,6 +6,7 @@ import com.toucheese.member.entity.Token;
 import com.toucheese.member.repository.MemberRepository;
 import com.toucheese.member.repository.TokenRepository;
 import com.toucheese.member.service.MemberService;
+import com.toucheese.solapi.util.EmailUtil;
 import com.toucheese.solapi.util.SolapiUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class MessageService {
     private final SolapiUtil solapiUtil;
+    private final EmailUtil emailUtil;
     private final MemberService memberService;
 
     @Value("${solapi.from-number}")
@@ -26,6 +28,7 @@ public class MessageService {
         String messageText = solapiUtil.formatMessage(member.getName());
 
         solapiUtil.send(fromNumber, member.getPhone(), messageText);
+        emailUtil.sendEmail(member.getEmail(), "예약 접수 알림", messageText);
     }
 
 }
