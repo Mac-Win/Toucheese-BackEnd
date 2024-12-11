@@ -28,10 +28,6 @@ public class MessageController {
     @Operation(summary = "메세지 예약 접수 발송", description = "로그인한 유저의 예약 접수 메세지 발송 ( 문자 , 이메일 ) ")
     public ResponseEntity<String> sendMessage(Principal principal) {
 
-        if (principal == null) {
-            throw new ToucheeseUnAuthorizedException("Authentication required");
-        }
-
         Long memberId = getMemberIdFromPrincipal(principal);
         messageService.sendMessageForLoggedInUser(memberId);
 

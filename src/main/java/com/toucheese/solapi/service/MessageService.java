@@ -27,8 +27,15 @@ public class MessageService {
         Member member = memberService.findMemberById(memberId);
         String messageText = solapiUtil.formatMessage(member.getName());
 
-        solapiUtil.send(fromNumber, member.getPhone(), messageText);
-        emailUtil.sendEmail(member.getEmail(), "예약 접수 알림", messageText);
+        sendSms(member.getPhone(), messageText);
+        sendEmail(member.getEmail(), "예약 접수 알림" ,messageText);
     }
 
+    private void sendSms(String phone, String messageText) {
+        solapiUtil.send(fromNumber, phone, messageText);
+    }
+
+    private void sendEmail(String email, String subject, String body) {
+        emailUtil.sendEmail(email, subject, body);
+    }
 }
