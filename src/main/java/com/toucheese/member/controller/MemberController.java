@@ -1,7 +1,9 @@
 package com.toucheese.member.controller;
 
 import com.toucheese.global.data.ApiResponse;
+import com.toucheese.member.dto.LoginMemberResponse;
 import com.toucheese.member.dto.LoginRequest;
+import com.toucheese.member.dto.LoginResponse;
 import com.toucheese.member.service.MemberService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -29,8 +31,9 @@ public class MemberController {
     @PostMapping
     @Operation(summary = "회원 로그인", description = "email, password로 로그인 합니다.")
     public ResponseEntity<?> login(@RequestBody @Validated LoginRequest loginRequest) {
+        LoginMemberResponse loginMemberResponse = memberService.loginMember(loginRequest.email(), loginRequest.password());
         return ApiResponse.accessTokenResponse(
-                memberService.loginMember(loginRequest.email(), loginRequest.password())
+            LoginResponse.of(loginMemberResponse), loginMemberResponse.accessToken()
         );
     }
 

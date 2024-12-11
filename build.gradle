@@ -34,6 +34,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
+	implementation 'org.springframework.boot:spring-boot-starter-mail'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
@@ -52,6 +53,7 @@ dependencies {
 	// Spring Security
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	testImplementation 'org.springframework.security:spring-security-test'
+	implementation 'org.springframework.security:spring-security-config:6.1.4'
 
 	// JWT
 	implementation 'io.jsonwebtoken:jjwt-api:0.12.6'
@@ -69,6 +71,10 @@ dependencies {
 
 	//Solapi
 	implementation 'net.nurigo:sdk:4.3.2'
+
+	// JavaMail dependencies for email sending
+	implementation 'javax.mail:javax.mail-api:1.6.2'
+	runtimeOnly 'com.sun.mail:javax.mail:1.6.2'
 }
 
 // QueryDSL Setting

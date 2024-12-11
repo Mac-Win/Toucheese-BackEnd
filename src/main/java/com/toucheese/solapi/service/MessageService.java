@@ -1,15 +1,14 @@
 package com.toucheese.solapi.service;
 
-import com.toucheese.global.exception.ToucheeseBadRequestException;
-import com.toucheese.global.exception.ToucheeseInternalServerErrorException;
-import com.toucheese.solapi.config.SolapiUtil;
-import com.toucheese.solapi.dto.MessageRequest;
-import jakarta.annotation.PostConstruct;
+import com.toucheese.global.exception.ToucheeseUnAuthorizedException;
+import com.toucheese.member.entity.Member;
+import com.toucheese.member.entity.Token;
+import com.toucheese.member.repository.MemberRepository;
+import com.toucheese.member.repository.TokenRepository;
+import com.toucheese.member.service.MemberService;
+import com.toucheese.solapi.util.EmailUtil;
+import com.toucheese.solapi.util.SolapiUtil;
 import lombok.RequiredArgsConstructor;
-import net.nurigo.sdk.NurigoApp;
-import net.nurigo.sdk.message.exception.NurigoMessageNotReceivedException;
-import net.nurigo.sdk.message.model.Message;
-import net.nurigo.sdk.message.service.DefaultMessageService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -17,18 +16,26 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class MessageService {
     private final SolapiUtil solapiUtil;
+    private final EmailUtil emailUtil;
+    private final MemberService memberService;
 
     @Value("${solapi.from-number}")
     private String fromNumber; // 고정 발신 번호
 
-    public String sendMessage(MessageRequest request) {
-        try {
-            solapiUtil.send(fromNumber, request.recipient(), request.name());
+    public void sendMessageForLoggedInUser(Long memberId) {
 
-            return "Message sent successfully to " + request.name();
-        } catch (Exception exception) {
-            throw new ToucheeseInternalServerErrorException("An unexpected error occurred:" + exception.getMessage());
-        }
+        Member member = memberService.findMemberById(memberId);
+        String messageText = solapiUtil.formatMessage(member.getName());
 
+        sendSms(member.getPhone(), messageText);
+        sendEmail(member.getEmail(), "예약 접수 알림" ,messageText);
+    }
+
+    private void sendSms(String phone, String messageText) {
+        solapiUtil.send(fromNumber, phone, messageText);
+    }
+
+    private void sendEmail(String email, String subject, String body) {
+        emailUtil.sendEmail(email, subject, body);
     }
 }
