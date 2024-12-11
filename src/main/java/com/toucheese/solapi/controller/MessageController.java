@@ -8,9 +8,13 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import net.nurigo.sdk.message.exception.NurigoMessageNotReceivedException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+
+import java.security.Principal;
 
 @RestController
 @RequestMapping("/v1/messages")
@@ -22,24 +26,26 @@ public class MessageController {
     @PostMapping
     @PreAuthorize("isAuthenticated()")
     @Operation(summary = "문자 메세지 예약 접수 발송", description = "이름, 전화번호를 포함한 요청을 받아 예약 접수 메세지 발송 ")
-    public ResponseEntity<String> sendMessage(
-            @RequestHeader("Authorization") String authorizationHeader
-    ) {
-        String accessToken = extractAccessToken(authorizationHeader);
+    public ResponseEntity<String> sendMessage(Principal principal) {
 
-        String result = messageService.sendMessageForLoggedInUser(accessToken);
-        return ResponseEntity.ok(result);
+        if (principal == null) {
+            throw new ToucheeseUnAuthorizedException("Authentication required");
+        }
+
+        Long memberId = getMemberIdFromPrincipal(principal);
+        messageService.sendMessageForLoggedInUser(memberId);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body("Message sent successfully");
     }
 
     /**
-     * Authorization 헤더에서 accesstoken 추출
-     * @param authorizationHeader Authorization 헤더 값
-     * @return 추출된 액세스 토큰
+     * Principal 객체에서 memberId를 추출하는 메서드
      */
-    private String extractAccessToken(String authorizationHeader) {
-        if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
-            throw new ToucheeseUnAuthorizedException("Missing or invalid Authorization header");
+    private Long getMemberIdFromPrincipal(Principal principal) {
+        try {
+            return Long.parseLong(principal.getName());
+        } catch (NumberFormatException e) {
+            throw new ToucheeseUnAuthorizedException("Invalid memberId format");
         }
-        return authorizationHeader.replace("Bearer", "").trim();
     }
 }
