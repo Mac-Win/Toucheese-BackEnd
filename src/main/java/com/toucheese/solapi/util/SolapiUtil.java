@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 public class SolapiUtil {
     private final DefaultMessageService solapiService;
 
-    public static final String Message_Template = "안녕하세요, %s 님 ! 예약 접수되었습니다.";
+    public static final String MESSAGE_TEMPLATE = "안녕하세요, %s 님 ! 예약 접수되었습니다.";
     public SolapiUtil(DefaultMessageService solapiService) {
         this.solapiService = solapiService;
     }
@@ -23,7 +23,7 @@ public class SolapiUtil {
     }
 
     public String formatMessage(String name) {
-        return String.format(Message_Template, name);
+        return String.format(MESSAGE_TEMPLATE, name);
     }
 
     public void send(String from, String to, String messageText) {

@@ -14,11 +14,13 @@ public class EmailUtil {
         this.mailSender = mailSender;
     }
 
+    public static final String FROM_EMAIL = "toucheeese@gmail.com";
+
     public void sendEmail(String to, String subject, String body) {
         MimeMessage message = mailSender.createMimeMessage();
         try {
             MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
-            helper.setFrom("toucheeese@gmail.com");
+            helper.setFrom(FROM_EMAIL);
             helper.setTo(to);
             helper.setSubject(subject);
             helper.setText(body, true);
