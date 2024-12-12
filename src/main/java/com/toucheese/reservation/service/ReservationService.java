@@ -1,6 +1,7 @@
 package com.toucheese.reservation.service;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -51,7 +52,7 @@ public class ReservationService {
 				.personnel(cart.getPersonnel())
 				.reservationProductAddOptions(reservationProductAddOptions)
 				.status(ReservationStatus.결제완료)
-				.reservationCompletedAt(LocalDateTime.now())
+				.reservationCompletedAt(LocalDateTime.now(ZoneId.of("Asia/Seoul")))
 				.build();
 		}).collect(Collectors.toList());
 
