@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.toucheese.product.dto.AddOptionResponse;
 
 public record CartResponse(
@@ -15,7 +16,8 @@ public record CartResponse(
 	Integer productStandard,    // 상품 기준 인원
 	Integer productPrice,       // 상품 가격
 	Integer personnel,          // 예약 인원
-	LocalDate reservationDate,  // 예약 날짜
+	LocalDate reservationDate,
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm")// 예약 날짜
 	LocalTime reservationTime,  // 예약 시간
 	Integer totalPrice,         // 전체 가격
 	List<SelectAddOptionResponse> selectAddOptions, // 선택한 추가 옵션 정보
