@@ -22,6 +22,7 @@ import com.toucheese.reservation.dto.CheckoutCartItemsResponse;
 import com.toucheese.reservation.entity.Cart;
 import com.toucheese.reservation.repository.CartRepository;
 import com.toucheese.reservation.util.CsvUtils;
+import com.toucheese.solapi.service.MessageService;
 import com.toucheese.studio.entity.Studio;
 import com.toucheese.studio.service.StudioService;
 
@@ -36,6 +37,8 @@ public class CartService {
 	private final ProductService productService;
 	private final MemberService memberService;
 	private final ReservationService reservationService;
+	private final MessageService messageService;
+
 
 	@Transactional
 	public void createCart(CartRequest cartRequest, Long memberId) {
@@ -214,8 +217,7 @@ public class CartService {
 		reservationService.createReservationsFromCarts(carts);
 
 		cartRepository.deleteAll(carts);
+
+		messageService.sendMessageForLoggedInUser(memberId);
 	}
 }
-
-
-
