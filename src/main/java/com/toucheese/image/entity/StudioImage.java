@@ -17,8 +17,8 @@ public class StudioImage {
     private Studio studio;
 
     @Column(nullable = false)
-    private String filename;
+    private String originalPath;
 
     @Column(nullable = false)
-    private String url;
+    private String resizedPath;
 }

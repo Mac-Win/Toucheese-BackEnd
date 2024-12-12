@@ -1,7 +1,8 @@
 package com.toucheese.conceptstudio.service;
 
-import com.toucheese.conceptstudio.repository.ConceptStudioRepository;
 import com.toucheese.conceptstudio.dto.StudioResponse;
+import com.toucheese.conceptstudio.repository.ConceptStudioRepository;
+import com.toucheese.global.config.ImageConfig;
 import com.toucheese.studio.entity.Location;
 import com.toucheese.studio.repository.StudioRepositoryImpl;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +20,7 @@ public class ConceptStudioService {
 
 	private final ConceptStudioRepository conceptStudioRepository;
 	private final StudioRepositoryImpl studioRepositoryImpl;
+	private final ImageConfig imageConfig;
 
 	private static final int PAGE_SIZE = 10;
 
@@ -26,7 +28,7 @@ public class ConceptStudioService {
 	public Page<StudioResponse> getStudiosByConceptId(Long conceptId, int page) {
 		Pageable pageable = PageRequest.of(page, PAGE_SIZE);
 		return conceptStudioRepository.findByConceptId(conceptId, pageable).map( conceptStudio ->
-				StudioResponse.of(conceptStudio.getStudio())
+				StudioResponse.of(conceptStudio.getStudio(), imageConfig.getImageBaseUrl())
 		);
 	}
 
@@ -43,7 +45,7 @@ public class ConceptStudioService {
 	public Page<StudioResponse> getFilteredStudiosOrderByName(int page, Long conceptId, Integer price, Float rating, List<Location> locations) {
 		Pageable pageable = PageRequest.of(page, PAGE_SIZE);
 		return studioRepositoryImpl.getFilteredStudiosOrderByName(price, rating, locations, conceptId, pageable)
-				.map(StudioResponse::of);
+				.map(studio -> StudioResponse.of(studio, imageConfig.getImageBaseUrl()));
 	}
 
 }

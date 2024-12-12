@@ -45,5 +45,5 @@ out/
 # QueryDSL generated
 /src/main/generated/
 
-# Ignore application-secret.yml
-application-secret.yml
+# application setting
+/src/main/resources/application-secret.yml
