@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -35,6 +36,7 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/v1/members")
 @RequiredArgsConstructor
 @Tag(name = "예약 API")
+@PreAuthorize("isAuthenticated()")
 public class ReservationController {
 	private final CartService cartService;
 	private final MemberService memberService;
@@ -149,7 +151,7 @@ public class ReservationController {
 		https://api.toucheese-macwin.store/v1/members/carts/checkout-items?cartIds=1,2,3
 		```
 		{
-		    "cartPaymentList": [
+		    "checkoutCartItems": [
 		        {
 		            "cartId": 해당 장바구니 id
 		            "studioName": 스튜디오 이름
