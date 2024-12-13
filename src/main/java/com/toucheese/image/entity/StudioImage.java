@@ -2,7 +2,10 @@ package com.toucheese.image.entity;
 
 import com.toucheese.studio.entity.Studio;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)

@@ -1,7 +1,6 @@
 package com.toucheese.global.config;
 
 import com.toucheese.image.util.S3ImageUtil;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
