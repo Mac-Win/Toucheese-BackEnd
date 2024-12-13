@@ -3,11 +3,12 @@ package com.toucheese.image.util;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.toucheese.global.config.S3Config;
 import jakarta.servlet.ServletInputStream;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-@Component
+@Component @Getter
 @RequiredArgsConstructor
 public class S3ImageUtil {
 
@@ -18,6 +19,9 @@ public class S3ImageUtil {
 
     @Value("${cloud.aws.upload-path}")
     private String uploadPath;
+
+    @Value("${cloud.aws.resized-path}")
+    private String resizedPath;
 
     /**
      * S3에 이미지 업로드
