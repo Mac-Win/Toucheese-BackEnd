@@ -6,7 +6,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionSynchronizationAdapter;
+import org.springframework.transaction.support.TransactionSynchronization;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 import com.toucheese.global.exception.ToucheeseBadRequestException;
@@ -221,7 +221,7 @@ public class CartService {
 		cartRepository.deleteAll(carts);
 
 		// 트랜잭션 커밋 후 메시지 전송
-		TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronizationAdapter() {
+		TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
 			@Override
 			public void afterCommit() {
 				messageService.sendMessageForLoggedInUser(memberId);

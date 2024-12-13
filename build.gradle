@@ -75,6 +75,8 @@ dependencies {
 	// JavaMail dependencies for email sending
 	implementation 'jakarta.mail:jakarta.mail-api:2.1.1'
 	runtimeOnly 'com.sun.mail:jakarta.mail:2.0.1'
+
+	implementation 'org.springframework:spring-tx'
 }
 
 // QueryDSL Setting
