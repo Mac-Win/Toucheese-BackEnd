@@ -1,6 +1,7 @@
 package com.toucheese.solapi.service;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import com.toucheese.member.entity.Member;
@@ -20,6 +21,7 @@ public class MessageService {
     @Value("${solapi.from-number}")
     private String fromNumber; // 고정 발신 번호
 
+    @Async("customTaskExecutor")
     public void sendMessageForLoggedInUser(Long memberId) {
 
         Member member = memberService.findMemberById(memberId);
@@ -37,11 +39,13 @@ public class MessageService {
         }
     }
 
-    private void sendSms(String phone, String messageText) {
+    @Async("customTaskExecutor")
+    public void sendSms(String phone, String messageText) {
         solapiUtil.send(fromNumber, phone, messageText);
     }
 
-    private void sendEmail(String email, String subject, String body) {
+    @Async("customTaskExecutor")
+    public void sendEmail(String email, String subject, String body) {
         emailUtil.sendEmail(email, subject, body);
     }
 }
