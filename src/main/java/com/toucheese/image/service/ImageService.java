@@ -27,7 +27,7 @@ public class ImageService {
     private static final String RESIZED_EXTENSION = ".webp";
 
     /**
-     * Stream 방식으로 기존 이미지를 업로드하기 위한 메서드
+     * 기존 이미지를 업로드하기 위한 메서드
      * @param request 요청 정보 (InputStream, Metadata)
      * @param filename 파일 이름
      */
