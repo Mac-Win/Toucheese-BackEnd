@@ -51,7 +51,7 @@ public class ReservationService {
 				.createTime(cart.getCreateTime())
 				.personnel(cart.getPersonnel())
 				.reservationProductAddOptions(reservationProductAddOptions)
-				.status(ReservationStatus.결제완료)
+				.status(ReservationStatus.예약접수)
 				.reservationCompletedAt(LocalDateTime.now(ZoneId.of("Asia/Seoul")))
 				.build();
 		}).collect(Collectors.toList());
