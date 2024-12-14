@@ -5,6 +5,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class CsvUtils {
+
+	private CsvUtils() {
+		throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
+	}
+
 	public static String toCsv(List<Long> ids) {
 		if (ids == null || ids.isEmpty()) {
 			return "";
@@ -18,6 +23,7 @@ public class CsvUtils {
 		}
 		try {
 			return Arrays.stream(csv.split(","))
+				.map(String::trim)
 				.map(Long::valueOf)
 				.collect(Collectors.toList());
 		} catch (NumberFormatException e) {
