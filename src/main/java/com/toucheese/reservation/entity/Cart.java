@@ -5,6 +5,8 @@ import java.time.LocalTime;
 
 import com.toucheese.member.entity.Member;
 import com.toucheese.product.entity.Product;
+import com.toucheese.reservation.dto.CartRequest;
+import com.toucheese.reservation.util.CsvUtils;
 import com.toucheese.studio.entity.Studio;
 
 import jakarta.persistence.Entity;
@@ -61,5 +63,20 @@ public class Cart {
 
 	public void updateTotalPrice(Integer totalPrice) {
 		this.totalPrice = totalPrice;
+	}
+
+	public static Cart fromCartRequest(CartRequest cartRequest, Product product, Studio studio, Member member) {
+		String addOptionsCsv = CsvUtils.toCsv(cartRequest.addOptions());
+
+		return Cart.builder()
+			.product(product)
+			.studio(studio)
+			.member(member)
+			.totalPrice(cartRequest.totalPrice())
+			.createDate(cartRequest.createDate())
+			.createTime(cartRequest.createTime())
+			.personnel(cartRequest.personnel())
+			.addOptions(addOptionsCsv)
+			.build();
 	}
 }

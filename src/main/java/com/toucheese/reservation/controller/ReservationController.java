@@ -77,8 +77,7 @@ public class ReservationController {
 	public ResponseEntity<CartRequest> cartCreate(
 		@Valid @RequestBody CartRequest cartRequest, Principal principal) {
 
-		Long memberId = Long.parseLong(principal.getName());
-		cartService.createCart(cartRequest, memberId);
+		cartService.createCart(cartRequest, principal);
 
 		return ResponseEntity.status(HttpStatus.CREATED).build();
 	}

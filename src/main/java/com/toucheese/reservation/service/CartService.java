@@ -44,23 +44,15 @@ public class CartService {
 
 
 	@Transactional
-	public void createCart(CartRequest cartRequest, Long memberId) {
+	public void createCart(CartRequest cartRequest, Principal principal) {
+
+		Long memberId = memberService.getAuthenticatedMemberId(principal);
 
 		Product product = productService.findProductById(cartRequest.productId());
 		Studio studio = studioService.findStudioById(cartRequest.studioId());
 		Member member = memberService.findMemberById(memberId);
-		String addOptionsCsv = CsvUtils.toCsv(cartRequest.addOptions());
 
-		Cart cart = Cart.builder()
-			.product(product)
-			.studio(studio)
-			.member(member)
-			.totalPrice(cartRequest.totalPrice())
-			.createDate(cartRequest.createDate())
-			.createTime(cartRequest.createTime())
-			.personnel(cartRequest.personnel())
-			.addOptions(addOptionsCsv)
-			.build();
+		Cart cart = Cart.fromCartRequest(cartRequest, product, studio, member);
 
 		cartRepository.save(cart);
 	}
