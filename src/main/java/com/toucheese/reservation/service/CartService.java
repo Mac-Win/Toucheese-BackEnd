@@ -73,9 +73,7 @@ public class CartService {
 	public void deleteCart(Long cartId, Principal principal) {
 		Long memberId = memberService.getAuthenticatedMemberId(principal);
 
-		checkCartOwner(cartId, memberId);
-		Cart cart = cartRepository.findById(cartId)
-			.orElseThrow(() -> new ToucheeseBadRequestException("장바구니 항목이 존재하지 않습니다."));
+		Cart cart = validateCartOwnership(cartId, memberId);
 
 		cartRepository.delete(cart);
 	}
@@ -111,18 +109,6 @@ public class CartService {
 		}
 
 		cartRepository.save(cart);
-	}
-
-	public void checkCartOwner(Long cartId, Long memberId) {
-		Member cartOwner = cartRepository.findMemberByCartId(cartId);
-
-		if (cartOwner == null) {
-			throw new ToucheeseBadRequestException("장바구니를 찾을 수 없습니다.");
-		}
-
-		if (!cartOwner.getId().equals(memberId)) {
-			throw new ToucheeseBadRequestException("해당 장바구니를 삭제할 권한이 없습니다.");
-		}
 	}
 
 	@Transactional(readOnly = true)
@@ -198,6 +184,20 @@ public class CartService {
 		if (carts.isEmpty()) {
 			throw new ToucheeseBadRequestException("선택한 장바구니 항목이 없습니다.");
 		}
+	}
+
+	/**
+	 * 장바구니 소유권 검증 및 Cart 조회
+	 */
+	private Cart validateCartOwnership(Long cartId, Long memberId) {
+		Cart cart = cartRepository.findById(cartId)
+			.orElseThrow(() -> new ToucheeseBadRequestException("장바구니 항목이 존재하지 않습니다."));
+
+		if (!cart.getMember().getId().equals(memberId)) {
+			throw new ToucheeseBadRequestException("해당 장바구니를 삭제할 권한이 없습니다.");
+		}
+
+		return cart;
 	}
 
 	// 이 아래는 Helper 메서드

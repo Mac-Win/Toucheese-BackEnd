@@ -112,11 +112,7 @@ public class ReservationController {
 	@DeleteMapping("/carts/{cartId}")
 	public ResponseEntity<?> deleteCart(@PathVariable Long cartId, Principal principal) {
 
-		Long memberId = Long.parseLong(principal.getName());
-
-		cartService.checkCartOwner(cartId, memberId);
-		cartService.deleteCart(cartId);
-
+		cartService.deleteCart(cartId, principal);
 		return ResponseEntity.ok("장바구니 항목이 삭제되었습니다.");
 	}
 
