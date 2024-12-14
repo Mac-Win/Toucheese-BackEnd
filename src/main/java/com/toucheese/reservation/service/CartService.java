@@ -58,54 +58,22 @@ public class CartService {
 	}
 
 	@Transactional(readOnly = true)
-	public List<CartResponse> getCartList(Long memberId) {
+	public List<CartResponse> findCartList(Principal principal) {
+		Long memberId = memberService.getAuthenticatedMemberId(principal);
+
 		Member member = memberService.findMemberById(memberId);
 		List<Cart> carts = cartRepository.findByMember(member);
 
-		return carts.stream().map(cart -> {
-			List<Long> addOptionIds = CsvUtils.fromCsv(cart.getAddOptions());
-
-			List<ProductAddOption> productAddOptions = productService.findProductAddOptionsByProductIdAndAddOptionIds(
-				cart.getProduct().getId(),
-				addOptionIds
-			);
-
-			Map<Long, AddOption> addOptionCache = addOptionIds.stream()
-				.map(productService::findAddOptionById)
-				.collect(Collectors.toMap(AddOption::getId, addOption -> addOption));
-
-			List<CartResponse.SelectAddOptionResponse> SelectAddOptionResponse = productAddOptions.stream()
-				.map(productAddOption -> {
-					AddOption addOption = addOptionCache.get(productAddOption.getAddOption().getId());
-					return new CartResponse.SelectAddOptionResponse(
-						addOption.getId(),
-						addOption.getAddOptionName(),
-						productAddOption.getAddOptionPrice()
-					);
-				}).toList();
-
-			ProductDetailResponse productDetailResponse = productService.findProductDetailById(cart.getProduct().getId());
-
-			return new CartResponse(
-				cart.getId(),
-				cart.getStudio().getProfileImage(),
-				cart.getStudio().getName(),
-				cart.getProduct().getProductImage(),
-				cart.getProduct().getName(),
-				cart.getProduct().getStandard(),
-				cart.getProduct().getPrice(),
-				cart.getPersonnel(),
-				cart.getCreateDate(),
-				cart.getCreateTime(),
-				cart.getTotalPrice(),
-				SelectAddOptionResponse,
-				productDetailResponse.addOptions()
-			);
-		}).toList();
+		return carts.stream()
+			.map(this::convertToCartResponse)
+			.toList();
 	}
 
 	@Transactional
-	public void deleteCart(Long cartId) {
+	public void deleteCart(Long cartId, Principal principal) {
+		Long memberId = memberService.getAuthenticatedMemberId(principal);
+
+		checkCartOwner(cartId, memberId);
 		Cart cart = cartRepository.findById(cartId)
 			.orElseThrow(() -> new ToucheeseBadRequestException("장바구니 항목이 존재하지 않습니다."));
 
@@ -230,5 +198,61 @@ public class CartService {
 		if (carts.isEmpty()) {
 			throw new ToucheeseBadRequestException("선택한 장바구니 항목이 없습니다.");
 		}
+	}
+
+	// 이 아래는 Helper 메서드
+	private CartResponse convertToCartResponse(Cart cart) {
+		List<Long> addOptionIds = CsvUtils.fromCsv(cart.getAddOptions());
+
+		Map<Long, AddOption> addOptionCache = createAddOptionCache(addOptionIds);
+
+		List<CartResponse.SelectAddOptionResponse> selectAddOptionResponses = mapToSelectAddOptionResponses(addOptionCache, addOptionIds, cart);
+
+		ProductDetailResponse productDetailResponse = productService.findProductDetailById(cart.getProduct().getId());
+
+		return new CartResponse(
+			cart.getId(),
+			cart.getStudio().getProfileImage(),
+			cart.getStudio().getName(),
+			cart.getProduct().getProductImage(),
+			cart.getProduct().getName(),
+			cart.getProduct().getStandard(),
+			cart.getProduct().getPrice(),
+			cart.getPersonnel(),
+			cart.getCreateDate(),
+			cart.getCreateTime(),
+			cart.getTotalPrice(),
+			selectAddOptionResponses,
+			productDetailResponse.addOptions()
+		);
+	}
+
+	/**
+	 * AddOption 조회 중복 방지
+	 */
+	private Map<Long, AddOption> createAddOptionCache(List<Long> addOptionIds) {
+		return addOptionIds.stream()
+			.map(productService::findAddOptionById)
+			.collect(Collectors.toMap(AddOption::getId, addOption -> addOption));
+	}
+
+	/**
+	 * AddOption 데이터를 SelectAddOptionResponse로 변환
+	 */
+	private List<CartResponse.SelectAddOptionResponse> mapToSelectAddOptionResponses(
+		Map<Long, AddOption> addOptionCache, List<Long> addOptionIds, Cart cart) {
+
+		List<ProductAddOption> productAddOptions = productService.findProductAddOptionsByProductIdAndAddOptionIds(
+			cart.getProduct().getId(), addOptionIds);
+
+		return productAddOptions.stream()
+			.map(productAddOption -> {
+				AddOption addOption = addOptionCache.get(productAddOption.getAddOption().getId());
+				return new CartResponse.SelectAddOptionResponse(
+					addOption.getId(),
+					addOption.getAddOptionName(),
+					productAddOption.getAddOptionPrice()
+				);
+			}).toList();
 	}
 }

@@ -103,9 +103,8 @@ public class ReservationController {
 	)
 	@GetMapping("/carts/list")
 	public ResponseEntity<List<CartResponse>> getCartList(Principal principal) {
-		Long memberId = Long.parseLong(principal.getName());
 
-		List<CartResponse> cartList = cartService.getCartList(memberId);
+		List<CartResponse> cartList = cartService.findCartList(principal);
 		return ResponseEntity.ok(cartList);
 	}
 
