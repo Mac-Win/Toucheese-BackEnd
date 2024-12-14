@@ -70,12 +70,14 @@ public class CartService {
 	}
 
 	@Transactional
-	public void deleteCart(Long cartId, Principal principal) {
+	public void deleteCart(String cartIds, Principal principal) {
 		Long memberId = memberService.getAuthenticatedMemberId(principal);
 
-		Cart cart = validateCartOwnership(cartId, memberId);
-
-		cartRepository.delete(cart);
+		List<Long> cartIdList = CsvUtils.fromCsv(cartIds);
+		for (Long cartId : cartIdList) {
+			Cart cart = validateCartOwnership(cartId, memberId);
+			cartRepository.delete(cart);
+		}
 	}
 
 	@Transactional

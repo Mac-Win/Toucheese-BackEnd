@@ -110,7 +110,7 @@ public class ReservationController {
 
 	@Operation(summary = "해당 장바구니 삭제", description = "해당하는 장바구니를 삭제합니다.")
 	@DeleteMapping("/carts/{cartId}")
-	public ResponseEntity<?> deleteCart(@PathVariable Long cartId, Principal principal) {
+	public ResponseEntity<?> deleteCart(@PathVariable String cartId, Principal principal) {
 
 		cartService.deleteCart(cartId, principal);
 		return ResponseEntity.ok("장바구니 항목이 삭제되었습니다.");
