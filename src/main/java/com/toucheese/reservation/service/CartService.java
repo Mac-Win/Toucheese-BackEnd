@@ -1,6 +1,5 @@
 package com.toucheese.reservation.service;
 
-import java.security.Principal;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -44,11 +43,8 @@ public class CartService {
 	private final ReservationService reservationService;
 	private final ApplicationEventPublisher eventPublisher;
 
-
 	@Transactional
-	public void createCart(CartRequest cartRequest, Principal principal) {
-
-		Long memberId = memberService.getAuthenticatedMemberId(principal);
+	public void createCart(CartRequest cartRequest, Long memberId) {
 
 		Product product = productService.findProductById(cartRequest.productId());
 		Studio studio = studioService.findStudioById(cartRequest.studioId());
@@ -60,8 +56,7 @@ public class CartService {
 	}
 
 	@Transactional(readOnly = true)
-	public List<CartResponse> findCartList(Principal principal) {
-		Long memberId = memberService.getAuthenticatedMemberId(principal);
+	public List<CartResponse> findCartList(Long memberId) {
 
 		Member member = memberService.findMemberById(memberId);
 		List<Cart> carts = cartRepository.findByMember(member);
@@ -72,8 +67,7 @@ public class CartService {
 	}
 
 	@Transactional
-	public void deleteCart(String cartIds, Principal principal) {
-		Long memberId = memberService.getAuthenticatedMemberId(principal);
+	public void deleteCart(String cartIds, Long memberId) {
 
 		List<Long> cartIdList = CsvUtils.fromCsv(cartIds);
 		for (Long cartId : cartIdList) {
@@ -83,8 +77,7 @@ public class CartService {
 	}
 
 	@Transactional
-	public void updateCart(Long cartId, CartUpdateRequest request, Principal principal) {
-		Long memberId = memberService.getAuthenticatedMemberId(principal);
+	public void updateCart(Long cartId, CartUpdateRequest request, Long memberId) {
 
 		Cart cart = validateCartOwnership(cartId, memberId);
 
@@ -94,8 +87,7 @@ public class CartService {
 	}
 
 	@Transactional(readOnly = true)
-	public List<CheckoutCartItemsResponse> getCheckoutCartItems(Principal principal, String cartIds) {
-		Long memberId = memberService.getAuthenticatedMemberId(principal);
+	public List<CheckoutCartItemsResponse> getCheckoutCartItems(Long memberId, String cartIds) {
 
 		List<Long> cartIdsList = CsvUtils.fromCsv(cartIds);
 
@@ -110,9 +102,7 @@ public class CartService {
 	 * 장바구니 상품 결제성공시 예약 테이블로 데이터 복사, 해당 장바구니 상품 삭제, 메시지 및 이메일 전송(비동기)
 	 */
 	@Transactional
-	public void createReservationsFromCart(Principal principal, CartIdsRequest cartIdsRequest) {
-
-		Long memberId = memberService.getAuthenticatedMemberId(principal);
+	public void createReservationsFromCart(Long memberId, CartIdsRequest cartIdsRequest) {
 
 		List<Long> cartIds = cartIdsRequest.toCartIdList();
 
@@ -158,14 +148,16 @@ public class CartService {
 		List<Long> addOptionIds = CsvUtils.fromCsv(cart.getAddOptions());
 		Map<Long, AddOption> addOptionCache = createAddOptionCache(addOptionIds);
 
-		List<SelectAddOptionResponse> selectAddOptionResponses = mapToSelectAddOptionResponses(addOptionCache, addOptionIds, cart);
+		List<SelectAddOptionResponse> selectAddOptionResponses = mapToSelectAddOptionResponses(addOptionCache,
+			addOptionIds, cart);
 
 		return responseConstructor.apply(selectAddOptionResponses);
 	}
 
 	private CartResponse convertToCartResponse(Cart cart) {
 		return convertCartToResponse(cart, selectAddOptionResponses -> {
-			ProductDetailResponse productDetailResponse = productService.findProductDetailById(cart.getProduct().getId());
+			ProductDetailResponse productDetailResponse = productService.findProductDetailById(
+				cart.getProduct().getId());
 
 			return new CartResponse(
 				cart.getId(),

@@ -1,7 +1,5 @@
 package com.toucheese.member.service;
 
-import java.security.Principal;
-
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -59,20 +57,7 @@ public class MemberService {
     }
 
     @Transactional(readOnly = true)
-    public MemberContactInfoResponse findMemberContactInfo(Principal principal) {
-        Long memberId = getAuthenticatedMemberId(principal);
-
-        Member member = memberRepository.findById(memberId)
-            .orElseThrow(ToucheeseBadRequestException::new);
-        return MemberContactInfoResponse.of(member);
-    }
-
-    /**
-     * principal MemberId 찾는 메서드
-     * PreAuthorize("isAuthenticated()")가 적용되어 있을 경우
-     */
-    @Transactional(readOnly = true)
-    public Long getAuthenticatedMemberId(Principal principal) {
-        return Long.parseLong(principal.getName());
+    public MemberContactInfoResponse findMemberContactInfo(Long memberId) {
+        return MemberContactInfoResponse.of(findMemberById(memberId));
     }
 }

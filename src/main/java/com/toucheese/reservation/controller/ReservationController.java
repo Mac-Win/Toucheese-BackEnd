@@ -53,7 +53,9 @@ public class ReservationController {
 	@PostMapping("/reservations")
 	public ResponseEntity<?> acceptReservationAfterPayment(Principal principal, @RequestBody CartIdsRequest cartIdsRequest) {
 
-		cartService.createReservationsFromCart(principal, cartIdsRequest);
+		Long memberId = Long.parseLong(principal.getName());
+
+		cartService.createReservationsFromCart(memberId, cartIdsRequest);
 		return ResponseEntity.ok("결제가 완료되었습니다.");
 	}
 
@@ -77,7 +79,9 @@ public class ReservationController {
 	public ResponseEntity<CartRequest> cartCreate(
 		@Valid @RequestBody CartRequest cartRequest, Principal principal) {
 
-		cartService.createCart(cartRequest, principal);
+		Long memberId = Long.parseLong(principal.getName());
+
+		cartService.createCart(cartRequest, memberId);
 
 		return ResponseEntity.status(HttpStatus.CREATED).build();
 	}
@@ -104,7 +108,9 @@ public class ReservationController {
 	@GetMapping("/carts/list")
 	public ResponseEntity<List<CartResponse>> getCartList(Principal principal) {
 
-		List<CartResponse> cartList = cartService.findCartList(principal);
+		Long memberId = Long.parseLong(principal.getName());
+
+		List<CartResponse> cartList = cartService.findCartList(memberId);
 		return ResponseEntity.ok(cartList);
 	}
 
@@ -112,7 +118,9 @@ public class ReservationController {
 	@DeleteMapping("/carts/{cartId}")
 	public ResponseEntity<?> deleteCart(@PathVariable String cartId, Principal principal) {
 
-		cartService.deleteCart(cartId, principal);
+		Long memberId = Long.parseLong(principal.getName());
+
+		cartService.deleteCart(cartId, memberId);
 		return ResponseEntity.ok("장바구니 항목이 삭제되었습니다.");
 	}
 
@@ -131,7 +139,9 @@ public class ReservationController {
 	public ResponseEntity<?> updateCart(@PathVariable Long cartId,
 		@Valid @RequestBody CartUpdateRequest request, Principal principal) {
 
-		cartService.updateCart(cartId, request, principal);
+		Long memberId = Long.parseLong(principal.getName());
+
+		cartService.updateCart(cartId, request, memberId);
 		return ResponseEntity.ok("장바구니가 성공적으로 업데이트되었습니다.");
 	}
 
@@ -170,9 +180,11 @@ public class ReservationController {
 	@GetMapping("carts/checkout-items")
 	public ResponseEntity<CombinedResponse> getCombinedResponse(Principal principal, @RequestParam String cartIds) {
 
-		List<CheckoutCartItemsResponse> checkoutCartItems = cartService.getCheckoutCartItems(principal, cartIds);
+		Long memberId = Long.parseLong(principal.getName());
 
-		MemberContactInfoResponse memberContactInfo = memberService.findMemberContactInfo(principal);
+		List<CheckoutCartItemsResponse> checkoutCartItems = cartService.getCheckoutCartItems(memberId, cartIds);
+
+		MemberContactInfoResponse memberContactInfo = memberService.findMemberContactInfo(memberId);
 
 		CombinedResponse combinedResponse = new CombinedResponse(checkoutCartItems, memberContactInfo);
 
