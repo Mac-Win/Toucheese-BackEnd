@@ -59,7 +59,9 @@ public class MemberService {
     }
 
     @Transactional(readOnly = true)
-    public MemberContactInfoResponse findMemberContactInfo(Long memberId) {
+    public MemberContactInfoResponse findMemberContactInfo(Principal principal) {
+        Long memberId = getAuthenticatedMemberId(principal);
+
         Member member = memberRepository.findById(memberId)
             .orElseThrow(ToucheeseBadRequestException::new);
         return MemberContactInfoResponse.of(member);

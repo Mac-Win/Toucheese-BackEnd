@@ -169,11 +169,10 @@ public class ReservationController {
 		""")
 	@GetMapping("carts/checkout-items")
 	public ResponseEntity<CombinedResponse> getCombinedResponse(Principal principal, @RequestParam String cartIds) {
-		Long memberId = Long.parseLong(principal.getName());
 
-		List<CheckoutCartItemsResponse> checkoutCartItems = cartService.getCheckoutCartItems(memberId, cartIds);
+		List<CheckoutCartItemsResponse> checkoutCartItems = cartService.getCheckoutCartItems(principal, cartIds);
 
-		MemberContactInfoResponse memberContactInfo = memberService.findMemberContactInfo(memberId);
+		MemberContactInfoResponse memberContactInfo = memberService.findMemberContactInfo(principal);
 
 		CombinedResponse combinedResponse = new CombinedResponse(checkoutCartItems, memberContactInfo);
 

@@ -23,10 +23,4 @@ public record CartResponse(
 	List<SelectAddOptionResponse> selectAddOptions, // 선택한 추가 옵션 정보
 	List<AddOptionResponse> addOptions
 ) {
-	public record SelectAddOptionResponse(
-		Long selectOptionId,             //
-		String selectOptionName,       // 옵션 이름
-		Integer selectOptionPrice      // 옵션 가격
-	) {
-	}
 }

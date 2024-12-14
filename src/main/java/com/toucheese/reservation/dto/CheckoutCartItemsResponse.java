@@ -17,12 +17,6 @@ public record CheckoutCartItemsResponse (
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm")
 	LocalTime reservationTime,  // 예약 시간
 	Integer totalPrice,         // 상품 1개 전체 가격
-	List<CartResponse.SelectAddOptionResponse> selectAddOptions // 선택한 추가 옵션 정보
+	List<SelectAddOptionResponse> selectAddOptions // 선택한 추가 옵션 정보
 ) {
-	public record SelectAddOptionResponse(
-		Long selectOptionId,             //
-		String selectOptionName,       // 옵션 이름
-		Integer selectOptionPrice      // 옵션 가격
-	) {
-	}
 }
