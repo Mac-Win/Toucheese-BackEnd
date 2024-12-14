@@ -6,6 +6,7 @@ import java.time.LocalTime;
 import com.toucheese.member.entity.Member;
 import com.toucheese.product.entity.Product;
 import com.toucheese.reservation.dto.CartRequest;
+import com.toucheese.reservation.dto.CartUpdateRequest;
 import com.toucheese.reservation.util.CsvUtils;
 import com.toucheese.studio.entity.Studio;
 
@@ -53,16 +54,18 @@ public class Cart {
 	@JoinColumn(name = "studio_id")
 	private Studio studio;
 
-	public void updatePersonnel(Integer personnel) {
-		this.personnel = personnel;
-	}
-
-	public void updateAddOptions(String addOptions) {
-		this.addOptions = addOptions;
-	}
-
-	public void updateTotalPrice(Integer totalPrice) {
-		this.totalPrice = totalPrice;
+	public void update(CartUpdateRequest request) {
+		if (request.totalPrice() != null) {
+			this.totalPrice = request.totalPrice();
+		}
+		if (request.personnel() != null) {
+			this.personnel = request.personnel();
+		}
+		if (request.addOptions() != null) {
+			this.addOptions = CsvUtils.toCsv(request.addOptions());
+		} else {
+			this.addOptions = "";
+		}
 	}
 
 	public static Cart fromCartRequest(CartRequest cartRequest, Product product, Studio studio, Member member) {

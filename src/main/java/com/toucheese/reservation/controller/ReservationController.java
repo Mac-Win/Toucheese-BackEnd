@@ -130,9 +130,8 @@ public class ReservationController {
 	@PutMapping("/carts/{cartId}")
 	public ResponseEntity<?> updateCart(@PathVariable Long cartId,
 		@Valid @RequestBody CartUpdateRequest request, Principal principal) {
-		Long memberId = Long.parseLong(principal.getName());
 
-		cartService.updateCart(cartId, request, memberId);
+		cartService.updateCart(cartId, request, principal);
 		return ResponseEntity.ok("장바구니가 성공적으로 업데이트되었습니다.");
 	}
 
