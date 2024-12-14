@@ -28,7 +28,7 @@ public class ConceptStudioService {
 	public Page<StudioResponse> getStudiosByConceptId(Long conceptId, int page) {
 		Pageable pageable = PageRequest.of(page, PAGE_SIZE);
 		return conceptStudioRepository.findByConceptId(conceptId, pageable).map( conceptStudio ->
-				StudioResponse.of(conceptStudio.getStudio(), imageConfig.getImageBaseUrl())
+				StudioResponse.of(conceptStudio.getStudio(), imageConfig.getResizedImageBaseUrl())
 		);
 	}
 
@@ -45,7 +45,7 @@ public class ConceptStudioService {
 	public Page<StudioResponse> getFilteredStudiosOrderByName(int page, Long conceptId, Integer price, Float rating, List<Location> locations) {
 		Pageable pageable = PageRequest.of(page, PAGE_SIZE);
 		return studioRepositoryImpl.getFilteredStudiosOrderByName(price, rating, locations, conceptId, pageable)
-				.map(studio -> StudioResponse.of(studio, imageConfig.getImageBaseUrl()));
+				.map(studio -> StudioResponse.of(studio, imageConfig.getResizedImageBaseUrl()));
 	}
 
 }
