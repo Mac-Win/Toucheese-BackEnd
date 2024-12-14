@@ -1,13 +1,13 @@
 package com.toucheese.reservation.service;
 
+import java.security.Principal;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionSynchronization;
-import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 import com.toucheese.global.exception.ToucheeseBadRequestException;
 import com.toucheese.member.entity.Member;
@@ -17,14 +17,15 @@ import com.toucheese.product.entity.AddOption;
 import com.toucheese.product.entity.Product;
 import com.toucheese.product.entity.ProductAddOption;
 import com.toucheese.product.service.ProductService;
+import com.toucheese.reservation.dto.CartIdsRequest;
 import com.toucheese.reservation.dto.CartRequest;
 import com.toucheese.reservation.dto.CartResponse;
 import com.toucheese.reservation.dto.CartUpdateRequest;
 import com.toucheese.reservation.dto.CheckoutCartItemsResponse;
 import com.toucheese.reservation.entity.Cart;
+import com.toucheese.reservation.event.ReservationMessageEvent;
 import com.toucheese.reservation.repository.CartRepository;
 import com.toucheese.reservation.util.CsvUtils;
-import com.toucheese.solapi.service.MessageService;
 import com.toucheese.studio.entity.Studio;
 import com.toucheese.studio.service.StudioService;
 
@@ -39,7 +40,7 @@ public class CartService {
 	private final ProductService productService;
 	private final MemberService memberService;
 	private final ReservationService reservationService;
-	private final MessageService messageService;
+	private final ApplicationEventPublisher eventPublisher;
 
 
 	@Transactional
@@ -206,27 +207,36 @@ public class CartService {
 		}).toList();
 	}
 
-
+	/**
+	 * 장바구니 상품 결제성공시 예약 테이블로 데이터 복사, 해당 장바구니 상품 삭제, 메시지 및 이메일 전송(비동기)
+	 */
 	@Transactional
-	public void createReservationsFromCart(Long memberId, List<Long> cartIds) {
+	public void createReservationsFromCart(Principal principal, CartIdsRequest cartIdsRequest) {
+
+		Long memberId = memberService.getAuthenticatedMemberId(principal);
+
+		List<Long> cartIds = cartIdsRequest.toCartIdList();
 
 		List<Cart> carts = cartRepository.findCartsByMemberIdAndCartIds(memberId, cartIds);
 
-		if (carts.isEmpty()) {
-			throw new ToucheeseBadRequestException("선택한 장바구니 항목이 없습니다.");
-		}
+		validateCarts(carts);
 
 		reservationService.createReservationsFromCarts(carts);
 
 		cartRepository.deleteAll(carts);
 
-		// 트랜잭션 커밋 후 메시지 전송
-		TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
-			@Override
-			public void afterCommit() {
-				messageService.sendMessageForLoggedInUser(memberId);
-			}
-		});
+		// 객체를 스프링 컨텍스트에 전달 -> 스프링 컨텍스트 해당 이벤트를 처리할 수 있는 리스너 검색하여 호출
+		eventPublisher.publishEvent(new ReservationMessageEvent(memberId));
+	}
 
+	// 이 아래는 검증 메서드
+
+	/**
+	 * 장바구니가 비어 있는 경우 예외를 발생시킵니다.
+	 */
+	private void validateCarts(List<Cart> carts) {
+		if (carts.isEmpty()) {
+			throw new ToucheeseBadRequestException("선택한 장바구니 항목이 없습니다.");
+		}
 	}
 }

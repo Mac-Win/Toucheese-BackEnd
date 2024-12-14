@@ -25,7 +25,6 @@ import com.toucheese.reservation.dto.CartUpdateRequest;
 import com.toucheese.reservation.dto.CheckoutCartItemsResponse;
 import com.toucheese.reservation.dto.CombinedResponse;
 import com.toucheese.reservation.service.CartService;
-import com.toucheese.reservation.util.CsvUtils;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -52,12 +51,9 @@ public class ReservationController {
 			"""
 	)
 	@PostMapping("/reservations")
-	public ResponseEntity<?> completeReservation(Principal principal, @RequestBody CartIdsRequest request) {
-		Long memberId = Long.parseLong(principal.getName());
+	public ResponseEntity<?> acceptReservationAfterPayment(Principal principal, @RequestBody CartIdsRequest cartIdsRequest) {
 
-		String cartIdsString = request.cartIds();
-		List<Long> cartIds = CsvUtils.fromCsv(cartIdsString);
-		cartService.createReservationsFromCart(memberId, cartIds);
+		cartService.createReservationsFromCart(principal, cartIdsRequest);
 		return ResponseEntity.ok("결제가 완료되었습니다.");
 	}
 

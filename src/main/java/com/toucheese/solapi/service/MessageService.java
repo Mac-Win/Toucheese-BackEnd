@@ -3,9 +3,12 @@ package com.toucheese.solapi.service;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.event.TransactionPhase;
+import org.springframework.transaction.event.TransactionalEventListener;
 
 import com.toucheese.member.entity.Member;
 import com.toucheese.member.service.MemberService;
+import com.toucheese.reservation.event.ReservationMessageEvent;
 import com.toucheese.solapi.util.EmailUtil;
 import com.toucheese.solapi.util.SolapiUtil;
 
@@ -22,8 +25,9 @@ public class MessageService {
     private String fromNumber; // 고정 발신 번호
 
     @Async("customTaskExecutor")
-    public void sendMessageForLoggedInUser(Long memberId) {
-
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    public void handleReservationMessageEvent(ReservationMessageEvent event) {
+        Long memberId = event.memberId();
         Member member = memberService.findMemberById(memberId);
         String messageText = solapiUtil.formatMessage(member.getName());
 

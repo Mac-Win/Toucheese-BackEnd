@@ -1,20 +1,20 @@
 package com.toucheese.solapi.controller;
 
-import com.toucheese.global.exception.ToucheeseUnAuthorizedException;
-import com.toucheese.solapi.dto.MessageRequest;
-import com.toucheese.solapi.service.MessageService;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
-import lombok.RequiredArgsConstructor;
-import net.nurigo.sdk.message.exception.NurigoMessageNotReceivedException;
-import org.springframework.beans.factory.annotation.Autowired;
+import java.security.Principal;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.security.Principal;
+import com.toucheese.global.exception.ToucheeseUnAuthorizedException;
+import com.toucheese.solapi.service.MessageService;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/v1/messages")
@@ -29,7 +29,6 @@ public class MessageController {
     public ResponseEntity<String> sendMessage(Principal principal) {
 
         Long memberId = getMemberIdFromPrincipal(principal);
-        messageService.sendMessageForLoggedInUser(memberId);
 
         return ResponseEntity.status(HttpStatus.CREATED).body("Message sent successfully");
     }
