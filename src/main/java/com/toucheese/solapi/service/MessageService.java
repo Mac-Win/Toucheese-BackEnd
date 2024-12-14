@@ -13,10 +13,13 @@ import com.toucheese.solapi.util.EmailUtil;
 import com.toucheese.solapi.util.SolapiUtil;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class MessageService {
+
     private final SolapiUtil solapiUtil;
     private final EmailUtil emailUtil;
     private final MemberService memberService;
@@ -34,12 +37,12 @@ public class MessageService {
         try {
             sendSms(member.getPhone(), messageText);
         } catch (Exception e) {
-            System.err.println("Failed to send SMS: " + e.getMessage());
+            log.error("Failed to send SMS to {}: {}", member.getPhone(), e.getMessage(), e);
         }
         try {
             sendEmail(member.getEmail(), "예약 접수 알림", messageText);
         } catch (Exception e) {
-            System.err.println("Failed to send Email: " + e.getMessage());
+            log.error("Failed to send Email to {}: {}", member.getEmail(), e.getMessage(), e);
         }
     }
 
