@@ -34,7 +34,7 @@ public class CartReadService {
 
 	@Transactional(readOnly = true)
 	public List<Cart> findCheckoutCartItems(Long memberId, List<Long> cartIds) {
-		return cartRepository.findCartsByMemberIdAndCartIds(memberId, cartIds);
+		return cartRepository.findByMemberIdAndIdIn(memberId, cartIds);
 	}
 
 	@Transactional(readOnly = true)

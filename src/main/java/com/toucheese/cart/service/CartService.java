@@ -106,7 +106,7 @@ public class CartService {
 
 		List<Long> cartIds = cartIdsRequest.toCartIdList();
 
-		List<Cart> carts = cartRepository.findCartsByMemberIdAndCartIds(memberId, cartIds);
+		List<Cart> carts = cartRepository.findByMemberIdAndIdIn(memberId, cartIds);
 
 		validateCarts(carts);
 
