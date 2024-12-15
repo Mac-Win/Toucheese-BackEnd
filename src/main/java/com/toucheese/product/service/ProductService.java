@@ -53,6 +53,7 @@ public class ProductService {
         return productAddOptionRepository.findByProduct_IdAndAddOption_IdIn(productId, addOptionIds);
     }
 
+    @Transactional(readOnly = true)
     public AddOption findAddOptionById(Long addOptionId) {
         return addOptionRepository.findById(addOptionId)
             .orElseThrow(() -> new ToucheeseBadRequestException("addOption not found"));

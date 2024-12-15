@@ -38,6 +38,7 @@ import lombok.RequiredArgsConstructor;
 public class CartService {
 
 	private final CartRepository cartRepository;
+	private final CartReadService cartReadService;
 	private final StudioService studioService;
 	private final ProductService productService;
 	private final MemberService memberService;
@@ -58,9 +59,7 @@ public class CartService {
 
 	@Transactional(readOnly = true)
 	public List<CartResponse> findCartList(Long memberId) {
-
-		Member member = memberService.findMemberById(memberId);
-		List<Cart> carts = cartRepository.findByMember(member);
+		List<Cart> carts = cartReadService.findCartListByMemberId(memberId);
 
 		return carts.stream()
 			.map(this::convertToCartResponse)
@@ -72,7 +71,7 @@ public class CartService {
 
 		List<Long> cartIdList = CsvUtils.fromCsv(cartIds);
 		for (Long cartId : cartIdList) {
-			Cart cart = validateCartOwnership(cartId, memberId);
+			Cart cart = cartReadService.validateCartOwnership(cartId, memberId);
 			cartRepository.delete(cart);
 		}
 	}
@@ -80,7 +79,7 @@ public class CartService {
 	@Transactional
 	public void updateCart(Long cartId, CartUpdateRequest request, Long memberId) {
 
-		Cart cart = validateCartOwnership(cartId, memberId);
+		Cart cart = cartReadService.validateCartOwnership(cartId, memberId);
 
 		cart.update(request);
 
@@ -92,7 +91,7 @@ public class CartService {
 
 		List<Long> cartIdsList = CsvUtils.fromCsv(cartIds);
 
-		List<Cart> carts = cartRepository.findCartsByMemberIdAndCartIds(memberId, cartIdsList);
+		List<Cart> carts = cartReadService.findCheckoutCartItems(memberId, cartIdsList);
 
 		return carts.stream()
 			.map(this::convertToCheckoutCartItemsResponse)
@@ -130,19 +129,6 @@ public class CartService {
 		}
 	}
 
-	/**
-	 * 장바구니 소유권 검증 및 Cart 조회
-	 */
-	private Cart validateCartOwnership(Long cartId, Long memberId) {
-		Cart cart = cartRepository.findById(cartId)
-			.orElseThrow(() -> new ToucheeseBadRequestException("장바구니 항목이 존재하지 않습니다."));
-
-		if (!cart.getMember().getId().equals(memberId)) {
-			throw new ToucheeseBadRequestException("해당 장바구니 권한이 없습니다.");
-		}
-
-		return cart;
-	}
 
 	// 이 아래는 Helper 메서드
 	private <T> T convertCartToResponse(Cart cart, Function<List<SelectAddOptionResponse>, T> responseConstructor) {
