@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.toucheese.global.util.PrincipalUtils;
-import com.toucheese.reservation.dto.CartIdsRequest;
-import com.toucheese.reservation.service.CartService;
+import com.toucheese.cart.dto.CartIdsRequest;
+import com.toucheese.cart.service.CartService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -43,5 +43,7 @@ public class ReservationController {
 		cartService.createReservationsFromCart(memberId, cartIdsRequest);
 		return ResponseEntity.ok("결제가 완료되었습니다.");
 	}
+
+
 
 }

@@ -1,4 +1,4 @@
-package com.toucheese.reservation.dto;
+package com.toucheese.cart.dto;
 
 public record SelectAddOptionResponse(
 	Long selectOptionId,             //

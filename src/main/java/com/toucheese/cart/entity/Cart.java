@@ -1,13 +1,13 @@
-package com.toucheese.reservation.entity;
+package com.toucheese.cart.entity;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 
+import com.toucheese.cart.dto.CartRequest;
+import com.toucheese.cart.dto.CartUpdateRequest;
+import com.toucheese.global.util.CsvUtils;
 import com.toucheese.member.entity.Member;
 import com.toucheese.product.entity.Product;
-import com.toucheese.reservation.dto.CartRequest;
-import com.toucheese.reservation.dto.CartUpdateRequest;
-import com.toucheese.reservation.util.CsvUtils;
 import com.toucheese.studio.entity.Studio;
 
 import jakarta.persistence.Entity;

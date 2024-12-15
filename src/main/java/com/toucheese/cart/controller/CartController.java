@@ -1,4 +1,4 @@
-package com.toucheese.reservation.controller;
+package com.toucheese.cart.controller;
 
 import java.security.Principal;
 import java.util.List;
@@ -19,12 +19,12 @@ import org.springframework.web.bind.annotation.RestController;
 import com.toucheese.global.util.PrincipalUtils;
 import com.toucheese.member.dto.MemberContactInfoResponse;
 import com.toucheese.member.service.MemberService;
-import com.toucheese.reservation.dto.CartRequest;
-import com.toucheese.reservation.dto.CartResponse;
-import com.toucheese.reservation.dto.CartUpdateRequest;
-import com.toucheese.reservation.dto.CheckoutCartItemsResponse;
-import com.toucheese.reservation.dto.CombinedResponse;
-import com.toucheese.reservation.service.CartService;
+import com.toucheese.cart.dto.CartRequest;
+import com.toucheese.cart.dto.CartResponse;
+import com.toucheese.cart.dto.CartUpdateRequest;
+import com.toucheese.cart.dto.CheckoutCartItemsResponse;
+import com.toucheese.cart.dto.CombinedResponse;
+import com.toucheese.cart.service.CartService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;

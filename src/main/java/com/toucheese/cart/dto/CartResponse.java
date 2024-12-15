@@ -1,4 +1,4 @@
-package com.toucheese.reservation.dto;
+package com.toucheese.cart.dto;
 
 import java.time.LocalDate;
 import java.time.LocalTime;

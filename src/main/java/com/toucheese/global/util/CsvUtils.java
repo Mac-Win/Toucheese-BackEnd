@@ -1,4 +1,4 @@
-package com.toucheese.reservation.util;
+package com.toucheese.global.util;
 
 import java.util.Arrays;
 import java.util.List;

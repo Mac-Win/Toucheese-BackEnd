@@ -9,12 +9,12 @@ import org.springframework.stereotype.Service;
 
 import com.toucheese.product.entity.ProductAddOption;
 import com.toucheese.product.service.ProductService;
-import com.toucheese.reservation.entity.Cart;
+import com.toucheese.cart.entity.Cart;
 import com.toucheese.reservation.entity.Reservation;
 import com.toucheese.reservation.entity.ReservationProductAddOption;
 import com.toucheese.reservation.entity.ReservationStatus;
 import com.toucheese.reservation.repository.ReservationRepository;
-import com.toucheese.reservation.util.CsvUtils;
+import com.toucheese.global.util.CsvUtils;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;

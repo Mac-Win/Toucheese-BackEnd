@@ -3,7 +3,7 @@ package com.toucheese.member.entity;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.toucheese.reservation.entity.Cart;
+import com.toucheese.cart.entity.Cart;
 import com.toucheese.reservation.entity.Reservation;
 
 import jakarta.persistence.CascadeType;

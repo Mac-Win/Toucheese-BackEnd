@@ -1,8 +1,8 @@
-package com.toucheese.reservation.dto;
+package com.toucheese.cart.dto;
 
 import java.util.List;
 
-import com.toucheese.reservation.util.CsvUtils;
+import com.toucheese.global.util.CsvUtils;
 
 public record CartIdsRequest(String cartIds) {
 	public static CartIdsRequest of(String cartIds) {
