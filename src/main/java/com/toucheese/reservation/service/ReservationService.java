@@ -1,22 +1,26 @@
 package com.toucheese.reservation.service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import com.toucheese.cart.entity.Cart;
+import com.toucheese.global.exception.ToucheeseBadRequestException;
+import com.toucheese.global.util.CsvUtils;
 import com.toucheese.product.entity.ProductAddOption;
 import com.toucheese.product.service.ProductService;
-import com.toucheese.cart.entity.Cart;
 import com.toucheese.reservation.entity.Reservation;
 import com.toucheese.reservation.entity.ReservationProductAddOption;
 import com.toucheese.reservation.entity.ReservationStatus;
 import com.toucheese.reservation.repository.ReservationRepository;
-import com.toucheese.global.util.CsvUtils;
 
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -30,18 +34,16 @@ public class ReservationService {
 	public void createReservationsFromCarts(List<Cart> carts) {
 		List<Reservation> reservations = carts.stream().map(cart -> {
 			List<Long> addOptionIds = CsvUtils.fromCsv(cart.getAddOptions());
-
-			// ProductAddOption 리스트 조회
+			
 			List<ProductAddOption> productAddOptions = productService.findProductAddOptionsByProductIdAndAddOptionIds(
 				cart.getProduct().getId(), addOptionIds
 			);
 
-			// ReservationProductAddOption 생성
 			List<ReservationProductAddOption> reservationProductAddOptions = productAddOptions.stream()
-				.map(productAddOption -> new ReservationProductAddOption(productAddOption, productAddOption.getAddOptionPrice()))
+				.map(productAddOption -> new ReservationProductAddOption(productAddOption,
+					productAddOption.getAddOptionPrice()))
 				.collect(Collectors.toList());
 
-			// Reservation 생성
 			return Reservation.builder()
 				.product(cart.getProduct())
 				.studio(cart.getStudio())
@@ -57,5 +59,24 @@ public class ReservationService {
 		}).collect(Collectors.toList());
 
 		reservationRepository.saveAll(reservations);
+	}
+
+	@Transactional(readOnly = true)
+	public Reservation findReservationById(Long Reservationid) {
+		return reservationRepository.findById(Reservationid)
+			.orElseThrow(() -> new ToucheeseBadRequestException("Reservation not found with ID: " + Reservationid));
+	}
+
+	@Transactional(readOnly = true)
+	public Page<Reservation> findReservationsByStatusAndDate(ReservationStatus status, LocalDate createDate,
+		Pageable pageable) {
+		return reservationRepository.findReservations(status, createDate, pageable);
+	}
+
+	@Transactional
+	public void changeReservationStatus(Long reservationId, ReservationStatus newStatus) {
+		Reservation reservation = findReservationById(reservationId);
+
+		reservation.updateStatus(newStatus);
 	}
 }

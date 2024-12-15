@@ -40,6 +40,7 @@ public class SecurityConfig {
 					.requestMatchers(HttpMethod.POST, "/v1/messages/**").permitAll()
 					.requestMatchers("/swagger", "/swagger-ui.html", "/swagger-ui/**", "/api-docs", "/api-docs/**",
 						"/v3/api-docs/**").permitAll()
+					.requestMatchers("/v1/admin/**").hasAuthority("ADMIN")
 					.anyRequest().authenticated()
 			)
 			.sessionManagement(sessionManagement ->
