@@ -70,4 +70,8 @@ public class Reservation {
 
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
 	private LocalDateTime reservationCompletedAt;
+
+	public void updateStatus(ReservationStatus newStatus) {
+		this.status = newStatus;
+	}
 }

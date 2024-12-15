@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.toucheese.reservation.entity.Reservation;
 import com.toucheese.reservation.entity.ReservationProductAddOption;
 
@@ -18,6 +19,7 @@ public record ReservationRequest(
 	Long memberId,
 	Integer totalPrice,
 	LocalDate createDate,
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm")
 	LocalTime createTime,
 	Integer personnel,
 	List<Long> addOptions
