@@ -1,13 +1,15 @@
 package com.toucheese.member.service;
 
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.toucheese.global.exception.ToucheeseUnAuthorizedException;
 import com.toucheese.global.util.JwtTokenProvider;
 import com.toucheese.member.entity.Member;
 import com.toucheese.member.entity.Token;
 import com.toucheese.member.repository.TokenRepository;
+
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -34,7 +36,9 @@ public class TokenService {
     @Transactional
     public String saveToken(Member member) {
         String memberId = member.getId().toString();
-        String accessToken = jwtTokenProvider.createAccessToken(memberId);
+        String role = member.getRole().toString();
+
+        String accessToken = jwtTokenProvider.createAccessToken(memberId, role);
         String refreshToken = jwtTokenProvider.createRefreshToken(memberId);
 
         Token token = Token.builder()

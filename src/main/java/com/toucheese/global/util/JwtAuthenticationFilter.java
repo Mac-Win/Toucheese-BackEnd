@@ -1,22 +1,25 @@
 package com.toucheese.global.util;
 
-import com.toucheese.global.data.JwtValidateStatus;
-import com.toucheese.global.exception.ToucheeseTokenInvalidException;
-import com.toucheese.global.exception.ToucheeseUnAuthorizedException;
-import com.toucheese.member.entity.Token;
-import com.toucheese.member.service.TokenService;
-import jakarta.servlet.FilterChain;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import lombok.RequiredArgsConstructor;
+
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
+
+import com.toucheese.global.data.JwtValidateStatus;
+import com.toucheese.global.exception.ToucheeseTokenInvalidException;
+import com.toucheese.global.exception.ToucheeseUnAuthorizedException;
+import com.toucheese.member.entity.Token;
+import com.toucheese.member.service.TokenService;
+
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 
 @Component
 @RequiredArgsConstructor
@@ -42,7 +45,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             Token token = tokenService.findRefreshTokenByAccessToken(accessToken);
             checkRefreshToken(token.getRefreshToken()); // refreshToken 확인
 
-            String newAccessToken = jwtTokenProvider.createAccessToken(accessToken);
+            String role = jwtTokenProvider.getClaims(token.getRefreshToken()).get("role", String.class);
+            String newAccessToken = jwtTokenProvider.createAccessToken(accessToken, role);
             tokenService.updateAccessToken(token, newAccessToken); // 갱신 및 업데이트
 
             response.setHeader("Authorization", "Bearer " + newAccessToken); // 새로운 accessToken을 응답 헤더에 추가
