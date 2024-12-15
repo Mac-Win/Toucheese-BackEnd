@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.toucheese.global.util.PrincipalUtils;
 import com.toucheese.member.dto.MemberContactInfoResponse;
 import com.toucheese.member.service.MemberService;
 import com.toucheese.reservation.dto.CartIdsRequest;
@@ -53,7 +54,7 @@ public class ReservationController {
 	@PostMapping("/reservations")
 	public ResponseEntity<?> acceptReservationAfterPayment(Principal principal, @RequestBody CartIdsRequest cartIdsRequest) {
 
-		Long memberId = Long.parseLong(principal.getName());
+		Long memberId = PrincipalUtils.extractMemberId(principal);
 
 		cartService.createReservationsFromCart(memberId, cartIdsRequest);
 		return ResponseEntity.ok("결제가 완료되었습니다.");
@@ -79,7 +80,7 @@ public class ReservationController {
 	public ResponseEntity<CartRequest> cartCreate(
 		@Valid @RequestBody CartRequest cartRequest, Principal principal) {
 
-		Long memberId = Long.parseLong(principal.getName());
+		Long memberId = PrincipalUtils.extractMemberId(principal);
 
 		cartService.createCart(cartRequest, memberId);
 
@@ -108,7 +109,7 @@ public class ReservationController {
 	@GetMapping("/carts/list")
 	public ResponseEntity<List<CartResponse>> getCartList(Principal principal) {
 
-		Long memberId = Long.parseLong(principal.getName());
+		Long memberId = PrincipalUtils.extractMemberId(principal);
 
 		List<CartResponse> cartList = cartService.findCartList(memberId);
 		return ResponseEntity.ok(cartList);
@@ -118,7 +119,7 @@ public class ReservationController {
 	@DeleteMapping("/carts/{cartId}")
 	public ResponseEntity<?> deleteCart(@PathVariable String cartId, Principal principal) {
 
-		Long memberId = Long.parseLong(principal.getName());
+		Long memberId = PrincipalUtils.extractMemberId(principal);
 
 		cartService.deleteCart(cartId, memberId);
 		return ResponseEntity.ok("장바구니 항목이 삭제되었습니다.");
@@ -139,7 +140,7 @@ public class ReservationController {
 	public ResponseEntity<?> updateCart(@PathVariable Long cartId,
 		@Valid @RequestBody CartUpdateRequest request, Principal principal) {
 
-		Long memberId = Long.parseLong(principal.getName());
+		Long memberId = PrincipalUtils.extractMemberId(principal);
 
 		cartService.updateCart(cartId, request, memberId);
 		return ResponseEntity.ok("장바구니가 성공적으로 업데이트되었습니다.");
@@ -180,7 +181,7 @@ public class ReservationController {
 	@GetMapping("carts/checkout-items")
 	public ResponseEntity<CombinedResponse> getCombinedResponse(Principal principal, @RequestParam String cartIds) {
 
-		Long memberId = Long.parseLong(principal.getName());
+		Long memberId = PrincipalUtils.extractMemberId(principal);
 
 		List<CheckoutCartItemsResponse> checkoutCartItems = cartService.getCheckoutCartItems(memberId, cartIds);
 
