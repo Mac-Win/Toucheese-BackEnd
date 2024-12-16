@@ -24,9 +24,9 @@ public class MemberController {
     private final MemberService memberService;
 
     /**
-     * 로그인 요청을 처리하는 메서드
-     * @param loginRequest 로그인 요청 정보 (email, password)
-     * @return 로그인 시 생성 된 접근 토큰 (accessToken)
+     * 로그인 요청을 처리하는 API
+     * @param loginRequest 로그인 요청 정보 (email, password, deviceId)
+     * @return 로그인 시 생성 된 접근 토큰 및 로그인 정보
      */
     @PostMapping
     @Operation(summary = "회원 로그인", description = "email, password로 로그인 합니다.")

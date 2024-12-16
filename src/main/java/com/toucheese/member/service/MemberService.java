@@ -20,6 +20,11 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final TokenService tokenService;
 
+    /**
+     * 회원 정보 검색
+     * @param id 회원 아이디
+     * @return 회원 정보
+     */
     @Transactional(readOnly = true)
     public Member findMemberById(Long id) {
         return memberRepository.findById(id)

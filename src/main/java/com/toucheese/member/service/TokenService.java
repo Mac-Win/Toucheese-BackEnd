@@ -24,6 +24,12 @@ public class TokenService {
     private final JwtTokenProvider jwtTokenProvider;
     private final TokenRepository tokenRepository;
 
+    /**
+     * 토큰 재발급을 위한 메서드
+     * @param accessToken 접근 토큰
+     * @param reissueRequest 재발급을 위한 검증 정보
+     * @return 재발급 된 AccessToken 및 로그인 정보
+     */
     @Transactional
     public MemberTokenResponse reissueAccessToken(String accessToken, ReissueRequest reissueRequest) {
         String memberId = jwtTokenProvider.getClaims(accessToken).getSubject();
@@ -62,6 +68,12 @@ public class TokenService {
                 .orElseThrow(ToucheeseUnAuthorizedException::new);
     }
 
+    /**
+     * 로그인 시 회원 토큰 처리 메서드
+     * @param member 회원 정보
+     * @param deviceId 기기 아이디
+     * @return 기록된 토큰 정보
+     */
     @Transactional
     public TokenDTO loginMemberToken(Member member, String deviceId) {
         TokenDTO tokenDTO = generateTokens(member);
@@ -98,7 +110,11 @@ public class TokenService {
         return token;
     }
 
-    @Transactional
+    /**
+     * AccessToken, RefreshToken 생성 메서드
+     * @param member 회원 정보
+     * @return 생성된 토큰
+     */
     public TokenDTO generateTokens(Member member) {
         String memberId = member.getId().toString();
         String refreshToken = jwtTokenProvider.createRefreshToken(memberId);
