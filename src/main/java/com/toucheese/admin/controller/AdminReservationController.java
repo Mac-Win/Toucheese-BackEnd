@@ -29,7 +29,7 @@ public class AdminReservationController {
 
 	private final AdminReservationService adminReservationService;
 
-	@GetMapping()
+	@GetMapping
 	public ResponseEntity<Page<AdminReservationListResponse>> findReservations(
 		@RequestParam(required = false) String status,
 		@RequestParam(required = false) LocalDate createDate,
