@@ -5,6 +5,7 @@ import java.util.Date;
 
 import javax.crypto.SecretKey;
 
+import com.toucheese.member.entity.Role;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -42,11 +43,11 @@ public class JwtTokenProvider {
      * @param memberId subject 등록을 위한 회원 아이디
      * @return 생성된 접근 토큰
      */
-    public String createAccessToken(String memberId, String role) {
+    public String createAccessToken(String memberId, Role role) {
         Date now = new Date();
         return Jwts.builder()
                 .subject(memberId)
-                .claim("role", role)
+                .claim("role", role.toString())
                 .signWith(secretKey)
                 .expiration(new Date(now.getTime() + accessTokenExpiration)) // 30분
                 .issuedAt(now)
@@ -63,7 +64,7 @@ public class JwtTokenProvider {
         return Jwts.builder()
                 .subject(memberId)
                 .signWith(secretKey)
-                .expiration(new Date(now.getTime() + refreshTokenExpiration)) // 3개월
+                .expiration(new Date(now.getTime() + refreshTokenExpiration))
                 .issuedAt(now)
                 .compact();
     }
