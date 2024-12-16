@@ -2,6 +2,7 @@ package com.toucheese.admin.controller;
 
 import java.time.LocalDate;
 
+import com.toucheese.global.data.ApiResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -30,22 +31,21 @@ public class AdminReservationController {
 	private final AdminReservationService adminReservationService;
 
 	@GetMapping
-	public ResponseEntity<Page<AdminReservationListResponse>> findReservations(
+	public ResponseEntity<?> findReservations(
 		@RequestParam(required = false) String status,
 		@RequestParam(required = false) LocalDate createDate,
 		@RequestParam int page
 	) {
-
 		Page<AdminReservationListResponse> reservations = adminReservationService.findReservations(status, createDate, page);
-		return ResponseEntity.ok(reservations);
+		return ApiResponse.getObjectSuccess(reservations);
 	}
 
 	@PutMapping("/{reservationId}/status")
-	public ResponseEntity<Void> updateReservationStatus(
+	public ResponseEntity<?> updateReservationStatus(
 		@PathVariable Long reservationId,
 		@RequestBody UpdateReservationStatusRequest request
 	) {
 		adminReservationService.updateReservationStatus(reservationId, request.status());
-		return ResponseEntity.noContent().build();
+		return ApiResponse.updatedSuccess("예약 상태를 성공적으로 업데이트했습니다.");
 	}
 }

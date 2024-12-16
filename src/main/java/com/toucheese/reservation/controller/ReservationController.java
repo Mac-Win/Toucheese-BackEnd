@@ -1,7 +1,12 @@
 package com.toucheese.reservation.controller;
 
-import java.security.Principal;
-
+import com.toucheese.cart.dto.CartIdsRequest;
+import com.toucheese.cart.service.CartService;
+import com.toucheese.global.data.ApiResponse;
+import com.toucheese.global.util.PrincipalUtils;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -9,13 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.toucheese.global.util.PrincipalUtils;
-import com.toucheese.cart.dto.CartIdsRequest;
-import com.toucheese.cart.service.CartService;
-
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
-import lombok.RequiredArgsConstructor;
+import java.security.Principal;
 
 @RestController
 @RequestMapping("/v1/members")
@@ -36,12 +35,13 @@ public class ReservationController {
 			"""
 	)
 	@PostMapping("/reservations")
-	public ResponseEntity<?> acceptReservationAfterPayment(Principal principal, @RequestBody CartIdsRequest cartIdsRequest) {
-
+	public ResponseEntity<?> acceptReservationAfterPayment(
+			Principal principal, @RequestBody CartIdsRequest cartIdsRequest
+	) {
 		Long memberId = PrincipalUtils.extractMemberId(principal);
-
 		cartService.createReservationsFromCart(memberId, cartIdsRequest);
-		return ResponseEntity.ok("결제가 완료되었습니다.");
+
+		return ApiResponse.createdSuccess("결제가 완료되었습니다.");
 	}
 
 

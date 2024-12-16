@@ -1,35 +1,21 @@
 package com.toucheese.cart.controller;
 
-import java.security.Principal;
-import java.util.List;
-
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
+import com.toucheese.cart.dto.*;
+import com.toucheese.cart.service.CartService;
+import com.toucheese.global.data.ApiResponse;
 import com.toucheese.global.util.PrincipalUtils;
 import com.toucheese.member.dto.MemberContactInfoResponse;
 import com.toucheese.member.service.MemberService;
-import com.toucheese.cart.dto.CartRequest;
-import com.toucheese.cart.dto.CartResponse;
-import com.toucheese.cart.dto.CartUpdateRequest;
-import com.toucheese.cart.dto.CheckoutCartItemsResponse;
-import com.toucheese.cart.dto.CombinedResponse;
-import com.toucheese.cart.service.CartService;
-
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
+
+import java.security.Principal;
+import java.util.List;
 
 @RestController
 @RequestMapping("/v1/members")
@@ -57,14 +43,13 @@ public class CartController {
 			"""
 	)
 	@PostMapping("/carts")
-	public ResponseEntity<CartRequest> cartCreate(
-		@Valid @RequestBody CartRequest cartRequest, Principal principal) {
-
+	public ResponseEntity<?> cartCreate(
+		@Valid @RequestBody CartRequest cartRequest, Principal principal
+	) {
 		Long memberId = PrincipalUtils.extractMemberId(principal);
-
 		cartService.createCart(cartRequest, memberId);
 
-		return ResponseEntity.status(HttpStatus.CREATED).build();
+		return ApiResponse.createdSuccess("장바구니가 생성되었습니다.");
 	}
 
 	@Operation(summary = "장바구니 목록 조회(회원)",
@@ -87,22 +72,20 @@ public class CartController {
     """
 	)
 	@GetMapping("/carts/list")
-	public ResponseEntity<List<CartResponse>> getCartList(Principal principal) {
-
+	public ResponseEntity<?> getCartList(Principal principal) {
 		Long memberId = PrincipalUtils.extractMemberId(principal);
-
 		List<CartResponse> cartList = cartService.findCartList(memberId);
-		return ResponseEntity.ok(cartList);
+
+		return ApiResponse.getObjectSuccess(cartList);
 	}
 
 	@Operation(summary = "해당 장바구니 삭제", description = "해당하는 장바구니를 삭제합니다.")
 	@DeleteMapping("/carts/{cartId}")
 	public ResponseEntity<?> deleteCart(@PathVariable String cartId, Principal principal) {
-
 		Long memberId = PrincipalUtils.extractMemberId(principal);
-
 		cartService.deleteCart(cartId, memberId);
-		return ResponseEntity.ok("장바구니 항목이 삭제되었습니다.");
+
+		return ApiResponse.deletedSuccess("장바구니 항목이 삭제되었습니다.");
 	}
 
 	@Operation(summary = "장바구니 옵션 및 인원 변경", description = """
@@ -118,12 +101,12 @@ public class CartController {
 		""")
 	@PutMapping("/carts/{cartId}")
 	public ResponseEntity<?> updateCart(@PathVariable Long cartId,
-		@Valid @RequestBody CartUpdateRequest request, Principal principal) {
-
+		@Valid @RequestBody CartUpdateRequest request, Principal principal
+	) {
 		Long memberId = PrincipalUtils.extractMemberId(principal);
-
 		cartService.updateCart(cartId, request, memberId);
-		return ResponseEntity.ok("장바구니가 성공적으로 업데이트되었습니다.");
+
+		return ApiResponse.updatedSuccess("장바구니가 성공적으로 업데이트되었습니다.");
 	}
 
 	@Operation(summary = "장바구니 결제 조회", description = """
@@ -159,16 +142,12 @@ public class CartController {
 		}
 		""")
 	@GetMapping("carts/checkout-items")
-	public ResponseEntity<CombinedResponse> getCombinedResponse(Principal principal, @RequestParam String cartIds) {
-
+	public ResponseEntity<?> getCombinedResponse(Principal principal, @RequestParam String cartIds) {
 		Long memberId = PrincipalUtils.extractMemberId(principal);
-
 		List<CheckoutCartItemsResponse> checkoutCartItems = cartService.getCheckoutCartItems(memberId, cartIds);
-
 		MemberContactInfoResponse memberContactInfo = memberService.findMemberContactInfo(memberId);
 
 		CombinedResponse combinedResponse = new CombinedResponse(checkoutCartItems, memberContactInfo);
-
-		return ResponseEntity.ok(combinedResponse);
+		return ApiResponse.getObjectSuccess(combinedResponse);
 	}
 }

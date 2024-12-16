@@ -15,4 +15,22 @@ public class ApiResponse<T> extends ResponseEntity<T> {
                 .header("Authorization", "Bearer " + accessToken)
                 .body(loginResponse);
     }
+
+    public static ResponseEntity<?> createdSuccess(String message) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(message);
+    }
+
+    public static ResponseEntity<?> deletedSuccess(String message) {
+        return ResponseEntity.ok(message);
+    }
+
+    public static ResponseEntity<?> updatedSuccess(String message) {
+        return ResponseEntity.ok(message);
+    }
+
+    public static ResponseEntity<?> getObjectSuccess(Object object) {
+        return ResponseEntity.ok(object);
+    }
+
+
 }
