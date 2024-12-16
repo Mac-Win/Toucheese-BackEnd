@@ -158,7 +158,7 @@ public class CartController {
 		    }
 		}
 		""")
-	@GetMapping("carts/checkout-items")
+	@GetMapping("/carts/checkout-items")
 	public ResponseEntity<CombinedResponse> getCombinedResponse(Principal principal, @RequestParam String cartIds) {
 
 		Long memberId = PrincipalUtils.extractMemberId(principal);
