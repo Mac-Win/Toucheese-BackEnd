@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.toucheese.admin.dto.AdminReservationListResponse;
+import com.toucheese.global.exception.ToucheeseBadRequestException;
 import com.toucheese.reservation.entity.ReservationStatus;
 import com.toucheese.reservation.service.ReservationService;
 
@@ -24,7 +25,15 @@ public class AdminReservationService {
 
 	@Transactional(readOnly = true)
 	public Page<AdminReservationListResponse> findReservations(String status, LocalDate createDate, int page) {
-		ReservationStatus reservationStatus = ReservationStatus.valueOf(status);
+		ReservationStatus reservationStatus = null;
+
+		if (status != null && !status.isEmpty()) {
+			try {
+				reservationStatus = ReservationStatus.valueOf(status);
+			} catch (IllegalArgumentException e) {
+				throw new ToucheeseBadRequestException("Invalid status value: " + status);
+			}
+		}
 		Pageable pageable = createPageRequest(page);
 
 		return reservationService.findReservationsByStatusAndDate(reservationStatus, createDate, pageable)
