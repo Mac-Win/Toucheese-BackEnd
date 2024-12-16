@@ -33,8 +33,7 @@ public class MemberService {
 
     /**
      * 로그인 처리를 위한 메서드
-     * @param email 아이디
-     * @param password 비밀번호
+     * @param loginRequest 로그인 정보 (email, password, deviceId)
      * @return 로그인 시 생성 된 접근 토큰
      */
     @Transactional

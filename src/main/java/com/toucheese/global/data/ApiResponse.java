@@ -32,5 +32,4 @@ public class ApiResponse<T> extends ResponseEntity<T> {
         return ResponseEntity.ok(object);
     }
 
-
 }

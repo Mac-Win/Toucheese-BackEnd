@@ -98,8 +98,14 @@ public class TokenService {
         return deviceId == null || deviceId.isEmpty();
     }
 
+    /**
+     * 새 로그인 시 토큰 저장을 위한 메서드
+     * @param member 회원 정보
+     * @param deviceId 기기 아이디
+     * @param tokenDTO 생성된 토큰 정보
+     */
     @Transactional
-    public Token saveToken(Member member, String deviceId, TokenDTO tokenDTO) {
+    public void saveToken(Member member, String deviceId, TokenDTO tokenDTO) {
         Token token = Token.builder()
                 .member(member)
                 .refreshToken(tokenDTO.refreshToken())
@@ -107,7 +113,6 @@ public class TokenService {
                 .build();
 
         tokenRepository.save(token);
-        return token;
     }
 
     /**
