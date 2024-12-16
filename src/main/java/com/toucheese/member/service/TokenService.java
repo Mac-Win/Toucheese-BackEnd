@@ -1,5 +1,9 @@
 package com.toucheese.member.service;
 
+import com.toucheese.global.data.JwtValidateStatus;
+import com.toucheese.member.dto.MemberTokenResponse;
+import com.toucheese.member.dto.ReissueRequest;
+import com.toucheese.member.dto.TokenDTO;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -11,6 +15,8 @@ import com.toucheese.member.repository.TokenRepository;
 
 import lombok.RequiredArgsConstructor;
 
+import java.util.UUID;
+
 @Service
 @RequiredArgsConstructor
 public class TokenService {
@@ -18,47 +24,106 @@ public class TokenService {
     private final JwtTokenProvider jwtTokenProvider;
     private final TokenRepository tokenRepository;
 
+    @Transactional
+    public MemberTokenResponse reissueAccessToken(String accessToken, ReissueRequest reissueRequest) {
+        String memberId = jwtTokenProvider.getClaims(accessToken).getSubject();
+        String deviceId = reissueRequest.deviceId();
+        Token token = findTokenByMemberIdAndDeviceId(Long.parseLong(memberId), deviceId);
+
+        String refreshToken = token.getRefreshToken();
+        checkRefreshToken(refreshToken, reissueRequest.refreshToken()); // refreshToken 검증
+
+        // DENIED, EXPIRED 되지 않았다면 AccessToken 재발급
+        Member member = token.getMember();
+        String newAccessToken = jwtTokenProvider.createAccessToken(memberId, member.getRole());
+
+        return MemberTokenResponse.builder()
+                .memberId(member.getId())
+                .name(member.getName())
+                .tokenDTO(
+                        TokenDTO.builder()
+                                .refreshToken(refreshToken)
+                                .accessToken(newAccessToken)
+                                .deviceId(deviceId)
+                                .build()
+                )
+                .build();
+    }
+
     /**
-     * 갱신 토큰 검색을 위한 메서드
-     * @param accessToken 접근 토큰
-     * @return 해당하는 토큰 정보
+     * 회원 정보와 기기 정보를 통해 해당되는 토큰을 검색
+     * @param memberId 회원 아이디
+     * @param deviceId 기기 아이디
+     * @return 토큰 정보
      */
     @Transactional(readOnly = true)
-    public Token findRefreshTokenByAccessToken(String accessToken) {
-        return tokenRepository.findByAccessToken(accessToken)
+    public Token findTokenByMemberIdAndDeviceId(Long memberId, String deviceId) {
+        return tokenRepository.findByMemberIdAndDeviceId(memberId, deviceId)
                 .orElseThrow(ToucheeseUnAuthorizedException::new);
     }
 
-    /**
-     * 토큰 저장을 위한 메서드
-     * @param member 회원
-     */
     @Transactional
-    public String saveToken(Member member) {
-        String memberId = member.getId().toString();
-        String role = member.getRole().toString();
+    public TokenDTO loginMemberToken(Member member, String deviceId) {
+        TokenDTO tokenDTO = generateTokens(member);
 
-        String accessToken = jwtTokenProvider.createAccessToken(memberId, role);
-        String refreshToken = jwtTokenProvider.createRefreshToken(memberId);
+        if (validDeviceId(deviceId)) {
+            deviceId = UUID.randomUUID().toString();
+            saveToken(member, deviceId, tokenDTO);
+        } else {
+            Token token = findTokenByMemberIdAndDeviceId(member.getId(), deviceId);
+            token.updateRefreshToken(tokenDTO.refreshToken());
+        }
 
-        Token token = Token.builder()
-                .accessToken(accessToken)
-                .refreshToken(refreshToken)
-                .member(member)
-                .build();
-
-        tokenRepository.save(token);
-        return accessToken;
+        return TokenDTO.of(tokenDTO.accessToken(), tokenDTO.refreshToken(), deviceId);
     }
 
     /**
-     * 접근 토큰 정보 업데이트를 위한 메서드
-     * @param token 해당하는 토큰
-     * @param accessToken 새로운 갱신 토큰
+     * 기기 아이디 검증을 위한 메서드
+     * @param deviceId 기기 아이디
+     * @return true / false
      */
+    private boolean validDeviceId(String deviceId) {
+        return deviceId == null || deviceId.isEmpty();
+    }
+
     @Transactional
-    public void updateAccessToken(Token token, String accessToken) {
-        token.updateAccessToken(accessToken);
+    public Token saveToken(Member member, String deviceId, TokenDTO tokenDTO) {
+        Token token = Token.builder()
+                .member(member)
+                .refreshToken(tokenDTO.refreshToken())
+                .deviceId(deviceId)
+                .build();
+
+        tokenRepository.save(token);
+        return token;
+    }
+
+    @Transactional
+    public TokenDTO generateTokens(Member member) {
+        String memberId = member.getId().toString();
+        String refreshToken = jwtTokenProvider.createRefreshToken(memberId);
+        String accessToken = jwtTokenProvider.createAccessToken(memberId, member.getRole());
+
+        return TokenDTO.builder()
+                .refreshToken(refreshToken)
+                .accessToken(accessToken)
+                .build();
+    }
+
+    /**
+     * RefreshToken 을 검증하기 위한 토큰
+     * @param refreshToken 갱신 토큰
+     * @throws ToucheeseUnAuthorizedException 갱신 토큰 또한 만료되었을 경우 재로그인 요청
+     */
+    public void checkRefreshToken(String refreshToken, String requestRefreshToken) {
+        JwtValidateStatus jwtValidateStatus = jwtTokenProvider.validateToken(refreshToken);
+
+        if (jwtValidateStatus == JwtValidateStatus.EXPIRED ||
+                jwtValidateStatus == JwtValidateStatus.DENIED ||
+                !refreshToken.equals(requestRefreshToken)
+        ) {
+            throw new ToucheeseUnAuthorizedException("재로그인이 필요합니다.");
+        }
     }
 
 }

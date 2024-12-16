@@ -3,10 +3,10 @@ package com.toucheese.member.dto;
 import lombok.Builder;
 
 @Builder
-public record LoginMemberResponse(
+public record MemberTokenResponse(
         Long memberId,
         String name,
-        String accessToken
+        TokenDTO tokenDTO
 ) {
 
 }
