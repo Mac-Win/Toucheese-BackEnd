@@ -10,7 +10,7 @@ public class ApiResponse<T> extends ResponseEntity<T> {
         super(status);
     }
 
-    public static ResponseEntity<Object> accessTokenResponse(LoginResponse loginResponse, String accessToken) {
+    public static ResponseEntity<?> accessTokenResponse(LoginResponse loginResponse, String accessToken) {
         return ResponseEntity.ok()
                 .header("Authorization", "Bearer " + accessToken)
                 .body(loginResponse);
