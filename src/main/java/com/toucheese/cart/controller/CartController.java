@@ -74,9 +74,7 @@ public class CartController {
 	@GetMapping("/carts/list")
 	public ResponseEntity<?> getCartList(Principal principal) {
 		Long memberId = PrincipalUtils.extractMemberId(principal);
-		List<CartResponse> cartList = cartService.findCartList(memberId);
-
-		return ApiResponse.getObjectSuccess(cartList);
+		return ApiResponse.getObjectSuccess(cartService.findCartList(memberId));
 	}
 
 	@Operation(summary = "해당 장바구니 삭제", description = "해당하는 장바구니를 삭제합니다.")

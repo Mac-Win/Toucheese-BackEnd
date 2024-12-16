@@ -36,8 +36,7 @@ public class AdminReservationController {
 		@RequestParam(required = false) LocalDate createDate,
 		@RequestParam int page
 	) {
-		Page<AdminReservationListResponse> reservations = adminReservationService.findReservations(status, createDate, page);
-		return ApiResponse.getObjectSuccess(reservations);
+		return ApiResponse.getObjectSuccess(adminReservationService.findReservations(status, createDate, page));
 	}
 
 	@PutMapping("/{reservationId}/status")
