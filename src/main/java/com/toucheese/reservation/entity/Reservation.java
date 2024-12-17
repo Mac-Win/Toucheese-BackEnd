@@ -1,10 +1,12 @@
 package com.toucheese.reservation.entity;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.toucheese.member.entity.Member;
 import com.toucheese.product.entity.Product;
 import com.toucheese.studio.entity.Studio;
 
@@ -20,7 +22,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.PrePersist;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -39,10 +40,6 @@ public class Reservation {
 
 	private Integer totalPrice;
 
-	private String name;
-
-	private String phone;
-
 	@JsonFormat(pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
 	private LocalDate createDate;
 
@@ -59,6 +56,10 @@ public class Reservation {
 	@JoinColumn(name = "studio_id")
 	private Studio studio;
 
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "member_id")
+	private Member member;
+
 	@OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn(name = "reservation_id")
 	private List<ReservationProductAddOption> reservationProductAddOptions;
@@ -67,11 +68,10 @@ public class Reservation {
 	@Enumerated(EnumType.STRING)
 	private ReservationStatus status;
 
-	@PrePersist
-	private void prePersist() {
-		if (this.status == null) {
-			this.status = ReservationStatus.예약대기;
-		}
-	}
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
+	private LocalDateTime reservationCompletedAt;
 
+	public void updateStatus(ReservationStatus newStatus) {
+		this.status = newStatus;
+	}
 }

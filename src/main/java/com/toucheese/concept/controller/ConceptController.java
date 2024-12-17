@@ -3,9 +3,11 @@ package com.toucheese.concept.controller;
 import com.toucheese.concept.dto.ConceptResponse;
 import com.toucheese.concept.service.ConceptService;
 
+import com.toucheese.global.data.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -27,7 +29,7 @@ public class ConceptController {
             + "4. 내추럴 화보 느낌, "
             + "5. 선명하고 인형같은 느낌, "
             + "6. 필터 / 수채화 그림체 느낌")
-    public List<ConceptResponse> getAllConcepts() {
-        return conceptService.getAllConcepts();
+    public ResponseEntity<?> getAllConcepts() {
+        return ApiResponse.getObjectSuccess(conceptService.getAllConcepts());
     }
 }

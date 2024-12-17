@@ -1,22 +1,26 @@
 package com.toucheese.global.util;
 
-import com.toucheese.global.config.AppConfig;
-import com.toucheese.global.data.JwtValidateStatus;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.JwtException;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.security.Keys;
-import lombok.extern.slf4j.Slf4j;
+import java.util.Collections;
+import java.util.Date;
+
+import javax.crypto.SecretKey;
+
+import com.toucheese.member.entity.Role;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Component;
 
-import javax.crypto.SecretKey;
-import java.util.Collections;
-import java.util.Date;
+import com.toucheese.global.config.AppConfig;
+import com.toucheese.global.data.JwtValidateStatus;
+
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.security.Keys;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Component
@@ -39,10 +43,11 @@ public class JwtTokenProvider {
      * @param memberId subject 등록을 위한 회원 아이디
      * @return 생성된 접근 토큰
      */
-    public String createAccessToken(String memberId) {
+    public String createAccessToken(String memberId, Role role) {
         Date now = new Date();
         return Jwts.builder()
                 .subject(memberId)
+                .claim("role", role.toString())
                 .signWith(secretKey)
                 .expiration(new Date(now.getTime() + accessTokenExpiration)) // 30분
                 .issuedAt(now)
@@ -59,7 +64,7 @@ public class JwtTokenProvider {
         return Jwts.builder()
                 .subject(memberId)
                 .signWith(secretKey)
-                .expiration(new Date(now.getTime() + refreshTokenExpiration)) // 3개월
+                .expiration(new Date(now.getTime() + refreshTokenExpiration))
                 .issuedAt(now)
                 .compact();
     }
@@ -106,7 +111,8 @@ public class JwtTokenProvider {
      */
     public Authentication getAuthentication(String token) {
         Claims claims = getClaims(token);
-        User principal = new User(claims.getSubject(), "",  Collections.emptyList());
+        String role = claims.get("role", String.class);
+        User principal = new User(claims.getSubject(), "",  Collections.singleton(() -> role));
         return new UsernamePasswordAuthenticationToken(principal, token, principal.getAuthorities());
     }
 

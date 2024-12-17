@@ -7,8 +7,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.toucheese.global.exception.ToucheeseBadRequestException;
 import com.toucheese.product.dto.ProductDetailResponse;
+import com.toucheese.product.entity.AddOption;
 import com.toucheese.product.entity.Product;
 import com.toucheese.product.entity.ProductAddOption;
+import com.toucheese.product.repository.AddOptionRepository;
 import com.toucheese.product.repository.ProductAddOptionRepository;
 import com.toucheese.product.repository.ProductRepository;
 
@@ -20,6 +22,7 @@ public class ProductService {
 
     private final ProductRepository productRepository;
     private final ProductAddOptionRepository productAddOptionRepository;
+    private final AddOptionRepository addOptionRepository;
 
     /**
      * 상품 상세 정보를 조회한다.
@@ -48,5 +51,11 @@ public class ProductService {
     @Transactional(readOnly = true)
     public List<ProductAddOption> findProductAddOptionsByProductIdAndAddOptionIds(Long productId, List<Long> addOptionIds) {
         return productAddOptionRepository.findByProduct_IdAndAddOption_IdIn(productId, addOptionIds);
+    }
+
+    @Transactional(readOnly = true)
+    public AddOption findAddOptionById(Long addOptionId) {
+        return addOptionRepository.findById(addOptionId)
+            .orElseThrow(() -> new ToucheeseBadRequestException("addOption not found"));
     }
 }

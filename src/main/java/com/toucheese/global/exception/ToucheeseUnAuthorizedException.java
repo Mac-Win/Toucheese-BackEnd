@@ -4,7 +4,7 @@ import org.springframework.http.HttpStatus;
 
 public class ToucheeseUnAuthorizedException extends ToucheeseException {
 
-    private static final String DEFAULT_MESSAGE = "인증되지 않은 요청입니다.";
+    private static final String DEFAULT_MESSAGE = "인증이 만료되었습니다.";
 
     public ToucheeseUnAuthorizedException() {
         super(DEFAULT_MESSAGE);

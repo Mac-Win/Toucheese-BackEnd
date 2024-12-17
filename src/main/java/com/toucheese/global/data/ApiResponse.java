@@ -10,9 +10,26 @@ public class ApiResponse<T> extends ResponseEntity<T> {
         super(status);
     }
 
-    public static ResponseEntity<Object> accessTokenResponse(LoginResponse loginResponse, String accessToken) {
+    public static ResponseEntity<?> accessTokenResponse(LoginResponse loginResponse, String accessToken) {
         return ResponseEntity.ok()
                 .header("Authorization", "Bearer " + accessToken)
                 .body(loginResponse);
     }
+
+    public static ResponseEntity<?> createdSuccess(String message) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(message);
+    }
+
+    public static ResponseEntity<?> deletedSuccess(String message) {
+        return ResponseEntity.ok(message);
+    }
+
+    public static ResponseEntity<?> updatedSuccess(String message) {
+        return ResponseEntity.ok(message);
+    }
+
+    public static ResponseEntity<?> getObjectSuccess(Object object) {
+        return ResponseEntity.ok(object);
+    }
+
 }
