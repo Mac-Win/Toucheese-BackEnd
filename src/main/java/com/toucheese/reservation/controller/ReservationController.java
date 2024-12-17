@@ -20,6 +20,7 @@ import com.toucheese.global.data.ApiResponse;
 import com.toucheese.global.util.PrincipalUtils;
 import com.toucheese.reservation.dto.ReservationResponse;
 import com.toucheese.reservation.dto.ReservationTimeRequest;
+import com.toucheese.reservation.service.ReservationReadService;
 import com.toucheese.reservation.service.ReservationService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -34,6 +35,7 @@ import lombok.RequiredArgsConstructor;
 public class ReservationController {
 	private final CartService cartService;
 	private final ReservationService reservationService;
+	private final ReservationReadService reservationReadService;
 
 	@Operation(
 		summary = "예약 기능",
@@ -49,7 +51,7 @@ public class ReservationController {
 	public ResponseEntity<?> acceptReservationAfterPayment(Principal principal,
 		@RequestBody CartIdsRequest cartIdsRequest) {
 		Long memberId = PrincipalUtils.extractMemberId(principal);
-		
+
 		cartService.createReservationsFromCart(memberId, cartIdsRequest);
 		return ApiResponse.createdSuccess("결제가 완료되었습니다.");
 	}
@@ -59,7 +61,7 @@ public class ReservationController {
 	public ResponseEntity<?> findReservations(Principal principal, @RequestParam int page) {
 		Long memberId = PrincipalUtils.extractMemberId(principal);
 
-		Page<ReservationResponse> reservations = reservationService.findReservation(memberId, page);
+		Page<ReservationResponse> reservations = reservationReadService.findPagedReservationsByMemberId(memberId, page);
 		return ApiResponse.getObjectSuccess(reservations);
 	}
 

@@ -5,9 +5,6 @@ import java.time.ZoneId;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,7 +12,6 @@ import com.toucheese.cart.entity.Cart;
 import com.toucheese.global.util.CsvUtils;
 import com.toucheese.product.entity.ProductAddOption;
 import com.toucheese.product.service.ProductService;
-import com.toucheese.reservation.dto.ReservationResponse;
 import com.toucheese.reservation.dto.ReservationTimeRequest;
 import com.toucheese.reservation.entity.Reservation;
 import com.toucheese.reservation.entity.ReservationProductAddOption;
@@ -31,8 +27,6 @@ public class ReservationService {
 	private final ReservationRepository reservationRepository;
 	private final ReservationReadService reservationReadService;
 	private final ProductService productService;
-
-	private static final int PAGE_SIZE = 10;
 
 	@Transactional
 	public void createReservationsFromCarts(List<Cart> carts) {
@@ -70,17 +64,6 @@ public class ReservationService {
 		Reservation reservation = reservationReadService.findReservationById(reservationId);
 
 		reservation.updateStatus(newStatus);
-	}
-
-	public Page<ReservationResponse> findReservation(Long memberId, int page) {
-		Pageable pageable = createPageable(page);
-
-		return reservationReadService.findPagedReservationsByMemberId(memberId, pageable)
-			.map(ReservationResponse::of);
-	}
-
-	private Pageable createPageable(int page) {
-		return PageRequest.of(page, PAGE_SIZE);
 	}
 
 	@Transactional
