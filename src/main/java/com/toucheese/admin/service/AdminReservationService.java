@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.toucheese.admin.dto.AdminReservationListResponse;
 import com.toucheese.global.exception.ToucheeseBadRequestException;
 import com.toucheese.reservation.entity.ReservationStatus;
+import com.toucheese.reservation.service.ReservationReadService;
 import com.toucheese.reservation.service.ReservationService;
 
 import lombok.RequiredArgsConstructor;
@@ -20,6 +21,7 @@ import lombok.RequiredArgsConstructor;
 public class AdminReservationService {
 
 	private final ReservationService reservationService;
+	private final ReservationReadService reservationReadService;
 
 	private static final int PAGE_SIZE = 10;
 
@@ -36,7 +38,7 @@ public class AdminReservationService {
 		}
 		Pageable pageable = createPageRequest(page);
 
-		return reservationService.findReservationsByStatusAndDate(reservationStatus, createDate, pageable)
+		return reservationReadService.findReservationsByStatusAndDate(reservationStatus, createDate, pageable)
 			.map(AdminReservationListResponse::of);
 	}
 
