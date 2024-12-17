@@ -32,8 +32,24 @@ public class Question {
     @Enumerated(EnumType.STRING)
     private AnswerStatus answerStatus;
 
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "answer_id")
+    private Answer answer;
+
     public void update(String title, String content) {
         this.title = title;
         this.content = content;
+    }
+
+    // 답변 상태와 답변 연결
+    public void updateAnswer(Answer answer) {
+        this.answer = answer;
+        this.answerStatus = AnswerStatus.답변완료;
+    }
+
+    // 답변 상태를 답변대기로 변경
+    public void resetAnswer() {
+        this.answer = null;
+        this.answerStatus = AnswerStatus.답변대기;
     }
 }

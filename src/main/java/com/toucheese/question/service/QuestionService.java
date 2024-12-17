@@ -28,12 +28,8 @@ public class QuestionService {
 
     private static final int PAGE_SIZE = 10;
     @Transactional
-    public Question createQuestion(
-            QuestionRequest questionRequest,
-            Principal principal
-    ) {
+    public Question createQuestion(QuestionRequest questionRequest, Principal principal) {
         Member member = QuestionUtil.getMemberByPrincipal(principal, memberRepository);
-
         Question question = Question.builder()
                 .title(questionRequest.title())
                 .content(questionRequest.content())
@@ -44,11 +40,7 @@ public class QuestionService {
         return questionRepository.save(question);
     }
 
-    public QuestionResponse getQuestionById(
-            Long id,
-            Principal principal
-    ) {
-
+    public QuestionResponse getQuestionById(Long id, Principal principal) {
         Question question = QuestionUtil.findQuestionById(id, questionRepository);
         QuestionUtil.validateMemberAccess(question, principal);
         return QuestionResponse.of(question);
@@ -62,12 +54,7 @@ public class QuestionService {
     }
 
     @Transactional
-    public QuestionResponse updateQuestion(
-            Long id,
-            QuestionRequest questionRequest,
-            Principal principal
-    ) {
-
+    public QuestionResponse updateQuestion(Long id, QuestionRequest questionRequest, Principal principal) {
         Question question = QuestionUtil.findQuestionById(id, questionRepository);
         QuestionUtil.validateMemberAccess(question, principal);
 
@@ -79,10 +66,7 @@ public class QuestionService {
     }
 
     @Transactional
-    public void deleteQuestion(
-            Long id,
-            Principal principal
-    ) {
+    public void deleteQuestion(Long id, Principal principal) {
         Question question = QuestionUtil.findQuestionById(id, questionRepository);
         QuestionUtil.validateMemberAccess(question, principal);
         questionRepository.delete(question);

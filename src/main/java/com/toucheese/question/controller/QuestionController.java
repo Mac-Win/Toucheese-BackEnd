@@ -53,6 +53,10 @@ public class QuestionController {
             "content": "문의글 내용",
             "createDate": "문의글 작성 날짜",
             "answerStatus": "답변 상태"
+            "answer": {
+                "content": "답변 내용",
+                "createDate": "답변 작성 날짜"
+            }            
         }
         """
     )
@@ -64,7 +68,7 @@ public class QuestionController {
     }
 
     @GetMapping
-    @Operation(summary = "자신의 모든 문의하기 글 조회", description = """
+    @Operation(summary = "자신의 모든 문의하기 글 조회 ( 페이징 처리 )", description = """
         ```json
         {
             "id": "문의글 ID",
