@@ -30,7 +30,7 @@ public class ReviewController {
     @GetMapping("/reviews/{reviewId}")
     @Operation(summary = "특정 리뷰 상세 조회", description = "리뷰 사진 클릭 시 해당 리뷰 조회")
     public ReviewDetailResponse findStudioReviewDetail(@PathVariable("reviewId") Long reviewId) {
-        return reviewService.findReviewById(reviewId);
+        return reviewService.findReviewDetailById(reviewId);
     }
 
     @GetMapping("/products/{productId}/reviews")

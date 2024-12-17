@@ -14,13 +14,13 @@ public record ReviewDetailResponse(
         Float rating,
         List<String> reviewImages
 ) {
-    public static ReviewDetailResponse of(Review review) {
+    public static ReviewDetailResponse of(Review review, String baseUrl) {
         return ReviewDetailResponse.builder()
                 .id(review.getId())
                 .content(review.getContent())
                 .rating(review.getRating())
                 .reviewImages(review.getReviewImages().stream()
-                        .map(ReviewImage::getUrl)
+                        .map(reviewImage -> baseUrl + reviewImage.getOriginalPath())
                         .toList()
                 )
                 .build();
