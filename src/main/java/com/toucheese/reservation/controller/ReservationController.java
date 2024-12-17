@@ -28,7 +28,7 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequestMapping("/v1/members/reservations")
 @RequiredArgsConstructor
-@Tag(name = "예약 API")
+@Tag(name = "사용자 예약 API")
 @PreAuthorize("isAuthenticated()")
 public class ReservationController {
 	private final CartService cartService;
@@ -54,6 +54,7 @@ public class ReservationController {
 		return ResponseEntity.ok("결제가 완료되었습니다.");
 	}
 
+	@Operation(summary = "사용자 예약 조회")
 	@GetMapping()
 	public ResponseEntity<Page<ReservationResponse>> findReservations(Principal principal, @RequestParam int page) {
 
@@ -64,6 +65,7 @@ public class ReservationController {
 		return ResponseEntity.ok(reservations);
 	}
 
+	@Operation(summary = "사용자 예약 일정 수정")
 	@PutMapping("/{reservationId}")
 	public ResponseEntity<Void> updateReservationTime(
 		Principal principal,
