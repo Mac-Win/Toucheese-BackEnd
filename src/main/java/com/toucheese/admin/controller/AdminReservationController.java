@@ -17,6 +17,7 @@ import com.toucheese.admin.dto.AdminReservationListResponse;
 import com.toucheese.admin.dto.UpdateReservationStatusRequest;
 import com.toucheese.admin.service.AdminReservationService;
 
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 
@@ -29,6 +30,7 @@ public class AdminReservationController {
 
 	private final AdminReservationService adminReservationService;
 
+	@Operation(summary = "관리자 예약 전체 조회")
 	@GetMapping
 	public ResponseEntity<Page<AdminReservationListResponse>> findReservations(
 		@RequestParam(required = false) String status,
@@ -40,6 +42,7 @@ public class AdminReservationController {
 		return ResponseEntity.ok(reservations);
 	}
 
+	@Operation(summary = "관리자 예약 상태 수정")
 	@PutMapping("/{reservationId}/status")
 	public ResponseEntity<Void> updateReservationStatus(
 		@PathVariable Long reservationId,
