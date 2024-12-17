@@ -1,6 +1,7 @@
 package com.toucheese.reservation.repository;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
@@ -26,4 +27,6 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
 	Page<Reservation> findPagedReservationsByMemberId(Long memberId, Pageable pageable);
 
 	Optional<Reservation> findByIdAndMemberId(Long reservationId, Long memberId);
+
+	List<Reservation> findAllByStatus(ReservationStatus reservationStatus);
 }
