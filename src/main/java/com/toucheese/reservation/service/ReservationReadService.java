@@ -1,0 +1,43 @@
+package com.toucheese.reservation.service;
+
+import java.time.LocalDate;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.toucheese.global.exception.ToucheeseBadRequestException;
+import com.toucheese.reservation.entity.Reservation;
+import com.toucheese.reservation.entity.ReservationStatus;
+import com.toucheese.reservation.repository.ReservationRepository;
+
+import lombok.RequiredArgsConstructor;
+
+@Service
+@RequiredArgsConstructor
+public class ReservationReadService {
+	private final ReservationRepository reservationRepository;
+
+	@Transactional(readOnly = true)
+	public Reservation findReservationById(Long reservationId) {
+		return reservationRepository.findById(reservationId)
+			.orElseThrow(() -> new ToucheeseBadRequestException("Reservation not found with ID: " + reservationId));
+	}
+
+	@Transactional(readOnly = true)
+	public Page<Reservation> findReservationsByStatusAndDate(ReservationStatus status, LocalDate createDate,
+		Pageable pageable) {
+		return reservationRepository.findReservations(status, createDate, pageable);
+	}
+
+	@Transactional(readOnly = true)
+	public Page<Reservation> findPagedReservationsByMemberId(Long memberId, Pageable pageable) {
+		return reservationRepository.findPagedReservationsByMemberId(memberId, pageable);
+	}
+
+	public Reservation findReservationByIdAndMemberId(Long reservationId, Long memberId) {
+		return reservationRepository.findByIdAndMemberId(reservationId, memberId)
+			.orElseThrow(() -> new ToucheeseBadRequestException("해당 예약이 존재하지 않거나 접근 권한이 없습니다."));
+	}
+}

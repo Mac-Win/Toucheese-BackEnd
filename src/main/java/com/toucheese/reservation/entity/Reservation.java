@@ -8,6 +8,7 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.toucheese.member.entity.Member;
 import com.toucheese.product.entity.Product;
+import com.toucheese.reservation.dto.ReservationTimeRequest;
 import com.toucheese.studio.entity.Studio;
 
 import jakarta.persistence.CascadeType;
@@ -73,5 +74,10 @@ public class Reservation {
 
 	public void updateStatus(ReservationStatus newStatus) {
 		this.status = newStatus;
+	}
+
+	public void updateTime(ReservationTimeRequest request) {
+		this.createDate = request.createDate();
+		this.createTime = request.createTime();
 	}
 }

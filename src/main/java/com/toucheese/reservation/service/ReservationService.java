@@ -1,21 +1,22 @@
 package com.toucheese.reservation.service;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.toucheese.cart.entity.Cart;
-import com.toucheese.global.exception.ToucheeseBadRequestException;
 import com.toucheese.global.util.CsvUtils;
 import com.toucheese.product.entity.ProductAddOption;
 import com.toucheese.product.service.ProductService;
+import com.toucheese.reservation.dto.ReservationResponse;
+import com.toucheese.reservation.dto.ReservationTimeRequest;
 import com.toucheese.reservation.entity.Reservation;
 import com.toucheese.reservation.entity.ReservationProductAddOption;
 import com.toucheese.reservation.entity.ReservationStatus;
@@ -28,13 +29,16 @@ import lombok.RequiredArgsConstructor;
 public class ReservationService {
 
 	private final ReservationRepository reservationRepository;
+	private final ReservationReadService reservationReadService;
 	private final ProductService productService;
+
+	private static final int PAGE_SIZE = 10;
 
 	@Transactional
 	public void createReservationsFromCarts(List<Cart> carts) {
 		List<Reservation> reservations = carts.stream().map(cart -> {
 			List<Long> addOptionIds = CsvUtils.fromCsv(cart.getAddOptions());
-			
+
 			List<ProductAddOption> productAddOptions = productService.findProductAddOptionsByProductIdAndAddOptionIds(
 				cart.getProduct().getId(), addOptionIds
 			);
@@ -61,22 +65,28 @@ public class ReservationService {
 		reservationRepository.saveAll(reservations);
 	}
 
-	@Transactional(readOnly = true)
-	public Reservation findReservationById(Long Reservationid) {
-		return reservationRepository.findById(Reservationid)
-			.orElseThrow(() -> new ToucheeseBadRequestException("Reservation not found with ID: " + Reservationid));
+	@Transactional
+	public void changeReservationStatus(Long reservationId, ReservationStatus newStatus) {
+		Reservation reservation = reservationReadService.findReservationById(reservationId);
+
+		reservation.updateStatus(newStatus);
 	}
 
-	@Transactional(readOnly = true)
-	public Page<Reservation> findReservationsByStatusAndDate(ReservationStatus status, LocalDate createDate,
-		Pageable pageable) {
-		return reservationRepository.findReservations(status, createDate, pageable);
+	public Page<ReservationResponse> findReservation(Long memberId, int page) {
+		Pageable pageable = createPageable(page);
+
+		return reservationReadService.findPagedReservationsByMemberId(memberId, pageable)
+			.map(ReservationResponse::of);
+	}
+
+	private Pageable createPageable(int page) {
+		return PageRequest.of(page, PAGE_SIZE);
 	}
 
 	@Transactional
-	public void changeReservationStatus(Long reservationId, ReservationStatus newStatus) {
-		Reservation reservation = findReservationById(reservationId);
+	public void updateReservationTime(Long memberId, Long reservationId, ReservationTimeRequest request) {
+		Reservation reservation = reservationReadService.findReservationByIdAndMemberId(reservationId, memberId);
 
-		reservation.updateStatus(newStatus);
+		reservation.updateTime(request);
 	}
 }
