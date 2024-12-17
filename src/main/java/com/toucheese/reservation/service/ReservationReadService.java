@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.toucheese.global.exception.ToucheeseBadRequestException;
+import com.toucheese.global.util.PageUtils;
+import com.toucheese.reservation.dto.ReservationResponse;
 import com.toucheese.reservation.entity.Reservation;
 import com.toucheese.reservation.entity.ReservationStatus;
 import com.toucheese.reservation.repository.ReservationRepository;
@@ -32,8 +34,10 @@ public class ReservationReadService {
 	}
 
 	@Transactional(readOnly = true)
-	public Page<Reservation> findPagedReservationsByMemberId(Long memberId, Pageable pageable) {
-		return reservationRepository.findPagedReservationsByMemberId(memberId, pageable);
+	public Page<ReservationResponse> findPagedReservationsByMemberId(Long memberId, int page) {
+		Pageable pageable = PageUtils.createPageable(page);
+		return reservationRepository.findPagedReservationsByMemberId(memberId, pageable)
+			.map(ReservationResponse::of);
 	}
 
 	public Reservation findReservationByIdAndMemberId(Long reservationId, Long memberId) {
