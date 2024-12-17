@@ -2,12 +2,14 @@ package com.toucheese.conceptstudio.controller;
 
 import com.toucheese.conceptstudio.service.ConceptStudioService;
 import com.toucheese.conceptstudio.dto.StudioResponse;
+import com.toucheese.global.data.ApiResponse;
 import com.toucheese.studio.entity.Location;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,11 +23,11 @@ public class ConceptStudioController {
 
     @GetMapping("/{conceptId}/studios")
     @Operation(summary = "컨셉 스튜디오 목록 조회", description = "컨셉을 선택하면 해당하는 스튜디오 목록 조회")
-    public Page<StudioResponse> getStudiosByConceptId(
+    public ResponseEntity<?> getStudiosByConceptId(
             @PathVariable Long conceptId,
             @RequestParam int page
     ) {
-        return conceptStudioService.getStudiosByConceptId(conceptId, page);
+        return ApiResponse.getObjectSuccess(conceptStudioService.getStudiosByConceptId(conceptId, page));
     }
 
     /**
@@ -39,14 +41,14 @@ public class ConceptStudioController {
      */
     @GetMapping("/{conceptId}/studios/filters")
     @Operation(summary = "필터 적용 후 스튜디오 목록 조회", description = "필터 적용 후 해당 컨셉 스튜디오 목록 조회")
-    public Page<StudioResponse> getFilteredStudios(
+    public ResponseEntity<?> getFilteredStudios(
             @PathVariable Long conceptId,
             @RequestParam int page,
             @RequestParam(required = false) Integer price,
             @RequestParam(required = false) Float rating,
             @RequestParam(required = false) List<Location> locations
     ) {
-        return conceptStudioService.getFilteredStudiosOrderByName(
+        return ApiResponse.getObjectSuccess(conceptStudioService.getFilteredStudiosOrderByName(
                 page, conceptId, price, rating, locations
-        );
+        ));
     }}

@@ -1,13 +1,6 @@
 package com.toucheese.member.entity;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -25,18 +18,18 @@ public class Token {
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private Member member;
 
-    private String accessToken;
-
     private String refreshToken;
 
-    public void updateAccessToken(String accessToken) {
-        this.accessToken = accessToken;
-    }
+    private String deviceId;
 
     @Builder
-    public Token(Member member, String accessToken, String refreshToken) {
+    public Token(Member member, String refreshToken, String deviceId) {
         this.member = member;
-        this.accessToken = accessToken;
+        this.refreshToken = refreshToken;
+        this.deviceId = deviceId;
+    }
+
+    public void updateRefreshToken(String refreshToken) {
         this.refreshToken = refreshToken;
     }
 }

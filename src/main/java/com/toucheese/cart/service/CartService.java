@@ -47,13 +47,11 @@ public class CartService {
 
 	@Transactional
 	public void createCart(CartRequest cartRequest, Long memberId) {
-
 		Product product = productService.findProductById(cartRequest.productId());
 		Studio studio = studioService.findStudioById(cartRequest.studioId());
 		Member member = memberService.findMemberById(memberId);
 
 		Cart cart = Cart.fromCartRequest(cartRequest, product, studio, member);
-
 		cartRepository.save(cart);
 	}
 
@@ -68,7 +66,6 @@ public class CartService {
 
 	@Transactional
 	public void deleteCart(String cartIds, Long memberId) {
-
 		List<Long> cartIdList = CsvUtils.fromCsv(cartIds);
 		for (Long cartId : cartIdList) {
 			Cart cart = cartReadService.validateCartOwnership(cartId, memberId);
@@ -78,19 +75,13 @@ public class CartService {
 
 	@Transactional
 	public void updateCart(Long cartId, CartUpdateRequest request, Long memberId) {
-
 		Cart cart = cartReadService.validateCartOwnership(cartId, memberId);
-
 		cart.update(request);
-
-		cartRepository.save(cart);
 	}
 
 	@Transactional(readOnly = true)
 	public List<CheckoutCartItemsResponse> getCheckoutCartItems(Long memberId, String cartIds) {
-
 		List<Long> cartIdsList = CsvUtils.fromCsv(cartIds);
-
 		List<Cart> carts = cartReadService.findCheckoutCartItems(memberId, cartIdsList);
 
 		return carts.stream()
@@ -103,15 +94,12 @@ public class CartService {
 	 */
 	@Transactional
 	public void createReservationsFromCart(Long memberId, CartIdsRequest cartIdsRequest) {
-
 		List<Long> cartIds = cartIdsRequest.toCartIdList();
-
 		List<Cart> carts = cartRepository.findByMemberIdAndIdIn(memberId, cartIds);
 
 		validateCarts(carts);
 
 		reservationService.createReservationsFromCarts(carts);
-
 		cartRepository.deleteAll(carts);
 
 		// 객체를 스프링 컨텍스트에 전달 -> 스프링 컨텍스트 해당 이벤트를 처리할 수 있는 리스너 검색하여 호출

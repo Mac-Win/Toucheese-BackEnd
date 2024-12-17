@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.toucheese.cart.dto.CartIdsRequest;
 import com.toucheese.cart.service.CartService;
+import com.toucheese.global.data.ApiResponse;
 import com.toucheese.global.util.PrincipalUtils;
 import com.toucheese.reservation.dto.ReservationResponse;
 import com.toucheese.reservation.dto.ReservationTimeRequest;
@@ -49,20 +50,19 @@ public class ReservationController {
 		@RequestBody CartIdsRequest cartIdsRequest) {
 
 		Long memberId = PrincipalUtils.extractMemberId(principal);
-
 		cartService.createReservationsFromCart(memberId, cartIdsRequest);
-		return ResponseEntity.ok("결제가 완료되었습니다.");
+		return ApiResponse.createdSuccess("결제가 완료되었습니다.");
 	}
 
 	@Operation(summary = "사용자 예약 조회")
 	@GetMapping()
-	public ResponseEntity<Page<ReservationResponse>> findReservations(Principal principal, @RequestParam int page) {
+	public ResponseEntity<?> findReservations(Principal principal, @RequestParam int page) {
 
 		Long memberId = PrincipalUtils.extractMemberId(principal);
 
 		Page<ReservationResponse> reservations = reservationService.findReservation(memberId, page);
 
-		return ResponseEntity.ok(reservations);
+		return ApiResponse.getObjectSuccess(reservations);
 	}
 
 	@Operation(summary = "사용자 예약 일정 수정")

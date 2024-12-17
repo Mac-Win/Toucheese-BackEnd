@@ -1,10 +1,12 @@
 package com.toucheese.member.service;
 
+import com.toucheese.member.dto.LoginRequest;
+import com.toucheese.member.dto.TokenDTO;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.toucheese.global.exception.ToucheeseBadRequestException;
-import com.toucheese.member.dto.LoginMemberResponse;
+import com.toucheese.member.dto.MemberTokenResponse;
 import com.toucheese.member.dto.MemberContactInfoResponse;
 import com.toucheese.member.entity.Member;
 import com.toucheese.member.repository.MemberRepository;
@@ -18,6 +20,11 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final TokenService tokenService;
 
+    /**
+     * 회원 정보 검색
+     * @param id 회원 아이디
+     * @return 회원 정보
+     */
     @Transactional(readOnly = true)
     public Member findMemberById(Long id) {
         return memberRepository.findById(id)
@@ -26,22 +33,21 @@ public class MemberService {
 
     /**
      * 로그인 처리를 위한 메서드
-     * @param email 아이디
-     * @param password 비밀번호
+     * @param loginRequest 로그인 정보 (email, password, deviceId)
      * @return 로그인 시 생성 된 접근 토큰
      */
     @Transactional
-    public LoginMemberResponse loginMember(String email, String password) {
-        Member member = memberRepository.findByEmail(email)
+    public MemberTokenResponse login(LoginRequest loginRequest) {
+        Member member = memberRepository.findByEmail(loginRequest.email())
                 .orElseThrow(() -> new ToucheeseBadRequestException("아이디 혹은 비밀번호가 잘못되었습니다."));
 
-        checkMemberPassword(member, password);
-        String accessToken = tokenService.saveToken(member);
+        checkMemberPassword(member, loginRequest.password());
+        TokenDTO tokenDTO = tokenService.loginMemberToken(member, loginRequest.deviceId());
 
-        return LoginMemberResponse.builder()
+        return MemberTokenResponse.builder()
                 .memberId(member.getId())
                 .name(member.getName())
-                .accessToken(accessToken)
+                .tokenDTO(tokenDTO)
                 .build();
     }
 
