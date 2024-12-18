@@ -29,7 +29,7 @@ public class ProductController {
 	 */
 	@GetMapping("/{productId}")
 	@Operation(summary = "상품 상세 조회", description = "상품 클릭 시 상품 상세 조회")
-	public ResponseEntity<?> findProductDetailById(@PathVariable("productId") Long productId) {
+	public ResponseEntity<ProductDetailResponse> findProductDetailById(@PathVariable("productId") Long productId) {
 		return ApiResponse.getObjectSuccess(productService.findProductDetailById(productId));
 	}
 }

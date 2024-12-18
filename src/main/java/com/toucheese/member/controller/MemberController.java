@@ -30,7 +30,7 @@ public class MemberController {
      */
     @PostMapping
     @Operation(summary = "회원 로그인", description = "email, password로 로그인 합니다.")
-    public ResponseEntity<?> login(@RequestBody @Valid LoginRequest loginRequest) {
+    public ResponseEntity<LoginResponse> login(@RequestBody @Valid LoginRequest loginRequest) {
         MemberTokenResponse memberTokenResponse = memberService.login(loginRequest);
         return ApiResponse.accessTokenResponse(
                 LoginResponse.of(memberTokenResponse),

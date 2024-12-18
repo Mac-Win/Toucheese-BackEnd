@@ -85,7 +85,7 @@ public class CartController {
     """
 	)
 	@GetMapping("/carts/list")
-	public ResponseEntity<?> getCartList(Principal principal) {
+	public ResponseEntity<List<CartResponse>> getCartList(Principal principal) {
 		Long memberId = PrincipalUtils.extractMemberId(principal);
 		return ApiResponse.getObjectSuccess(cartService.findCartList(memberId));
 	}
@@ -111,8 +111,9 @@ public class CartController {
 		}
 		""")
 	@PutMapping("/carts/{cartId}")
-	public ResponseEntity<?> updateCart(@PathVariable Long cartId,
-		@Valid @RequestBody CartUpdateRequest request, Principal principal
+	public ResponseEntity<?> updateCart(
+			@PathVariable Long cartId,
+			@Valid @RequestBody CartUpdateRequest request, Principal principal
 	) {
 		Long memberId = PrincipalUtils.extractMemberId(principal);
 		cartService.updateCart(cartId, request, memberId);
@@ -153,7 +154,7 @@ public class CartController {
 		}
 		""")
 	@GetMapping("/carts/checkout-items")
-	public ResponseEntity<?> getCombinedResponse(Principal principal, @RequestParam String cartIds) {
+	public ResponseEntity<CombinedResponse> getCombinedResponse(Principal principal, @RequestParam String cartIds) {
 		Long memberId = PrincipalUtils.extractMemberId(principal);
 		List<CheckoutCartItemsResponse> checkoutCartItems = cartService.getCheckoutCartItems(memberId, cartIds);
 		MemberContactInfoResponse memberContactInfo = memberService.findMemberContactInfo(memberId);
