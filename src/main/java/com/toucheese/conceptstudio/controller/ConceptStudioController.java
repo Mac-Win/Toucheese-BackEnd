@@ -1,7 +1,7 @@
 package com.toucheese.conceptstudio.controller;
 
-import com.toucheese.conceptstudio.service.ConceptStudioService;
 import com.toucheese.conceptstudio.dto.StudioResponse;
+import com.toucheese.conceptstudio.service.ConceptStudioService;
 import com.toucheese.global.data.ApiResponse;
 import com.toucheese.studio.entity.Location;
 
@@ -23,7 +23,7 @@ public class ConceptStudioController {
 
     @GetMapping("/{conceptId}/studios")
     @Operation(summary = "컨셉 스튜디오 목록 조회", description = "컨셉을 선택하면 해당하는 스튜디오 목록 조회")
-    public ResponseEntity<?> getStudiosByConceptId(
+    public ResponseEntity<Page<StudioResponse>> getStudiosByConceptId(
             @PathVariable Long conceptId,
             @RequestParam int page
     ) {
@@ -41,7 +41,7 @@ public class ConceptStudioController {
      */
     @GetMapping("/{conceptId}/studios/filters")
     @Operation(summary = "필터 적용 후 스튜디오 목록 조회", description = "필터 적용 후 해당 컨셉 스튜디오 목록 조회")
-    public ResponseEntity<?> getFilteredStudios(
+    public ResponseEntity<Page<StudioResponse>> getFilteredStudios(
             @PathVariable Long conceptId,
             @RequestParam int page,
             @RequestParam(required = false) Integer price,

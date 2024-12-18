@@ -32,7 +32,7 @@ public class StudioController {
 	@Operation(summary = "스튜디오 검색",
 		description = "사용자가 입력한 키워드로 스튜디오를 검색합니다.",
 		parameters = @Parameter(name = "keyword", description = "검색할 키워드", required = true))
-	public ResponseEntity<?> searchStudios(@RequestParam String keyword) {
+	public ResponseEntity<List<StudioSearchResponse>> searchStudios(@RequestParam String keyword) {
 		return ApiResponse.getObjectSuccess(studioService.searchStudios(keyword));
 	}
 
@@ -44,14 +44,14 @@ public class StudioController {
 	@GetMapping("/{studioId}")
 	@Operation(summary = "스튜디오 상세 조회",
 		description = "사용자가 클릭한 스튜디오 상세조회")
-	public ResponseEntity<?> findStudioDetailById(@PathVariable Long studioId) {
+	public ResponseEntity<StudioDetailResponse> findStudioDetailById(@PathVariable Long studioId) {
 		return ApiResponse.getObjectSuccess(studioService.findStudioDetailById(studioId));
 	}
 
 	@GetMapping("/{studioId}/calendars")
 	@Operation(summary = "캘린더 휴무일 및 예약 희망 시간",
 		description = "상품 예약시 캘린더 클릭하였을때 휴무일과 영업일의 스튜디오 영업시간 기준 예약 희망 시간 조회")
-	public ResponseEntity<?> getMonthlyCalendar(
+	public ResponseEntity<List<CalendarDayResponse>> getMonthlyCalendar(
 		@PathVariable Long studioId,
 		@RequestParam(required = false) String yearMonth
 	) {
