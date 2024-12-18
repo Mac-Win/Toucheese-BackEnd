@@ -21,12 +21,12 @@ public record ReservationResponse (
 	LocalTime createTime,
 	ReservationStatus status
 ){
-	public static ReservationResponse of(Reservation reservation) {
+	public static ReservationResponse of(Reservation reservation, String baseUrl) {
 		return builder()
 			.reservationId(reservation.getId())
 			.studioId(reservation.getStudio().getId())
 			.studioName(reservation.getStudio().getName())
-			.studioImage(reservation.getStudio().getProfileImage())
+			.studioImage(baseUrl + reservation.getStudio().getProfileImage())
 			.productName(reservation.getProduct().getName())
 			.createDate(reservation.getCreateDate())
 			.createTime(reservation.getCreateTime())

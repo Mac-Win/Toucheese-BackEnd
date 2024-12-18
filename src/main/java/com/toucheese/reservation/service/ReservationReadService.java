@@ -7,6 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.toucheese.global.config.ImageConfig;
 import com.toucheese.global.exception.ToucheeseBadRequestException;
 import com.toucheese.global.util.PageUtils;
 import com.toucheese.reservation.dto.ReservationResponse;
@@ -20,6 +21,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ReservationReadService {
 	private final ReservationRepository reservationRepository;
+	private final ImageConfig imageConfig;
 
 	@Transactional(readOnly = true)
 	public Reservation findReservationById(Long reservationId) {
@@ -37,7 +39,7 @@ public class ReservationReadService {
 	public Page<ReservationResponse> findPagedReservationsByMemberId(Long memberId, int page) {
 		Pageable pageable = PageUtils.createPageable(page);
 		return reservationRepository.findPagedReservationsByMemberId(memberId, pageable)
-			.map(ReservationResponse::of);
+			.map(reservation -> ReservationResponse.of(reservation, imageConfig.getResizedImageBaseUrl()));
 	}
 
 	@Transactional(readOnly = true)
