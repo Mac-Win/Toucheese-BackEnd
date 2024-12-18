@@ -10,7 +10,7 @@ public class ApiResponse<T> extends ResponseEntity<T> {
         super(status);
     }
 
-    public static ResponseEntity<?> accessTokenResponse(LoginResponse loginResponse, String accessToken) {
+    public static <LoginResponse> ResponseEntity<LoginResponse> accessTokenResponse(LoginResponse loginResponse, String accessToken) {
         return ResponseEntity.ok()
                 .header("Authorization", "Bearer " + accessToken)
                 .body(loginResponse);
@@ -28,7 +28,7 @@ public class ApiResponse<T> extends ResponseEntity<T> {
         return ResponseEntity.ok(message);
     }
 
-    public static ResponseEntity<?> getObjectSuccess(Object object) {
+    public static <T> ResponseEntity<T> getObjectSuccess(T object) {
         return ResponseEntity.ok(object);
     }
 

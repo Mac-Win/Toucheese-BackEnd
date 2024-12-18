@@ -31,7 +31,7 @@ public class AdminReservationController {
 	private final AdminReservationService adminReservationService;
 
 	@GetMapping
-	public ResponseEntity<?> findReservations(
+	public ResponseEntity<Page<AdminReservationListResponse>> findReservations(
 		@RequestParam(required = false) String status,
 		@RequestParam(required = false) LocalDate createDate,
 		@RequestParam int page

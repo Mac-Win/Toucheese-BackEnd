@@ -29,7 +29,7 @@ public class ConceptController {
             + "4. 내추럴 화보 느낌, "
             + "5. 선명하고 인형같은 느낌, "
             + "6. 필터 / 수채화 그림체 느낌")
-    public ResponseEntity<?> getAllConcepts() {
+    public ResponseEntity<List<ConceptResponse>> getAllConcepts() {
         return ApiResponse.getObjectSuccess(conceptService.getAllConcepts());
     }
 }
