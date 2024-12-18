@@ -56,7 +56,10 @@ public class ReservationController {
 		return ApiResponse.createdSuccess("결제가 완료되었습니다.");
 	}
 
-	@Operation(summary = "사용자 예약 조회")
+	@Operation(summary = "사용자 예약 조회",
+		description = """
+		createDate = 예약날짜,
+		createTime = 예약시간""")
 	@GetMapping
 	public ResponseEntity<Page<ReservationResponse>> findReservations(Principal principal, @RequestParam int page) {
 		Long memberId = PrincipalUtils.extractMemberId(principal);
