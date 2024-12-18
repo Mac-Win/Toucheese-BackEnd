@@ -10,9 +10,13 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ReviewImage {
 
 	@Id
@@ -27,5 +31,20 @@ public class ReviewImage {
 	private String filename;
 
 	@Column(nullable = false)
-	private String url;
+	private String uploadFilename;
+
+	@Column(nullable = false)
+	private String originalPath;
+
+	@Column(nullable = false)
+	private String resizedPath;
+
+	@Builder
+	public ReviewImage(Review review, String filename, String uploadFilename, String originalPath, String resizedPath) {
+		this.review = review;
+		this.filename = filename;
+		this.uploadFilename = uploadFilename;
+		this.originalPath = originalPath;
+		this.resizedPath = resizedPath;
+	}
 }

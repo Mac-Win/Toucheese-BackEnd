@@ -44,7 +44,7 @@ public class CartController {
 	)
 	@PostMapping("/carts")
 	public ResponseEntity<?> cartCreate(
-		@Valid @RequestBody CartRequest cartRequest, Principal principal
+			@Valid @RequestBody CartRequest cartRequest, Principal principal
 	) {
 		Long memberId = PrincipalUtils.extractMemberId(principal);
 		cartService.createCart(cartRequest, memberId);
@@ -53,7 +53,7 @@ public class CartController {
 	}
 
 	@Operation(summary = "장바구니 목록 조회(회원)",
-		description = """
+			description = """
         {
         	"cartId": 장바구니 id값,
             "studioName": "스튜디오 이름",
@@ -99,7 +99,7 @@ public class CartController {
 		""")
 	@PutMapping("/carts/{cartId}")
 	public ResponseEntity<?> updateCart(@PathVariable Long cartId,
-		@Valid @RequestBody CartUpdateRequest request, Principal principal
+										@Valid @RequestBody CartUpdateRequest request, Principal principal
 	) {
 		Long memberId = PrincipalUtils.extractMemberId(principal);
 		cartService.updateCart(cartId, request, memberId);

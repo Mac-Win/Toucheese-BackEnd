@@ -19,7 +19,7 @@ public record StudioResponse(
         return builder()
                 .id(studio.getId())
                 .name(studio.getName())
-                .profileImage(studio.getProfileImage())
+                .profileImage(baseUrl + studio.getProfileImage())
                 .rating(studio.getRating())
                 .price(studio.getPrice())
                 .imageUrls(studio.getStudioImages().stream()

@@ -14,12 +14,12 @@ public record ProductResponse(
         Integer price
 ) {
 
-    public static ProductResponse of(Product product) {
+    public static ProductResponse of(Product product, String baseUrl) {
         return ProductResponse.builder()
                 .id(product.getId())
                 .name(product.getName())
                 .description(product.getDescription())
-                .productImage(product.getProductImage())
+                .productImage(baseUrl + product.getProductImage())
                 .reviewCount(product.getReviews().size())
                 .standard(product.getStandard())
                 .price(product.getPrice())
