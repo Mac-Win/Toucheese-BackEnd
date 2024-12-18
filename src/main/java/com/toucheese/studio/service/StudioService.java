@@ -7,6 +7,7 @@ import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.toucheese.global.config.ImageConfig;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,6 +27,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class StudioService {
 
+	private final ImageConfig imageConfig;
 	private final StudioRepository studioRepository;
 	private final OperatingHourRepository operatingHourRepository;
 
@@ -43,7 +45,7 @@ public class StudioService {
 		Studio studio = studioRepository.findById(studioId)
 			.orElseThrow(ToucheeseBadRequestException::new);
 
-		return StudioDetailResponse.of(studio);
+		return StudioDetailResponse.of(studio, imageConfig.getResizedImageBaseUrl());
 	}
 
 	@Transactional(readOnly = true)
