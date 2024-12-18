@@ -2,15 +2,16 @@ package com.toucheese.image.service;
 
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.toucheese.global.exception.ToucheeseInternalServerErrorException;
-import com.toucheese.image.entity.FacilityImage;
-import com.toucheese.image.entity.ImageType;
-import com.toucheese.image.entity.ReviewImage;
-import com.toucheese.image.entity.StudioImage;
+import com.toucheese.image.entity.*;
 import com.toucheese.image.repository.FacilityImageRepository;
+import com.toucheese.image.repository.QuestionImageRepository;
 import com.toucheese.image.repository.ReviewImageRepository;
 import com.toucheese.image.repository.StudioImageRepository;
 import com.toucheese.image.util.FilenameUtil;
 import com.toucheese.image.util.S3ImageUtil;
+import com.toucheese.question.entity.Question;
+import com.toucheese.question.service.QuestionService;
+import com.toucheese.question.util.QuestionUtil;
 import com.toucheese.review.entity.Review;
 import com.toucheese.review.service.ReviewService;
 import com.toucheese.studio.entity.Studio;
@@ -38,6 +39,9 @@ public class ImageService {
     private final ReviewImageRepository reviewImageRepository;
 
     private final FacilityImageRepository facilityImageRepository;
+
+    private final QuestionService questionService;
+    private final QuestionImageRepository questionImageRepository;
 
     private static final String RESIZED_EXTENSION = ".webp";
 
@@ -98,6 +102,18 @@ public class ImageService {
                 .resizedPath(filenameUtil.buildFilePath(randomFilename, RESIZED_EXTENSION))
                 .build();
         facilityImageRepository.save(facilityImage);
+    }
+
+    private void saveQuestionImage(Long questionId, String filename, String randomFilename, String extension) {
+        Question question = questionService.findQuestionById(questionId);
+        QuestionImage questionImage = QuestionImage.builder()
+                .question(question)
+                .filename(filename)
+                .uploadFilename(randomFilename)
+                .originalPath(filenameUtil.buildFilePath(randomFilename, extension))
+                .resizedPath(filenameUtil.buildFilePath(randomFilename, RESIZED_EXTENSION))
+                .build();
+        questionImageRepository.save(questionImage);
     }
 
     /**
