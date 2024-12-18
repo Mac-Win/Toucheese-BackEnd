@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.toucheese.admin.dto.UpdateReservationStatusRequest;
 import com.toucheese.admin.service.AdminReservationService;
 import com.toucheese.global.data.ApiResponse;
+import com.toucheese.reservation.entity.ReservationStatus;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -32,7 +33,7 @@ public class AdminReservationController {
 	@Operation(summary = "관리자 예약 전체 조회")
 	@GetMapping
 	public ResponseEntity<?> findReservations(
-		@RequestParam(required = false) String status,
+		@RequestParam(required = false) ReservationStatus status,
 		@RequestParam(required = false) LocalDate createDate,
 		@RequestParam int page
 	) {
