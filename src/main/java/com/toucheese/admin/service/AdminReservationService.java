@@ -9,9 +9,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.toucheese.admin.dto.AdminReservationListResponse;
 import com.toucheese.global.util.PageUtils;
+import com.toucheese.reservation.entity.Reservation;
 import com.toucheese.reservation.entity.ReservationStatus;
 import com.toucheese.reservation.service.ReservationReadService;
-import com.toucheese.reservation.service.ReservationService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -19,11 +19,11 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class AdminReservationService {
 
-	private final ReservationService reservationService;
 	private final ReservationReadService reservationReadService;
 
 	@Transactional(readOnly = true)
-	public Page<AdminReservationListResponse> findReservations(ReservationStatus status, LocalDate createDate, int page) {
+	public Page<AdminReservationListResponse> findReservations(ReservationStatus status, LocalDate createDate,
+		int page) {
 		Pageable pageable = PageUtils.createPageable(page);
 
 		return reservationReadService.findReservationsByStatusAndDate(status, createDate, pageable)
@@ -32,6 +32,8 @@ public class AdminReservationService {
 
 	@Transactional
 	public void updateReservationStatus(Long reservationId, ReservationStatus newStatus) {
-		reservationService.changeReservationStatus(reservationId, newStatus);
+		Reservation reservation = reservationReadService.findReservationById(reservationId);
+
+		reservation.updateStatus(newStatus);
 	}
 }

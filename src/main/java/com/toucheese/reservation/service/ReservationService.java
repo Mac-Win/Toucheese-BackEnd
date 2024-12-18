@@ -60,13 +60,6 @@ public class ReservationService {
 	}
 
 	@Transactional
-	public void changeReservationStatus(Long reservationId, ReservationStatus newStatus) {
-		Reservation reservation = reservationReadService.findReservationById(reservationId);
-
-		reservation.updateStatus(newStatus);
-	}
-
-	@Transactional
 	public void updateReservationTime(Long memberId, Long reservationId, ReservationTimeRequest request) {
 		Reservation reservation = reservationReadService.findReservationByIdAndMemberId(reservationId, memberId);
 
