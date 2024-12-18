@@ -40,6 +40,7 @@ public class ReservationReadService {
 			.map(ReservationResponse::of);
 	}
 
+	@Transactional(readOnly = true)
 	public Reservation findReservationByIdAndMemberId(Long reservationId, Long memberId) {
 		return reservationRepository.findByIdAndMemberId(reservationId, memberId)
 			.orElseThrow(() -> new ToucheeseBadRequestException("해당 예약이 존재하지 않거나 접근 권한이 없습니다."));
