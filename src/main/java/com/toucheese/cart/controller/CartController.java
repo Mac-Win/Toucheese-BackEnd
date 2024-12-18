@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.toucheese.cart.dto.CartRequest;
+import com.toucheese.cart.dto.CartResponse;
 import com.toucheese.cart.dto.CartUpdateRequest;
 import com.toucheese.cart.dto.CheckoutCartItemsResponse;
 import com.toucheese.cart.dto.CombinedResponse;
