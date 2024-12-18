@@ -47,7 +47,7 @@ public class ReservationController {
 			}
 			"""
 	)
-	@PostMapping()
+	@PostMapping
 	public ResponseEntity<?> acceptReservationAfterPayment(Principal principal,
 		@RequestBody CartIdsRequest cartIdsRequest) {
 		Long memberId = PrincipalUtils.extractMemberId(principal);
@@ -57,7 +57,7 @@ public class ReservationController {
 	}
 
 	@Operation(summary = "사용자 예약 조회")
-	@GetMapping()
+	@GetMapping
 	public ResponseEntity<?> findReservations(Principal principal, @RequestParam int page) {
 		Long memberId = PrincipalUtils.extractMemberId(principal);
 
