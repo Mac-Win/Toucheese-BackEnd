@@ -33,7 +33,6 @@ public class QuestionService {
         Question question = Question.builder()
                 .title(questionRequest.title())
                 .content(questionRequest.content())
-                .createDate(questionRequest.createDate())
                 .member(member)
                 .answerStatus(AnswerStatus.답변대기)
                 .build();

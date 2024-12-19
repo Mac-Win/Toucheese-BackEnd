@@ -57,7 +57,7 @@ public class AdminAnswerService {
                 .build();
 
         Answer savedAnswer = answerRepository.save(answer);
-        question.updateAnswer(savedAnswer);
+        question.completeAnswer(savedAnswer);
         questionRepository.save(question);
 
         return AnswerResponse.of(savedAnswer);

@@ -9,14 +9,12 @@ import java.time.LocalDate;
 @Builder
 public record QuestionRequest (
         String title,
-        String content,
-        LocalDate createDate
+        String content
 ){
     public static QuestionRequest of(Question question) {
         return QuestionRequest.builder()
                 .title(question.getTitle())
                 .content(question.getContent())
-                .createDate(question.getCreateDate())
                 .build();
     }
 }

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.toucheese.member.entity.Member;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDate;
 
@@ -21,6 +22,8 @@ public class Question {
 
     private String content;
 
+    @Column(nullable = false, updatable = false)
+    @CreationTimestamp
     @JsonFormat(pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
     private LocalDate createDate;
 
@@ -42,7 +45,7 @@ public class Question {
     }
 
     // 답변 상태와 답변 연결
-    public void updateAnswer(Answer answer) {
+    public void completeAnswer(Answer answer) {
         this.answer = answer;
         this.answerStatus = AnswerStatus.답변완료;
     }
