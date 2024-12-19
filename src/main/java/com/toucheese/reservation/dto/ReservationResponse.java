@@ -7,6 +7,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.toucheese.reservation.entity.Reservation;
 import com.toucheese.reservation.entity.ReservationStatus;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 
 @Builder
@@ -18,6 +19,7 @@ public record ReservationResponse (
 	String productName,
 	LocalDate createDate,
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm")
+	@Schema(type = "string", example = "19:00")
 	LocalTime createTime,
 	ReservationStatus status
 ){
