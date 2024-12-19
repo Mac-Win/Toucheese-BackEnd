@@ -12,7 +12,7 @@ import com.toucheese.cart.entity.Cart;
 import com.toucheese.global.util.CsvUtils;
 import com.toucheese.product.entity.ProductAddOption;
 import com.toucheese.product.service.ProductService;
-import com.toucheese.reservation.dto.ReservationTimeRequest;
+import com.toucheese.reservation.dto.ReservationUpdateRequest;
 import com.toucheese.reservation.entity.Reservation;
 import com.toucheese.reservation.entity.ReservationProductAddOption;
 import com.toucheese.reservation.entity.ReservationStatus;
@@ -60,9 +60,9 @@ public class ReservationService {
 	}
 
 	@Transactional
-	public void updateReservationTime(Long memberId, Long reservationId, ReservationTimeRequest request) {
+	public void updateReservation(Long memberId, Long reservationId, ReservationUpdateRequest request) {
 		Reservation reservation = reservationReadService.findReservationByIdAndMemberId(reservationId, memberId);
 
-		reservation.updateTime(request);
+		reservation.updateReservationStatusAndTime(request);
 	}
 }

@@ -19,7 +19,7 @@ import com.toucheese.cart.service.CartService;
 import com.toucheese.global.data.ApiResponse;
 import com.toucheese.global.util.PrincipalUtils;
 import com.toucheese.reservation.dto.ReservationResponse;
-import com.toucheese.reservation.dto.ReservationTimeRequest;
+import com.toucheese.reservation.dto.ReservationUpdateRequest;
 import com.toucheese.reservation.service.ReservationReadService;
 import com.toucheese.reservation.service.ReservationService;
 
@@ -68,16 +68,16 @@ public class ReservationController {
 		return ApiResponse.getObjectSuccess(reservations);
 	}
 
-	@Operation(summary = "사용자 예약 일정 수정")
+	@Operation(summary = "사용자 예약 수정")
 	@PutMapping("/{reservationId}")
 	public ResponseEntity<?> updateReservationTime(
 		Principal principal,
 		@PathVariable Long reservationId,
-		@RequestBody ReservationTimeRequest request
+		@RequestBody ReservationUpdateRequest request
 	) {
 		Long memberId = PrincipalUtils.extractMemberId(principal);
 
-		reservationService.updateReservationTime(memberId, reservationId, request);
+		reservationService.updateReservation(memberId, reservationId, request);
 		return ApiResponse.updatedSuccess("예약 상태를 성공적으로 업데이트했습니다.");
 	}
 

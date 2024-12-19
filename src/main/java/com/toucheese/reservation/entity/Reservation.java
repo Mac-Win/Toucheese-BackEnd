@@ -8,7 +8,7 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.toucheese.member.entity.Member;
 import com.toucheese.product.entity.Product;
-import com.toucheese.reservation.dto.ReservationTimeRequest;
+import com.toucheese.reservation.dto.ReservationUpdateRequest;
 import com.toucheese.studio.entity.Studio;
 
 import jakarta.persistence.CascadeType;
@@ -76,8 +76,15 @@ public class Reservation {
 		this.status = newStatus;
 	}
 
-	public void updateTime(ReservationTimeRequest request) {
-		this.createDate = request.createDate();
-		this.createTime = request.createTime();
+	public void updateReservationStatusAndTime(ReservationUpdateRequest request) {
+		if (request.createDate() != null) {
+			this.createDate = request.createDate();
+		}
+		if (request.createTime() != null) {
+			this.createTime = request.createTime();
+		}
+		if (ReservationStatus.예약취소.equals(request.status())) {
+			this.status = request.status();
+		}
 	}
 }
