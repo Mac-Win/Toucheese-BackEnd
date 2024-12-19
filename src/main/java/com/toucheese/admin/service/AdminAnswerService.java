@@ -7,6 +7,7 @@ import com.toucheese.question.entity.AnswerStatus;
 import com.toucheese.question.entity.Question;
 import com.toucheese.question.repository.AnswerRepository;
 import com.toucheese.question.repository.QuestionRepository;
+import com.toucheese.question.util.QuestionUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -23,23 +24,31 @@ public class AdminAnswerService {
     private final QuestionRepository questionRepository;
     private final AnswerRepository answerRepository;
 
+    private Question getQuestion(Long questionId) {
+        return QuestionUtil.findQuestionById(questionId, questionRepository);
+    }
 
+    private Answer getAnswerByQuestionId(Long questionId) {
+        return answerRepository.findByQuestionId(questionId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 답변이 존재하지 않습니다."));
+    }
+
+    @Transactional(readOnly = true)
     public Page<QuestionResponse> getAllQuestions(Pageable pageable) {
         Page<Question> questions = questionRepository.findAll(pageable);
         return questions.map(QuestionResponse::of);
     }
 
+    @Transactional(readOnly = true)
     public QuestionResponse getQuestionById(Long id) {
-        Question question = questionRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("해당 x"));
+        Question question = getQuestion(id);
         return QuestionResponse.of(question);
     }
 
     @Transactional
     public AnswerResponse addAnswer(Long questionId, String content) {
 
-        Question question = questionRepository.findById(questionId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 존재하지 않습니다."));
+        Question question = getQuestion(questionId);
 
         Answer answer = Answer.builder()
                 .question(question)
@@ -57,9 +66,7 @@ public class AdminAnswerService {
     // 답변 수정
     @Transactional
     public AnswerResponse updateAnswer(Long questionId, String content) {
-        Answer answer = answerRepository.findByQuestionId(questionId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 답변이 존재하지 않습니다."));
-
+        Answer answer = getAnswerByQuestionId(questionId);
         answer.updateAnswer(content);
         return AnswerResponse.of(answer);
     }
@@ -67,11 +74,9 @@ public class AdminAnswerService {
     // 답변 삭제
     @Transactional
     public void deleteAnswer(Long questionId) {
-        Answer answer = answerRepository.findByQuestionId(questionId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 답변이 존재하지 않습니다."));
+        Answer answer = getAnswerByQuestionId(questionId);
+        Question question = getQuestion(questionId);
 
-        Question question = questionRepository.findById(questionId)
-                        .orElseThrow(()-> new IllegalArgumentException(("해당 게시글 존재하지 않습니다.")));
         question.resetAnswer();
         questionRepository.save(question);  // 질문 상태 업데이트
 

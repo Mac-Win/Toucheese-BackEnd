@@ -37,9 +37,7 @@ public class QuestionController {
         }
         """
     )
-    public ResponseEntity<?> createQuestion(
-            @RequestBody QuestionRequest questionRequest, Principal principal
-    ) {
+    public ResponseEntity<?> createQuestion(@RequestBody QuestionRequest questionRequest, Principal principal) {
         Question question = questionService.createQuestion(questionRequest, principal);
         return ApiResponse.createdSuccess("문의하기글이 성공적으로 생성되었습니다.");
     }
@@ -60,9 +58,7 @@ public class QuestionController {
         }
         """
     )
-    public ResponseEntity<?> getQuestionById(
-            @PathVariable Long id, Principal principal
-    ){
+    public ResponseEntity<?> getQuestionById(@PathVariable Long id, Principal principal){
         QuestionResponse response = questionService.getQuestionById(id, principal);
         return ApiResponse.getObjectSuccess(response);
     }
@@ -95,11 +91,7 @@ public class QuestionController {
         }
         """
     )
-    public ResponseEntity<?> updateQuestion(
-            @PathVariable Long id,
-            @RequestBody QuestionRequest questionRequest,
-            Principal principal
-    ) {
+    public ResponseEntity<?> updateQuestion(@PathVariable Long id, @RequestBody QuestionRequest questionRequest, Principal principal) {
         QuestionResponse response = questionService.updateQuestion(id, questionRequest, principal);
         return ApiResponse.updatedSuccess("문의하기글이 성공적으로 수정되었습니다.");
     }
@@ -113,9 +105,7 @@ public class QuestionController {
         }
         """
     )
-    public ResponseEntity<?> deleteQuestion(
-            @PathVariable Long id, Principal principal
-    ) {
+    public ResponseEntity<?> deleteQuestion(@PathVariable Long id, Principal principal) {
         questionService.deleteQuestion(id, principal);
         return ApiResponse.deletedSuccess("문의하기글이 성공적으로 삭제되었습니다.");
     }
