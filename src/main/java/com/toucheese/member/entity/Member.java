@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.toucheese.cart.entity.Cart;
+import com.toucheese.question.entity.Question;
 import com.toucheese.reservation.entity.Reservation;
 
 import jakarta.persistence.CascadeType;
@@ -44,5 +45,8 @@ public class Member {
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Reservation> reservations = new ArrayList<>();
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Question> questions = new ArrayList<>();
 
 }
