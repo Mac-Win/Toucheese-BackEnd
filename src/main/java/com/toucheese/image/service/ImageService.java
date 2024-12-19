@@ -10,7 +10,7 @@ import com.toucheese.image.repository.StudioImageRepository;
 import com.toucheese.image.util.FilenameUtil;
 import com.toucheese.image.util.S3ImageUtil;
 import com.toucheese.question.entity.Question;
-import com.toucheese.question.service.QuestionService;
+import com.toucheese.question.repository.QuestionRepository;
 import com.toucheese.question.util.QuestionUtil;
 import com.toucheese.review.entity.Review;
 import com.toucheese.review.service.ReviewService;
@@ -40,7 +40,7 @@ public class ImageService {
 
     private final FacilityImageRepository facilityImageRepository;
 
-    private final QuestionService questionService;
+    private final QuestionRepository questionRepository;
     private final QuestionImageRepository questionImageRepository;
 
     private static final String RESIZED_EXTENSION = ".webp";
@@ -64,6 +64,7 @@ public class ImageService {
             case STUDIO -> saveStudioImage(entityId, filename, randomFilename, extension);
             case REVIEW -> saveReviewImage(entityId, filename, randomFilename, extension);
             case FACILITY -> saveFacilityImage(entityId, filename, randomFilename, extension);
+            case QUESTION -> saveQuestionImage(entityId,filename, randomFilename, extension);
             default -> throw new IllegalArgumentException("Unsupported image type: " + imageType);
         }
     }
@@ -105,7 +106,7 @@ public class ImageService {
     }
 
     private void saveQuestionImage(Long questionId, String filename, String randomFilename, String extension) {
-        Question question = questionService.findQuestionById(questionId);
+        Question question = QuestionUtil.findQuestionById(questionId, questionRepository);
         QuestionImage questionImage = QuestionImage.builder()
                 .question(question)
                 .filename(filename)
@@ -136,6 +137,7 @@ public class ImageService {
             case STUDIO -> studioImageRepository.findByUploadFilename(filename).isPresent();
             case REVIEW -> reviewImageRepository.findByUploadFilename(filename).isPresent();
             case FACILITY -> facilityImageRepository.findByUploadFilename(filename).isPresent();
+            case QUESTION -> questionImageRepository.findByUploadFilename(filename).isPresent();
         };
     }
 

@@ -39,7 +39,4 @@ public class QuestionImage {
         this.originalPath = originalPath;
         this.resizedPath = resizedPath;
     }
-
-
-
 }
