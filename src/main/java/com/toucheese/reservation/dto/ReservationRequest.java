@@ -10,6 +10,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.toucheese.reservation.entity.Reservation;
 import com.toucheese.reservation.entity.ReservationProductAddOption;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 
 @Builder
@@ -20,6 +21,7 @@ public record ReservationRequest(
 	Integer totalPrice,
 	LocalDate createDate,
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm")
+	@Schema(type = "string", example = "19:00")
 	LocalTime createTime,
 	Integer personnel,
 	List<Long> addOptions

@@ -1,12 +1,15 @@
 package com.toucheese.admin.dto;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.toucheese.cart.dto.SelectAddOptionResponse;
 import com.toucheese.reservation.entity.Reservation;
 import com.toucheese.reservation.entity.ReservationStatus;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 
 @Builder
@@ -16,8 +19,11 @@ public record AdminReservationListResponse (
 	String customerName,
 	String customerPhone,
 	String studioName,
-	ReservationStatus status,            // 예약 상태
-	LocalDate createDate,  // 예약 날짜
+	ReservationStatus status,
+	LocalDate createDate,	// 예약 날짜
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm")
+	@Schema(type = "string", example = "19:00")
+	LocalTime createTime,	// 예약 시간
 	Integer personnel,
 	Integer totalPrice,
 	String productName,
@@ -32,6 +38,7 @@ public record AdminReservationListResponse (
 			.studioName(reservation.getStudio().getName())
 			.status(reservation.getStatus())
 			.createDate(reservation.getCreateDate())
+			.createTime(reservation.getCreateTime())
 			.personnel(reservation.getPersonnel())
 			.totalPrice(reservation.getTotalPrice())
 			.productName(reservation.getProduct().getName())

@@ -18,12 +18,12 @@ public record ProductDetailResponse(
 	List<AddOptionResponse> addOptions
 ) {
 
-	public static ProductDetailResponse of(Product product) {
+	public static ProductDetailResponse of(Product product, String baseUrl) {
 		return ProductDetailResponse.builder()
 			.id(product.getId())
 			.name(product.getName())
 			.description(product.getDescription())
-			.productImage(product.getProductImage())
+			.productImage(baseUrl + product.getProductImage())
 			.reviewCount(product.getReviews().size())
 			.standard(product.getStandard())
 			.price(product.getPrice())

@@ -3,14 +3,15 @@ package com.toucheese.admin.service;
 import java.time.LocalDate;
 
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.toucheese.admin.dto.AdminReservationListResponse;
+import com.toucheese.global.util.PageUtils;
+import com.toucheese.reservation.entity.Reservation;
 import com.toucheese.reservation.entity.ReservationStatus;
-import com.toucheese.reservation.service.ReservationService;
+import com.toucheese.reservation.service.ReservationReadService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -18,25 +19,21 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class AdminReservationService {
 
-	private final ReservationService reservationService;
-
-	private static final int PAGE_SIZE = 10;
+	private final ReservationReadService reservationReadService;
 
 	@Transactional(readOnly = true)
-	public Page<AdminReservationListResponse> findReservations(String status, LocalDate createDate, int page) {
-		ReservationStatus reservationStatus = ReservationStatus.valueOf(status);
-		Pageable pageable = createPageRequest(page);
+	public Page<AdminReservationListResponse> findReservations(ReservationStatus status, LocalDate createDate,
+		int page) {
+		Pageable pageable = PageUtils.createPageable(page);
 
-		return reservationService.findReservationsByStatusAndDate(reservationStatus, createDate, pageable)
+		return reservationReadService.findReservationsByStatusAndDate(status, createDate, pageable)
 			.map(AdminReservationListResponse::of);
 	}
 
 	@Transactional
 	public void updateReservationStatus(Long reservationId, ReservationStatus newStatus) {
-		reservationService.changeReservationStatus(reservationId, newStatus);
-	}
+		Reservation reservation = reservationReadService.findReservationById(reservationId);
 
-	private Pageable createPageRequest(int page) {
-		return PageRequest.of(page, PAGE_SIZE);
+		reservation.updateStatus(newStatus);
 	}
 }
