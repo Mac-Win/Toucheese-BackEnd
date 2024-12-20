@@ -41,8 +41,8 @@ public class AdminAnswerService {
     }
 
     @Transactional(readOnly = true)
-    public QuestionResponse getQuestionById(Long id) {
-        Question question = getQuestion(id);
+    public QuestionResponse getQuestionById(Long questionId) {
+        Question question = getQuestion(questionId);
         return QuestionResponse.of(question);
     }
 
