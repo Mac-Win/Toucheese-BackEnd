@@ -11,6 +11,7 @@ import com.toucheese.image.util.FilenameUtil;
 import com.toucheese.image.util.S3ImageUtil;
 import com.toucheese.question.entity.Question;
 import com.toucheese.question.repository.QuestionRepository;
+import com.toucheese.question.service.QuestionReadService;
 import com.toucheese.question.util.QuestionUtil;
 import com.toucheese.review.entity.Review;
 import com.toucheese.review.service.ReviewService;
@@ -42,6 +43,7 @@ public class ImageService {
 
     private final QuestionRepository questionRepository;
     private final QuestionImageRepository questionImageRepository;
+    private final QuestionReadService questionReadService;
 
     private static final String RESIZED_EXTENSION = ".webp";
 
@@ -106,7 +108,7 @@ public class ImageService {
     }
 
     private void saveQuestionImage(Long questionId, String filename, String randomFilename, String extension) {
-        Question question = QuestionUtil.findQuestionById(questionId, questionRepository);
+        Question question = questionReadService.findQuestionById(questionId, questionRepository);
         QuestionImage questionImage = QuestionImage.builder()
                 .question(question)
                 .filename(filename)

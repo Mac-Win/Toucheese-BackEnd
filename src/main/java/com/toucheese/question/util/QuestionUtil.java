@@ -15,17 +15,12 @@ import java.security.Principal;
 public class QuestionUtil {
 
     // Principal 로부터 Member 객체 가져오기
-    public static Member getMemberByPrincipal(Principal principal, MemberRepository memberRepository) {
+    public static Member findMemberByPrincipal(Principal principal, MemberRepository memberRepository) {
         Long memberId = PrincipalUtils.extractMemberId(principal);
         return memberRepository.findById(memberId)
                 .orElseThrow(()-> new ToucheeseBadRequestException("회원이 존재하지 않습니다."));
     }
 
-    // ID 로 Question 객체 조회
-    public static Question findQuestionById(Long id, QuestionRepository questionRepository) {
-        return questionRepository.findById(id)
-                .orElseThrow(()-> new ToucheeseBadRequestException("해당 게시글이 존재하지 않습니다."));
-    }
 
     // 게시글 접근 권한 검증
     public static void validateMemberAccess(Question question, Principal principal) {

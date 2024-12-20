@@ -26,10 +26,11 @@ import java.util.List;
 public class QuestionService {
     private final QuestionRepository questionRepository;
     private final MemberRepository memberRepository;
+    private final QuestionReadService questionReadService;
 
     @Transactional
     public Question createQuestion(QuestionRequest questionRequest, Principal principal) {
-        Member member = QuestionUtil.getMemberByPrincipal(principal, memberRepository);
+        Member member = QuestionUtil.findMemberByPrincipal(principal, memberRepository);
         Question question = Question.builder()
                 .title(questionRequest.title())
                 .content(questionRequest.content())
@@ -42,14 +43,14 @@ public class QuestionService {
 
     @Transactional(readOnly = true)
     public QuestionResponse getQuestionById(Long id, Principal principal) {
-        Question question = QuestionUtil.findQuestionById(id, questionRepository);
+        Question question = questionReadService.findQuestionById(id, questionRepository);
         QuestionUtil.validateMemberAccess(question, principal);
         return QuestionResponse.of(question);
     }
 
     @Transactional(readOnly = true)
     public Page<QuestionResponse> getQuestions(Principal principal, int page) {
-        Member member = QuestionUtil.getMemberByPrincipal(principal, memberRepository);
+        Member member = QuestionUtil.findMemberByPrincipal(principal, memberRepository);
         Pageable pageable = PageUtils.createPageable(page);
         Page<Question> questions = questionRepository.findAllByMemberId(member.getId(), pageable);
         return questions.map(QuestionResponse::of);
@@ -57,7 +58,7 @@ public class QuestionService {
 
     @Transactional
     public QuestionResponse updateQuestion(Long id, QuestionRequest questionRequest, Principal principal) {
-        Question question = QuestionUtil.findQuestionById(id, questionRepository);
+        Question question = questionReadService.findQuestionById(id, questionRepository);
         QuestionUtil.validateMemberAccess(question, principal);
 
         question.update(
@@ -69,7 +70,7 @@ public class QuestionService {
 
     @Transactional
     public void deleteQuestion(Long id, Principal principal) {
-        Question question = QuestionUtil.findQuestionById(id, questionRepository);
+        Question question = questionReadService.findQuestionById(id, questionRepository);
         QuestionUtil.validateMemberAccess(question, principal);
         questionRepository.delete(question);
     }
