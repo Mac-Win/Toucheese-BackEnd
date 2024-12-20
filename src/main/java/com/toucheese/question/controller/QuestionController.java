@@ -59,7 +59,7 @@ public class QuestionController {
         """
     )
     public ResponseEntity<QuestionResponse> getQuestionById(@PathVariable Long id, Principal principal){
-        QuestionResponse response = questionService.getQuestionById(id, principal);
+        QuestionResponse response = questionService.findQuestionById(id, principal);
         return ApiResponse.getObjectSuccess(response);
     }
 
@@ -76,7 +76,7 @@ public class QuestionController {
         """
     )
     public ResponseEntity<Page<QuestionResponse>> getQuestions(Principal principal, @RequestParam int page) {
-        Page<QuestionResponse> questions = questionService.getQuestions(principal, page);
+        Page<QuestionResponse> questions = questionService.findQuestions(principal, page);
         return ApiResponse.getObjectSuccess(questions);
     }
 

@@ -42,14 +42,14 @@ public class QuestionService {
     }
 
     @Transactional(readOnly = true)
-    public QuestionResponse getQuestionById(Long id, Principal principal) {
+    public QuestionResponse findQuestionById(Long id, Principal principal) {
         Question question = questionReadService.findQuestionById(id, questionRepository);
         QuestionUtil.validateMemberAccess(question, principal);
         return QuestionResponse.of(question);
     }
 
     @Transactional(readOnly = true)
-    public Page<QuestionResponse> getQuestions(Principal principal, int page) {
+    public Page<QuestionResponse> findQuestions(Principal principal, int page) {
         Member member = QuestionUtil.findMemberByPrincipal(principal, memberRepository);
         Pageable pageable = PageUtils.createPageable(page);
         Page<Question> questions = questionRepository.findAllByMemberId(member.getId(), pageable);
