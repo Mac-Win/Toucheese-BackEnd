@@ -6,6 +6,10 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: true
+  servlet:
+    multipart:
+      max-file-size: 5MB # 한개 파일의 최대 사이즈 (default: 1MB)
+      max-request-size: 25MB # 한개 요청의 최대 사이즈 (default: 10MB)
 
 springdoc:
   api-docs:
