@@ -58,7 +58,7 @@ public class QuestionController {
         }
         """
     )
-    public ResponseEntity<?> getQuestionById(@PathVariable Long id, Principal principal){
+    public ResponseEntity<QuestionResponse> getQuestionById(@PathVariable Long id, Principal principal){
         QuestionResponse response = questionService.getQuestionById(id, principal);
         return ApiResponse.getObjectSuccess(response);
     }
@@ -75,7 +75,7 @@ public class QuestionController {
         }
         """
     )
-    public ResponseEntity<?> getQuestions(Principal principal, @RequestParam int page) {
+    public ResponseEntity<Page<QuestionResponse>> getQuestions(Principal principal, @RequestParam int page) {
         Page<QuestionResponse> questions = questionService.getQuestions(principal, page);
         return ApiResponse.getObjectSuccess(questions);
     }
