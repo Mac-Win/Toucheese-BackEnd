@@ -1,5 +1,6 @@
 package com.toucheese.admin.service;
 
+import com.toucheese.global.exception.ToucheeseBadRequestException;
 import com.toucheese.question.dto.AnswerResponse;
 import com.toucheese.question.dto.QuestionResponse;
 import com.toucheese.question.entity.Answer;
@@ -30,7 +31,7 @@ public class AdminAnswerService {
 
     private Answer getAnswerByQuestionId(Long questionId) {
         return answerRepository.findByQuestionId(questionId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 답변이 존재하지 않습니다."));
+                .orElseThrow(() -> new ToucheeseBadRequestException("해당 답변이 존재하지 않습니다."));
     }
 
     @Transactional(readOnly = true)
