@@ -1,6 +1,7 @@
 package com.toucheese.admin.controller;
 
 import com.toucheese.admin.service.AdminAnswerService;
+import com.toucheese.global.data.ApiResponse;
 import com.toucheese.question.dto.AnswerResponse;
 import com.toucheese.question.dto.QuestionResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -24,7 +25,7 @@ public class AdminAnswerController {
     @GetMapping
     public ResponseEntity<Page<QuestionResponse>> getAllQuestions(Pageable pageable) {
         Page<QuestionResponse> questions = adminAnswerService.getAllQuestions(pageable);
-        return ResponseEntity.ok(questions);
+        return ApiResponse.getObjectSuccess(questions);
     }
 
     // 특정 문의글 조회
@@ -32,30 +33,30 @@ public class AdminAnswerController {
     @GetMapping("/{questionId}")
     public ResponseEntity<QuestionResponse> getQuestionById(@PathVariable Long questionId) {
         QuestionResponse question = adminAnswerService.getQuestionById(questionId);
-        return ResponseEntity.ok(question);
+        return ApiResponse.getObjectSuccess(question);
     }
 
     // 답변 작성
     @Operation(summary = "답변 작성", description = "관리자가 답변을 작성합니다. 답변 작성 후 문의글 상태는 '답변완료'로 변경됩니다.")
     @PostMapping("/{questionId}/answers")
-    public ResponseEntity<AnswerResponse> addAnswer(@PathVariable Long questionId, @RequestBody String content) {
+    public ResponseEntity<?> addAnswer(@PathVariable Long questionId, @RequestBody String content) {
         AnswerResponse answerResponse = adminAnswerService.addAnswer(questionId, content);
-        return ResponseEntity.ok(answerResponse);
+        return ApiResponse.createdSuccess("답변이 성공적으로 생성되었습니다.");
     }
 
     // 답변 수정
     @Operation(summary = "답변 수정", description = "관리자가 기존 답변을 수정합니다.")
     @PutMapping("/{questionId}/answers")
-    public ResponseEntity<AnswerResponse> updateAnswer(@PathVariable Long questionId, @RequestBody String content) {
+    public ResponseEntity<?> updateAnswer(@PathVariable Long questionId, @RequestBody String content) {
         AnswerResponse answerResponse = adminAnswerService.updateAnswer(questionId, content);
-        return ResponseEntity.ok(answerResponse);
+        return ApiResponse.createdSuccess("답변이 성공적으로 수정되었습니다.");
     }
 
     // 답변 삭제
     @Operation(summary = "답변 삭제", description = "관리자가 답변을 삭제합니다. 삭제 후 문의글 상태는 '답변대기'로 변경됩니다.")
     @DeleteMapping("/{questionId}/answers")
-    public ResponseEntity<Void> deleteAnswer(@PathVariable Long questionId) {
+    public ResponseEntity<?> deleteAnswer(@PathVariable Long questionId) {
         adminAnswerService.deleteAnswer(questionId);
-        return ResponseEntity.noContent().build();
+        return ApiResponse.deletedSuccess("답변이 성공적으로 삭제되었습니다.");
     }
 }
