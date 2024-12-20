@@ -54,9 +54,11 @@ public class Member {
     private boolean isFirstLogin; // 첫 로그인 여부 체크
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
     private List<Cart> carts = new ArrayList<>();
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
     private List<Reservation> reservations = new ArrayList<>();
 
     public void markAsLoggedIn() {
