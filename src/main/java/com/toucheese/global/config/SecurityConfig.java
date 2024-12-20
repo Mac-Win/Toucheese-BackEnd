@@ -44,7 +44,8 @@ public class SecurityConfig {
 					.requestMatchers(HttpMethod.POST, "/v1/members/**").permitAll()
 					.requestMatchers(HttpMethod.POST, "/v1/messages/**").permitAll()
 					.requestMatchers(HttpMethod.POST, "/v1/tokens/reissue").permitAll()
-					.requestMatchers(HttpMethod.GET, "/v1/auth/kakao/callback").permitAll()
+					.requestMatchers(HttpMethod.GET, "/v1/auth/**").permitAll()
+					.requestMatchers(HttpMethod.POST, "/v1/auth/**").permitAll()
 					.requestMatchers("/swagger", "/swagger-ui.html", "/swagger-ui/**", "/api-docs", "/api-docs/**",
 						"/v3/api-docs/**").permitAll()
 					.requestMatchers("/v1/admin/**").hasAuthority("ADMIN")
