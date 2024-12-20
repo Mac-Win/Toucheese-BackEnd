@@ -50,17 +50,17 @@ public class AdminAnswerService {
 
         Question question = getQuestion(questionId);
 
-        Answer answer = Answer.builder()
+        Answer answer = answerRepository.save(
+                Answer.builder()
                 .question(question)
                 .content(content)
                 .createDate(LocalDate.now())
-                .build();
+                .build()
+        );
 
-        Answer savedAnswer = answerRepository.save(answer);
-        question.completeAnswer(savedAnswer);
-        questionRepository.save(question);
+        question.completeAnswer(answer);
 
-        return AnswerResponse.of(savedAnswer);
+        return AnswerResponse.of(answer);
     }
 
     // 답변 수정
