@@ -46,7 +46,7 @@ public class AdminAnswerService {
     }
 
     @Transactional
-    public AnswerResponse addAnswer(Long questionId, String content) {
+    public void addAnswer(Long questionId, String content) {
 
         Question question = questionReadService.findQuestionById(questionId);
 
@@ -59,26 +59,19 @@ public class AdminAnswerService {
         );
 
         question.completeAnswer(answer);
-
-        return AnswerResponse.of(answer);
     }
 
     // 답변 수정
     @Transactional
-    public AnswerResponse updateAnswer(Long questionId, String content) {
+    public void updateAnswer(Long questionId, String content) {
         Answer answer = findAnswerByQuestionId(questionId);
         answer.updateAnswer(content);
-        return AnswerResponse.of(answer);
     }
 
     // 답변 삭제
     @Transactional
     public void deleteAnswer(Long questionId) {
         Answer answer = findAnswerByQuestionId(questionId);
-        Question question = questionReadService.findQuestionById(questionId);
-
-        question.resetAnswer();
-        questionRepository.save(question);  // 질문 상태 업데이트
 
         answerRepository.delete(answer);  // 답변 삭제
     }

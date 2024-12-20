@@ -40,7 +40,7 @@ public class AdminAnswerController {
     @Operation(summary = "답변 작성", description = "관리자가 답변을 작성합니다. 답변 작성 후 문의글 상태는 '답변완료'로 변경됩니다.")
     @PostMapping("/{questionId}/answers")
     public ResponseEntity<?> addAnswer(@PathVariable Long questionId, @RequestBody String content) {
-        AnswerResponse answerResponse = adminAnswerService.addAnswer(questionId, content);
+        adminAnswerService.addAnswer(questionId, content);
         return ApiResponse.createdSuccess("답변이 성공적으로 생성되었습니다.");
     }
 
@@ -48,7 +48,7 @@ public class AdminAnswerController {
     @Operation(summary = "답변 수정", description = "관리자가 기존 답변을 수정합니다.")
     @PutMapping("/{questionId}/answers")
     public ResponseEntity<?> updateAnswer(@PathVariable Long questionId, @RequestBody String content) {
-        AnswerResponse answerResponse = adminAnswerService.updateAnswer(questionId, content);
+        adminAnswerService.updateAnswer(questionId, content);
         return ApiResponse.updatedSuccess("답변이 성공적으로 수정되었습니다.");
     }
 
