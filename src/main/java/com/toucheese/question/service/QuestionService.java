@@ -10,6 +10,7 @@ import com.toucheese.question.dto.QuestionResponse;
 import com.toucheese.question.entity.AnswerStatus;
 import com.toucheese.question.entity.Question;
 import com.toucheese.question.repository.QuestionRepository;
+import com.toucheese.question.util.QuestionUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -44,7 +45,6 @@ public class QuestionService {
     @Transactional(readOnly = true)
     public QuestionDetailResponse findQuestionDetailById(Long id, Principal principal) {
         Question question = questionReadService.findQuestionById(id);
-        questionReadService.validateMemberAccess(question, principal);
         return QuestionDetailResponse .of(question);
     }
 
@@ -59,7 +59,7 @@ public class QuestionService {
     @Transactional
     public QuestionResponse updateQuestion(Long id, QuestionRequest questionRequest, Principal principal) {
         Question question = questionReadService.findQuestionById(id);
-        questionReadService.validateMemberAccess(question, principal);
+        QuestionUtil.validateMemberAccess(question, principal);
 
         question.update(
                 questionRequest.title(),
@@ -71,8 +71,7 @@ public class QuestionService {
     @Transactional
     public void deleteQuestion(Long id, Principal principal) {
         Question question = questionReadService.findQuestionById(id);
-        questionReadService.validateMemberAccess(question, principal);
+        QuestionUtil.validateMemberAccess(question, principal);
         questionRepository.delete(question);
     }
-
 }

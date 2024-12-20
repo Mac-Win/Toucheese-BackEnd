@@ -35,13 +35,4 @@ public class QuestionReadService {
         Long memberId = PrincipalUtils.extractMemberId(principal);
         return memberService.findMemberById(memberId);}
 
-    // 게시글 접근 권한 검증
-    @Transactional(readOnly = true)
-    public void validateMemberAccess(Question question, Principal principal) {
-        Long memberId = PrincipalUtils.extractMemberId(principal);
-        if(!question.getMember().getId().equals(memberId)) {
-            throw new ToucheeseUnAuthorizedException("자신의 게시글만 접근 가능합니다.");
-        }
-    }
-
 }
