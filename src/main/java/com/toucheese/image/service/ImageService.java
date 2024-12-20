@@ -12,7 +12,6 @@ import com.toucheese.image.util.S3ImageUtil;
 import com.toucheese.question.entity.Question;
 import com.toucheese.question.repository.QuestionRepository;
 import com.toucheese.question.service.QuestionReadService;
-import com.toucheese.question.util.QuestionUtil;
 import com.toucheese.review.entity.Review;
 import com.toucheese.review.service.ReviewService;
 import com.toucheese.studio.entity.Studio;

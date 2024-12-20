@@ -10,7 +10,6 @@ import com.toucheese.question.entity.Question;
 import com.toucheese.question.repository.AnswerRepository;
 import com.toucheese.question.repository.QuestionRepository;
 import com.toucheese.question.service.QuestionReadService;
-import com.toucheese.question.util.QuestionUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

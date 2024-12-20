@@ -10,7 +10,6 @@ import com.toucheese.question.dto.QuestionResponse;
 import com.toucheese.question.entity.AnswerStatus;
 import com.toucheese.question.entity.Question;
 import com.toucheese.question.repository.QuestionRepository;
-import com.toucheese.question.util.QuestionUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -31,7 +30,7 @@ public class QuestionService {
 
     @Transactional
     public Question createQuestion(QuestionRequest questionRequest, Principal principal) {
-        Member member = QuestionUtil.findMemberByPrincipal(principal, memberRepository);
+        Member member = questionReadService.findMemberByPrincipal(principal, memberRepository);
         Question question = Question.builder()
                 .title(questionRequest.title())
                 .content(questionRequest.content())
@@ -45,13 +44,13 @@ public class QuestionService {
     @Transactional(readOnly = true)
     public QuestionDetailResponse findQuestionById(Long id, Principal principal) {
         Question question = questionReadService.findQuestionById(id);
-        QuestionUtil.validateMemberAccess(question, principal);
+        questionReadService.validateMemberAccess(question, principal);
         return QuestionDetailResponse .of(question);
     }
 
     @Transactional(readOnly = true)
     public Page<QuestionResponse> findQuestions(Principal principal, int page) {
-        Member member = QuestionUtil.findMemberByPrincipal(principal, memberRepository);
+        Member member = questionReadService.findMemberByPrincipal(principal, memberRepository);
         Pageable pageable = PageUtils.createPageable(page);
         Page<Question> questions = questionRepository.findAllByMemberId(member.getId(), pageable);
         return questions.map(QuestionResponse::of);
@@ -60,7 +59,7 @@ public class QuestionService {
     @Transactional
     public QuestionResponse updateQuestion(Long id, QuestionRequest questionRequest, Principal principal) {
         Question question = questionReadService.findQuestionById(id);
-        QuestionUtil.validateMemberAccess(question, principal);
+        questionReadService.validateMemberAccess(question, principal);
 
         question.update(
                 questionRequest.title(),
@@ -72,7 +71,7 @@ public class QuestionService {
     @Transactional
     public void deleteQuestion(Long id, Principal principal) {
         Question question = questionReadService.findQuestionById(id);
-        QuestionUtil.validateMemberAccess(question, principal);
+        questionReadService.validateMemberAccess(question, principal);
         questionRepository.delete(question);
     }
 
