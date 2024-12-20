@@ -30,7 +30,7 @@ public class QuestionService {
 
     @Transactional
     public Question createQuestion(QuestionRequest questionRequest, Principal principal) {
-        Member member = questionReadService.findMemberByPrincipal(principal, memberRepository);
+        Member member = questionReadService.findMemberByPrincipal(principal);
         Question question = Question.builder()
                 .title(questionRequest.title())
                 .content(questionRequest.content())
@@ -50,7 +50,7 @@ public class QuestionService {
 
     @Transactional(readOnly = true)
     public Page<QuestionResponse> findQuestions(Principal principal, int page) {
-        Member member = questionReadService.findMemberByPrincipal(principal, memberRepository);
+        Member member = questionReadService.findMemberByPrincipal(principal);
         Pageable pageable = PageUtils.createPageable(page);
         Page<Question> questions = questionRepository.findAllByMemberId(member.getId(), pageable);
         return questions.map(QuestionResponse::of);
