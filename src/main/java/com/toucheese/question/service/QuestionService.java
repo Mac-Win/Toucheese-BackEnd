@@ -4,6 +4,7 @@ import com.toucheese.global.util.PageUtils;
 import com.toucheese.global.util.PrincipalUtils;
 import com.toucheese.member.entity.Member;
 import com.toucheese.member.repository.MemberRepository;
+import com.toucheese.question.dto.QuestionDetailResponse;
 import com.toucheese.question.dto.QuestionRequest;
 import com.toucheese.question.dto.QuestionResponse;
 import com.toucheese.question.entity.AnswerStatus;
@@ -42,10 +43,10 @@ public class QuestionService {
     }
 
     @Transactional(readOnly = true)
-    public QuestionResponse findQuestionById(Long id, Principal principal) {
-        Question question = questionReadService.findQuestionById(id, questionRepository);
+    public QuestionDetailResponse findQuestionById(Long id, Principal principal) {
+        Question question = questionReadService.findQuestionById(id);
         QuestionUtil.validateMemberAccess(question, principal);
-        return QuestionResponse.of(question);
+        return QuestionDetailResponse .of(question);
     }
 
     @Transactional(readOnly = true)
@@ -58,7 +59,7 @@ public class QuestionService {
 
     @Transactional
     public QuestionResponse updateQuestion(Long id, QuestionRequest questionRequest, Principal principal) {
-        Question question = questionReadService.findQuestionById(id, questionRepository);
+        Question question = questionReadService.findQuestionById(id);
         QuestionUtil.validateMemberAccess(question, principal);
 
         question.update(
@@ -70,7 +71,7 @@ public class QuestionService {
 
     @Transactional
     public void deleteQuestion(Long id, Principal principal) {
-        Question question = questionReadService.findQuestionById(id, questionRepository);
+        Question question = questionReadService.findQuestionById(id);
         QuestionUtil.validateMemberAccess(question, principal);
         questionRepository.delete(question);
     }

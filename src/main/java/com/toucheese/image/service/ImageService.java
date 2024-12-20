@@ -108,7 +108,7 @@ public class ImageService {
     }
 
     private void saveQuestionImage(Long questionId, String filename, String randomFilename, String extension) {
-        Question question = questionReadService.findQuestionById(questionId, questionRepository);
+        Question question = questionReadService.findQuestionById(questionId);
         QuestionImage questionImage = QuestionImage.builder()
                 .question(question)
                 .filename(filename)

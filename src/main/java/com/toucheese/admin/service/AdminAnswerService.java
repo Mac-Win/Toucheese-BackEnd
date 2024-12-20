@@ -9,6 +9,7 @@ import com.toucheese.question.entity.AnswerStatus;
 import com.toucheese.question.entity.Question;
 import com.toucheese.question.repository.AnswerRepository;
 import com.toucheese.question.repository.QuestionRepository;
+import com.toucheese.question.service.QuestionReadService;
 import com.toucheese.question.util.QuestionUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -25,11 +26,7 @@ import java.util.List;
 public class AdminAnswerService {
     private final QuestionRepository questionRepository;
     private final AnswerRepository answerRepository;
-
-    private Question findQuestionById(Long questionId) {
-        return questionRepository.findById(questionId)
-                .orElseThrow(() -> new ToucheeseBadRequestException("해당 게시글이 존재하지 않습니다."));
-    }
+    private final QuestionReadService questionReadService;
 
     private Answer findAnswerByQuestionId(Long questionId) {
         return answerRepository.findByQuestionId(questionId)
@@ -45,14 +42,14 @@ public class AdminAnswerService {
 
     @Transactional(readOnly = true)
     public QuestionResponse getQuestionById(Long questionId) {
-        Question question = findQuestionById(questionId);
+        Question question = questionReadService.findQuestionById(questionId);
         return QuestionResponse.of(question);
     }
 
     @Transactional
     public AnswerResponse addAnswer(Long questionId, String content) {
 
-        Question question = findQuestionById(questionId);
+        Question question = questionReadService.findQuestionById(questionId);
 
         Answer answer = answerRepository.save(
                 Answer.builder()
@@ -79,7 +76,7 @@ public class AdminAnswerService {
     @Transactional
     public void deleteAnswer(Long questionId) {
         Answer answer = findAnswerByQuestionId(questionId);
-        Question question = findQuestionById(questionId);
+        Question question = questionReadService.findQuestionById(questionId);
 
         question.resetAnswer();
         questionRepository.save(question);  // 질문 상태 업데이트

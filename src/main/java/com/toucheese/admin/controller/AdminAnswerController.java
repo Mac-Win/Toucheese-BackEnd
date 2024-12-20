@@ -49,7 +49,7 @@ public class AdminAnswerController {
     @PutMapping("/{questionId}/answers")
     public ResponseEntity<?> updateAnswer(@PathVariable Long questionId, @RequestBody String content) {
         AnswerResponse answerResponse = adminAnswerService.updateAnswer(questionId, content);
-        return ApiResponse.createdSuccess("답변이 성공적으로 수정되었습니다.");
+        return ApiResponse.updatedSuccess("답변이 성공적으로 수정되었습니다.");
     }
 
     // 답변 삭제

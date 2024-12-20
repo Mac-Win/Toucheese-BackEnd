@@ -1,6 +1,7 @@
 package com.toucheese.question.controller;
 
 import com.toucheese.global.data.ApiResponse;
+import com.toucheese.question.dto.QuestionDetailResponse;
 import com.toucheese.question.dto.QuestionRequest;
 import com.toucheese.question.dto.QuestionResponse;
 import com.toucheese.question.entity.Question;
@@ -42,7 +43,7 @@ public class QuestionController {
         return ApiResponse.createdSuccess("문의하기글이 성공적으로 생성되었습니다.");
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/{questionId}")
     @Operation(summary = "특정 문의하기 글 조회", description = """
         ```json
         {
@@ -58,8 +59,8 @@ public class QuestionController {
         }
         """
     )
-    public ResponseEntity<QuestionResponse> getQuestionById(@PathVariable Long id, Principal principal){
-        QuestionResponse response = questionService.findQuestionById(id, principal);
+    public ResponseEntity<QuestionDetailResponse> getQuestionById(@PathVariable Long questionId, Principal principal){
+        QuestionDetailResponse response = questionService.findQuestionById(questionId, principal);
         return ApiResponse.getObjectSuccess(response);
     }
 
@@ -80,7 +81,7 @@ public class QuestionController {
         return ApiResponse.getObjectSuccess(questions);
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/{questionId}")
     @Operation(summary = "문의하기 글 수정", description = """
         제목 , 내용을 수정합니다. <br>
         ```
@@ -91,13 +92,13 @@ public class QuestionController {
         }
         """
     )
-    public ResponseEntity<?> updateQuestion(@PathVariable Long id, @RequestBody QuestionRequest questionRequest, Principal principal) {
-        QuestionResponse response = questionService.updateQuestion(id, questionRequest, principal);
+    public ResponseEntity<?> updateQuestion(@PathVariable Long questionId, @RequestBody QuestionRequest questionRequest, Principal principal) {
+        QuestionResponse response = questionService.updateQuestion(questionId, questionRequest, principal);
         return ApiResponse.updatedSuccess("문의하기글이 성공적으로 수정되었습니다.");
     }
 
     // 게시글 삭제
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{questionId}")
     @Operation(summary = "문의하기 글 삭제", description = """
         ```json
         {
@@ -105,8 +106,8 @@ public class QuestionController {
         }
         """
     )
-    public ResponseEntity<?> deleteQuestion(@PathVariable Long id, Principal principal) {
-        questionService.deleteQuestion(id, principal);
+    public ResponseEntity<?> deleteQuestion(@PathVariable Long questionId, Principal principal) {
+        questionService.deleteQuestion(questionId, principal);
         return ApiResponse.deletedSuccess("문의하기글이 성공적으로 삭제되었습니다.");
     }
 }
