@@ -29,17 +29,17 @@ public class AdminAnswerController {
 
     // 특정 문의글 조회
     @Operation(summary = "특정 문의글 조회", description = "관리자가 특정 문의글을 조회할 수 있습니다.")
-    @GetMapping("/{id}")
-    public ResponseEntity<QuestionResponse> getQuestionById(@PathVariable Long id) {
-        QuestionResponse question = adminAnswerService.getQuestionById(id);
+    @GetMapping("/{questionId}")
+    public ResponseEntity<QuestionResponse> getQuestionById(@PathVariable Long questionId) {
+        QuestionResponse question = adminAnswerService.getQuestionById(questionId);
         return ResponseEntity.ok(question);
     }
 
     // 답변 작성
     @Operation(summary = "답변 작성", description = "관리자가 답변을 작성합니다. 답변 작성 후 문의글 상태는 '답변완료'로 변경됩니다.")
-    @PostMapping("/{id}/answers")
-    public ResponseEntity<AnswerResponse> addAnswer(@PathVariable Long id, @RequestBody String content) {
-        AnswerResponse answerResponse = adminAnswerService.addAnswer(id, content);
+    @PostMapping("/{questionId}/answers")
+    public ResponseEntity<AnswerResponse> addAnswer(@PathVariable Long questionId, @RequestBody String content) {
+        AnswerResponse answerResponse = adminAnswerService.addAnswer(questionId, content);
         return ResponseEntity.ok(answerResponse);
     }
 
