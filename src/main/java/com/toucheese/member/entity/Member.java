@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.toucheese.cart.entity.Cart;
+import com.toucheese.member.dto.AuthProvider;
 import com.toucheese.reservation.entity.Reservation;
 
 import jakarta.persistence.CascadeType;
@@ -16,19 +17,25 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Builder
+@AllArgsConstructor
 public class Member {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false, unique = true)
     private String email;
 
+    @Column(nullable = true)
     private String password;
 
     private String name;
@@ -39,10 +46,21 @@ public class Member {
     @Column(nullable = false)
     private Role role;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private AuthProvider authProvider;
+
+    @Column(nullable = false)
+    private boolean isFirstLogin; // 첫 로그인 여부 체크
+
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Cart> carts = new ArrayList<>();
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Reservation> reservations = new ArrayList<>();
+
+    public void markAsLoggedIn() {
+        this.isFirstLogin = false; // 첫 로그인을 처리
+    }
 
 }

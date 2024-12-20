@@ -77,6 +77,9 @@ dependencies {
 	runtimeOnly 'com.sun.mail:jakarta.mail:2.0.1'
 
 	implementation 'org.springframework:spring-tx'
+
+	// webflux
+	implementation 'org.springframework.boot:spring-boot-starter-webflux'
 }
 
 // QueryDSL Setting
