@@ -8,7 +8,11 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -40,12 +44,13 @@ public class ImageController {
     @PostMapping("/v2/studios/images")
     @Operation(summary = "스튜디오 이미지 업로드를 위한 API", description = "이미지 업로드 및 DB 내 데이터 적재")
     public void streamStudioImageUpload(
-            HttpServletRequest request, @RequestParam String filename, @RequestParam Long studioId
+            @RequestPart List<MultipartFile> uploadFiles,
+            @RequestParam Long studioId
     ) {
-        imageService.uploadImageWithDetails(request, filename, studioId, ImageType.STUDIO);
+        imageService.uploadImageWithDetails(uploadFiles, studioId, ImageType.STUDIO);
     }
-
     /**
+
      * Stream 방식으로 리뷰 이미지 업로드
      * @param request 요청 정보 (InputStream, Metadata)
      * @param filename 파일이름
@@ -54,9 +59,10 @@ public class ImageController {
     @PostMapping("/v2/reviews/images")
     @Operation(summary = "리뷰 이미지 업로드를 위한 API", description = "이미지 업로드 및 DB 내 데이터 적재")
     public void streamReviewImageUpload(
-            HttpServletRequest request, @RequestParam String filename, @RequestParam Long reviewId
+            @RequestPart List<MultipartFile> uploadFiles,
+            @RequestParam Long reviewId
     ) {
-        imageService.uploadImageWithDetails(request, filename, reviewId, ImageType.REVIEW);
+        imageService.uploadImageWithDetails(uploadFiles, reviewId, ImageType.REVIEW);
     }
 
     /**
@@ -68,8 +74,9 @@ public class ImageController {
     @PostMapping("/v2/facilities/images")
     @Operation(summary = "시설 이미지 업로드를 위한 API", description = "이미지 업로드 및 DB 내 데이터 적재")
     public void streamFacilityImageUpload(
-            HttpServletRequest request, @RequestParam String filename, @RequestParam Long studioId
+            @RequestPart List<MultipartFile> uploadFiles,
+            @RequestParam Long studioId
     ) {
-        imageService.uploadImageWithDetails(request, filename, studioId, ImageType.FACILITY);
+        imageService.uploadImageWithDetails(uploadFiles, studioId, ImageType.FACILITY);
     }
 }

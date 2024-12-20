@@ -2,14 +2,10 @@ package com.toucheese.image.service;
 
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.toucheese.global.exception.ToucheeseInternalServerErrorException;
-import com.toucheese.image.entity.FacilityImage;
-import com.toucheese.image.entity.ImageType;
-import com.toucheese.image.entity.ReviewImage;
-import com.toucheese.image.entity.StudioImage;
+import com.toucheese.image.entity.*;
 import com.toucheese.image.repository.FacilityImageRepository;
 import com.toucheese.image.repository.ReviewImageRepository;
 import com.toucheese.image.repository.StudioImageRepository;
-import com.toucheese.image.util.FilenameUtil;
 import com.toucheese.image.util.S3ImageUtil;
 import com.toucheese.review.entity.Review;
 import com.toucheese.review.service.ReviewService;
@@ -17,19 +13,23 @@ import com.toucheese.studio.entity.Studio;
 import com.toucheese.studio.service.StudioService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.function.BiFunction;
+import java.util.List;
+import java.util.Objects;
+
+import static com.toucheese.image.util.FilenameUtil.buildFilePath;
+import static com.toucheese.image.util.FilenameUtil.extractFileExtension;
+import static com.toucheese.image.util.MetadataUtil.createMetadata;
 
 @Service
 @RequiredArgsConstructor
 public class ImageService {
 
     private final S3ImageUtil s3ImageUtil;
-    private final FilenameUtil filenameUtil;
 
     private final StudioService studioService;
     private final StudioImageRepository studioImageRepository;
@@ -39,6 +39,8 @@ public class ImageService {
 
     private final FacilityImageRepository facilityImageRepository;
 
+    private final ImageInfoService imageInfoService;
+
     private static final String RESIZED_EXTENSION = ".webp";
 
     /**
@@ -47,80 +49,64 @@ public class ImageService {
      * @param filename 파일 이름
      */
     public void uploadExistingImage(HttpServletRequest request, String filename) {
-        uploadImage(request, filename);
+        uploadImage(request, filename, createMetadata(request));
     }
 
+    /**
+     * 새 이미지 업로드하기 위한 메서드
+     * @param uploadFiles 업로드 할 파일 목록
+     * @param entityId 연관관계 객체 아이디
+     * @param imageType 이미지 타입
+     */
     @Transactional
-    public void uploadImageWithDetails(HttpServletRequest request, String filename, Long entityId, ImageType imageType) {
-        String randomFilename = generateRandomFilename(imageType);
-        String extension = filenameUtil.extractFileExtension(filename);
-        uploadImage(request, randomFilename + extension);
+    public void uploadImageWithDetails(List<MultipartFile> uploadFiles, Long entityId, ImageType imageType) {
+        for (MultipartFile uploadFile : uploadFiles) {
+            String filename = uploadFile.getOriginalFilename();
+            ImageInfo imageInfo = imageInfoService.createImageInfo(filename);
+            String extension = extractFileExtension(Objects.requireNonNull(filename));
 
-        switch (imageType) {
-            case STUDIO -> saveStudioImage(entityId, filename, randomFilename, extension);
-            case REVIEW -> saveReviewImage(entityId, filename, randomFilename, extension);
-            case FACILITY -> saveFacilityImage(entityId, filename, randomFilename, extension);
-            default -> throw new IllegalArgumentException("Unsupported image type: " + imageType);
+            uploadImage(uploadFile, imageInfo.getUploadFilename() + extension, createMetadata(uploadFile));
+
+            switch (imageType) {
+                case STUDIO -> saveStudioImage(entityId, imageInfo, extension);
+                case REVIEW -> saveReviewImage(entityId, imageInfo, extension);
+                case FACILITY -> saveFacilityImage(entityId, imageInfo, extension);
+                default -> throw new IllegalArgumentException("Unsupported image type: " + imageType);
+            }
         }
     }
 
-    private void saveStudioImage(Long studioId, String filename, String randomFilename, String extension) {
+    private void saveStudioImage(Long studioId, ImageInfo imageInfo, String extension) {
         Studio studio = studioService.findStudioById(studioId);
         StudioImage studioImage = StudioImage.builder()
                 .studio(studio)
-                .filename(filename)
-                .uploadFilename(randomFilename)
-                .originalPath(filenameUtil.buildFilePath(randomFilename, extension))
-                .resizedPath(filenameUtil.buildFilePath(randomFilename, RESIZED_EXTENSION))
+                .originalPath(buildFilePath(imageInfo.getUploadFilename(), extension))
+                .resizedPath(buildFilePath(imageInfo.getUploadFilename(), RESIZED_EXTENSION))
+                .imageInfo(imageInfo)
                 .build();
         studioImageRepository.save(studioImage);
     }
 
-    private void saveReviewImage(Long reviewId, String filename, String randomFilename, String extension) {
+    private void saveReviewImage(Long reviewId, ImageInfo imageInfo, String extension) {
         Review review = reviewService.findReviewById(reviewId);
         ReviewImage reviewImage = ReviewImage.builder()
                 .review(review)
-                .filename(filename)
-                .uploadFilename(randomFilename)
-                .originalPath(filenameUtil.buildFilePath(randomFilename, extension))
-                .resizedPath(filenameUtil.buildFilePath(randomFilename, RESIZED_EXTENSION))
+                .originalPath(buildFilePath(imageInfo.getUploadFilename(), extension))
+                .resizedPath(buildFilePath(imageInfo.getUploadFilename(), RESIZED_EXTENSION))
+                .imageInfo(imageInfo)
                 .build();
         reviewImageRepository.save(reviewImage);
     }
 
-    private void saveFacilityImage(Long studioId, String filename, String randomFilename, String extension) {
+    private void saveFacilityImage(Long studioId, ImageInfo imageInfo, String extension) {
         Studio studio = studioService.findStudioById(studioId);
         FacilityImage facilityImage = FacilityImage.builder()
                 .studio(studio)
-                .filename(filename)
-                .uploadFilename(randomFilename)
-                .originalPath(filenameUtil.buildFilePath(randomFilename, extension))
-                .resizedPath(filenameUtil.buildFilePath(randomFilename, RESIZED_EXTENSION))
+                .originalPath(buildFilePath(imageInfo.getUploadFilename(), extension))
+                .resizedPath(buildFilePath(imageInfo.getUploadFilename(), RESIZED_EXTENSION))
+                .imageInfo(imageInfo)
                 .build();
         facilityImageRepository.save(facilityImage);
-    }
-
-    /**
-     * 생성된 랜덤 파일명 중복 체크
-     * @return 중복되지 않는 랜덤 파일명
-     */
-    @Transactional(readOnly = true)
-    public String generateRandomFilename(ImageType imageType) {
-        String randomFilename;
-
-        do {
-            randomFilename = filenameUtil.generateRandomFileName();
-        } while (isFilenameExists(randomFilename, imageType));
-
-        return randomFilename;
-    }
-
-    private boolean isFilenameExists(String filename, ImageType imageType) {
-        return switch (imageType) {
-            case STUDIO -> studioImageRepository.findByUploadFilename(filename).isPresent();
-            case REVIEW -> reviewImageRepository.findByUploadFilename(filename).isPresent();
-            case FACILITY -> facilityImageRepository.findByUploadFilename(filename).isPresent();
-        };
     }
 
     /**
@@ -128,25 +114,25 @@ public class ImageService {
      * @param request 요청 정보 (InputStream, Metadata)
      * @param filename 업로드 할 파일 이름
      */
-    private void uploadImage(HttpServletRequest request, String filename) {
+    private void uploadImage(HttpServletRequest request, String filename, ObjectMetadata metadata) {
         try {
-            ObjectMetadata metadata = createMetadata(request);
-            s3ImageUtil.uploadImage(metadata, filename, request.getInputStream());
+            s3ImageUtil.uploadImage(filename, request.getInputStream(), metadata);
         } catch (IOException e) {
             throw new ToucheeseInternalServerErrorException(e.getMessage());
         }
     }
 
     /**
-     * 요청으로부터 ObjectMetadata를 생성
-     * @param request 요청 정보
-     * @return 생성된 ObjectMetadata
+     * 요청받은 이미지 업로드
+     * @param uploadFile 업로드 요청 파일
+     * @param filename 생성된 파일 이름
+     * @param metadata 생성된 메타데이터
      */
-    private ObjectMetadata createMetadata(HttpServletRequest request) {
-        ObjectMetadata metadata = new ObjectMetadata();
-        metadata.setContentType(request.getContentType());
-        metadata.setContentLength(request.getContentLength());
-        return metadata;
+    private void uploadImage(MultipartFile uploadFile, String filename, ObjectMetadata metadata) {
+        try {
+            s3ImageUtil.uploadImage(filename, uploadFile.getInputStream(), metadata);
+        } catch (IOException e) {
+            throw new ToucheeseInternalServerErrorException(e.getMessage());
+        }
     }
-
 }
