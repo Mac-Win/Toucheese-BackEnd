@@ -60,7 +60,7 @@ public class QuestionController {
         """
     )
     public ResponseEntity<QuestionDetailResponse> getQuestionById(@PathVariable Long questionId, Principal principal){
-        QuestionDetailResponse response = questionService.findQuestionById(questionId, principal);
+        QuestionDetailResponse response = questionService.findQuestionDetailById(questionId, principal);
         return ApiResponse.getObjectSuccess(response);
     }
 

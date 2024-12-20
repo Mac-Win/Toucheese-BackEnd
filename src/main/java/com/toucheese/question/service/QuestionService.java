@@ -42,7 +42,7 @@ public class QuestionService {
     }
 
     @Transactional(readOnly = true)
-    public QuestionDetailResponse findQuestionById(Long id, Principal principal) {
+    public QuestionDetailResponse findQuestionDetailById(Long id, Principal principal) {
         Question question = questionReadService.findQuestionById(id);
         questionReadService.validateMemberAccess(question, principal);
         return QuestionDetailResponse .of(question);
