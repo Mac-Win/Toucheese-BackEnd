@@ -1,5 +1,6 @@
 package com.toucheese.question.service;
 
+import com.toucheese.global.util.PageUtils;
 import com.toucheese.global.util.PrincipalUtils;
 import com.toucheese.member.entity.Member;
 import com.toucheese.member.repository.MemberRepository;
@@ -26,7 +27,6 @@ public class QuestionService {
     private final QuestionRepository questionRepository;
     private final MemberRepository memberRepository;
 
-    private static final int PAGE_SIZE = 10;
     @Transactional
     public Question createQuestion(QuestionRequest questionRequest, Principal principal) {
         Member member = QuestionUtil.getMemberByPrincipal(principal, memberRepository);
@@ -50,7 +50,7 @@ public class QuestionService {
     @Transactional(readOnly = true)
     public Page<QuestionResponse> getQuestions(Principal principal, int page) {
         Member member = QuestionUtil.getMemberByPrincipal(principal, memberRepository);
-        Pageable pageable = PageRequest.of(page, PAGE_SIZE);
+        Pageable pageable = PageUtils.createPageable(page);
         Page<Question> questions = questionRepository.findAllByMemberId(member.getId(), pageable);
         return questions.map(QuestionResponse::of);
     }

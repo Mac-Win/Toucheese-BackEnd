@@ -1,6 +1,7 @@
 package com.toucheese.admin.service;
 
 import com.toucheese.global.exception.ToucheeseBadRequestException;
+import com.toucheese.global.util.PageUtils;
 import com.toucheese.question.dto.AnswerResponse;
 import com.toucheese.question.dto.QuestionResponse;
 import com.toucheese.question.entity.Answer;
@@ -35,7 +36,8 @@ public class AdminAnswerService {
     }
 
     @Transactional(readOnly = true)
-    public Page<QuestionResponse> getAllQuestions(Pageable pageable) {
+    public Page<QuestionResponse> getAllQuestions(int page) {
+        Pageable pageable = PageUtils.createPageable(page);
         Page<Question> questions = questionRepository.findAll(pageable);
         return questions.map(QuestionResponse::of);
     }

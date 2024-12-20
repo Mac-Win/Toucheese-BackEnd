@@ -23,8 +23,8 @@ public class AdminAnswerController {
     // 문의글 전체 조회
     @Operation(summary = "문의글 전체 조회 (페이징 처리)", description = "관리자가 모든 문의글을 조회할 수 있습니다.")
     @GetMapping
-    public ResponseEntity<Page<QuestionResponse>> getAllQuestions(Pageable pageable) {
-        Page<QuestionResponse> questions = adminAnswerService.getAllQuestions(pageable);
+    public ResponseEntity<Page<QuestionResponse>> getAllQuestions(@RequestParam int page) {
+        Page<QuestionResponse> questions = adminAnswerService.getAllQuestions(page);
         return ApiResponse.getObjectSuccess(questions);
     }
 
