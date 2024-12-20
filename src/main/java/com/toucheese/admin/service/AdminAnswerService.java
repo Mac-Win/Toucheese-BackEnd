@@ -26,11 +26,12 @@ public class AdminAnswerService {
     private final QuestionRepository questionRepository;
     private final AnswerRepository answerRepository;
 
-    private Question getQuestion(Long questionId) {
-        return QuestionUtil.findQuestionById(questionId, questionRepository);
+    private Question findQuestionById(Long questionId) {
+        return questionRepository.findById(questionId)
+                .orElseThrow(() -> new ToucheeseBadRequestException("해당 게시글이 존재하지 않습니다."));
     }
 
-    private Answer getAnswerByQuestionId(Long questionId) {
+    private Answer findAnswerByQuestionId(Long questionId) {
         return answerRepository.findByQuestionId(questionId)
                 .orElseThrow(() -> new ToucheeseBadRequestException("해당 답변이 존재하지 않습니다."));
     }
@@ -44,14 +45,14 @@ public class AdminAnswerService {
 
     @Transactional(readOnly = true)
     public QuestionResponse getQuestionById(Long questionId) {
-        Question question = getQuestion(questionId);
+        Question question = findQuestionById(questionId);
         return QuestionResponse.of(question);
     }
 
     @Transactional
     public AnswerResponse addAnswer(Long questionId, String content) {
 
-        Question question = getQuestion(questionId);
+        Question question = findQuestionById(questionId);
 
         Answer answer = answerRepository.save(
                 Answer.builder()
@@ -69,7 +70,7 @@ public class AdminAnswerService {
     // 답변 수정
     @Transactional
     public AnswerResponse updateAnswer(Long questionId, String content) {
-        Answer answer = getAnswerByQuestionId(questionId);
+        Answer answer = findAnswerByQuestionId(questionId);
         answer.updateAnswer(content);
         return AnswerResponse.of(answer);
     }
@@ -77,8 +78,8 @@ public class AdminAnswerService {
     // 답변 삭제
     @Transactional
     public void deleteAnswer(Long questionId) {
-        Answer answer = getAnswerByQuestionId(questionId);
-        Question question = getQuestion(questionId);
+        Answer answer = findAnswerByQuestionId(questionId);
+        Question question = findQuestionById(questionId);
 
         question.resetAnswer();
         questionRepository.save(question);  // 질문 상태 업데이트
