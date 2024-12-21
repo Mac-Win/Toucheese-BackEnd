@@ -6,6 +6,7 @@ import java.util.List;
 import com.toucheese.cart.entity.Cart;
 import com.toucheese.member.dto.AuthProvider;
 import com.toucheese.member.dto.MemberFirstLoginUpdateRequest;
+import com.toucheese.question.entity.Question;
 import com.toucheese.reservation.entity.Reservation;
 
 import jakarta.persistence.CascadeType;
@@ -65,9 +66,11 @@ public class Member {
     public void markAsLoggedIn() {
         this.isFirstLogin = false; // 첫 로그인을 처리
     }
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Question> questions = new ArrayList<>();
 
-    public void firstLoginUpdate(MemberFirstLoginUpdateRequest request) {
-        this.name = request.name();
-        this.phone = request.phone();
-    }
+	public void firstLoginUpdate(MemberFirstLoginUpdateRequest request) {
+		this.name = request.name();
+		this.phone = request.phone();
+	}
 }
