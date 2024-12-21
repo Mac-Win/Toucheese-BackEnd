@@ -28,7 +28,7 @@ public class ImageController {
      */
     @PostMapping("/v1/images")
     @Operation(summary = "기존 이미지 업로드만을 위한 API", description = "이미 DB에 적재되어 있는 이미지를 업로드만 진행")
-    public void streamExistingImageUpload(
+    public void existingImageStreamUpload(
             HttpServletRequest request,
             @RequestParam String filename
     ) {
@@ -36,14 +36,13 @@ public class ImageController {
     }
 
     /**
-     * Stream 방식으로 스튜디오 이미지 업로드
-     * @param request 요청 정보 (InputStream, Metadata)
-     * @param filename 파일이름
+     * MultipartFile 방식으로 스튜디오 이미지 업로드
+     * @param uploadFiles 업로드 요청 파일 목록
      * @param studioId 스튜디오 ID
      */
     @PostMapping("/v2/studios/images")
     @Operation(summary = "스튜디오 이미지 업로드를 위한 API", description = "이미지 업로드 및 DB 내 데이터 적재")
-    public void streamStudioImageUpload(
+    public void studioImageUpload(
             @RequestPart List<MultipartFile> uploadFiles,
             @RequestParam Long studioId
     ) {
@@ -51,14 +50,13 @@ public class ImageController {
     }
     /**
 
-     * Stream 방식으로 리뷰 이미지 업로드
-     * @param request 요청 정보 (InputStream, Metadata)
-     * @param filename 파일이름
+     * MultipartFile 방식으로 리뷰 이미지 업로드
+     * @param uploadFiles 업로드 요청 파일 목록
      * @param reviewId 리뷰 ID
      */
     @PostMapping("/v2/reviews/images")
     @Operation(summary = "리뷰 이미지 업로드를 위한 API", description = "이미지 업로드 및 DB 내 데이터 적재")
-    public void streamReviewImageUpload(
+    public void reviewImageUpload(
             @RequestPart List<MultipartFile> uploadFiles,
             @RequestParam Long reviewId
     ) {
@@ -66,17 +64,30 @@ public class ImageController {
     }
 
     /**
-     * Stream 방식으로 리뷰 이미지 업로드
-     * @param request 요청 정보 (InputStream, Metadata)
-     * @param filename 파일이름
+     * MultipartFile 방식으로 리뷰 이미지 업로드
+     * @param uploadFiles 업로드 요청 파일 목록
      * @param studioId 스튜디오 ID
      */
     @PostMapping("/v2/facilities/images")
     @Operation(summary = "시설 이미지 업로드를 위한 API", description = "이미지 업로드 및 DB 내 데이터 적재")
-    public void streamFacilityImageUpload(
+    public void facilityImageUpload(
             @RequestPart List<MultipartFile> uploadFiles,
             @RequestParam Long studioId
     ) {
         imageService.uploadImageWithDetails(uploadFiles, studioId, ImageType.FACILITY);
+    }
+
+    /**
+     * MultipartFile 방식으로 리뷰 이미지 업로드
+     * @param uploadFiles 업로드 요청 파일 목록
+     * @param questionId 문의 ID
+     */
+    @PostMapping("/v2/questions/images")
+    @Operation(summary = "문의 이미지 업로드를 위한 API", description = "이미지 업로드 및 DB 내 데이터 적재")
+    public void questionImageUpload(
+            @RequestPart List<MultipartFile> uploadFiles,
+            @RequestParam Long questionId
+    ) {
+        imageService.uploadImageWithDetails(uploadFiles, questionId, ImageType.FACILITY);
     }
 }

@@ -30,13 +30,20 @@ public class S3ImageUtil {
      * S3에 이미지 업로드
      * @param metadata 요청 메타데이터
      * @param filename 파일 이름
-     * @param stream InputStream (파일 전송)
+     * @param stream 파일 전송을 위한 inputStream
      */
     public void uploadImage(String filename, InputStream stream, ObjectMetadata metadata) {
         s3Config.amazonS3Client()
                 .putObject(createPutObjectRequest(filename, stream, metadata));
     }
 
+    /**
+     * S3 이미지 업로드 요청 객체 생성
+     * @param filename 파일이름
+     * @param stream 파일 전송을 위한 inputStream
+     * @param metadata 메타데이터
+     * @return S3 요청 객체
+     */
     public PutObjectRequest createPutObjectRequest(String filename, InputStream stream, ObjectMetadata metadata) {
         return new PutObjectRequest(
                 bucketName + uploadPath,

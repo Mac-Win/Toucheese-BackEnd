@@ -3,7 +3,6 @@ package com.toucheese.image.service;
 import static com.toucheese.image.util.FilenameUtil.extractFileExtension;
 import static com.toucheese.image.util.MetadataUtil.createMetadata;
 
-import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.toucheese.global.exception.ToucheeseBadRequestException;
 import com.toucheese.global.exception.ToucheeseInternalServerErrorException;
 import com.toucheese.image.entity.ImageInfo;
@@ -14,11 +13,12 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-@Service
+@Service @Slf4j
 @RequiredArgsConstructor
 public class ImageService {
 
@@ -33,7 +33,7 @@ public class ImageService {
      * @param filename 파일 이름
      */
     public void uploadExistingImage(HttpServletRequest request, String filename) {
-        uploadImage(request, filename, createMetadata(request));
+        uploadImage(request, filename);
     }
 
     /**
@@ -49,7 +49,7 @@ public class ImageService {
             ImageInfo imageInfo = imageInfoService.createImageInfo(filename);
             String extension = extractFileExtension(Objects.requireNonNull(filename));
 
-            uploadImage(uploadFile, imageInfo.getUploadFilename() + extension, createMetadata(uploadFile));
+            uploadImage(uploadFile, imageInfo.getUploadFilename() + extension);
 
             switch (imageType) {
                 case STUDIO -> imageFacade.saveStudioImage(entityId, imageInfo, extension);
@@ -66,25 +66,26 @@ public class ImageService {
      * @param request 요청 정보 (InputStream, Metadata)
      * @param filename 업로드 할 파일 이름
      */
-    private void uploadImage(HttpServletRequest request, String filename, ObjectMetadata metadata) {
+    private void uploadImage(HttpServletRequest request, String filename) {
         try {
-            s3ImageUtil.uploadImage(filename, request.getInputStream(), metadata);
+            s3ImageUtil.uploadImage(filename, request.getInputStream(), createMetadata(request));
         } catch (IOException e) {
-            throw new ToucheeseInternalServerErrorException(e.getMessage());
+            log.error("이미지 업로드 실패 - 파일명: {}", filename, e);
+            throw new ToucheeseInternalServerErrorException("이미지 업로드 중 오류 발생: " + e.getMessage());
         }
     }
 
     /**
      * 요청받은 이미지 업로드
-     * @param uploadFile 업로드 요청 파일
+     * @param uploadFile 업로드 요청 파일 (inputStream, uploadFile)
      * @param filename 생성된 파일 이름
-     * @param metadata 생성된 메타데이터
      */
-    private void uploadImage(MultipartFile uploadFile, String filename, ObjectMetadata metadata) {
+    private void uploadImage(MultipartFile uploadFile, String filename) {
         try {
-            s3ImageUtil.uploadImage(filename, uploadFile.getInputStream(), metadata);
+            s3ImageUtil.uploadImage(filename, uploadFile.getInputStream(), createMetadata(uploadFile));
         } catch (IOException e) {
-            throw new ToucheeseInternalServerErrorException(e.getMessage());
+            log.error("이미지 업로드 실패 - 파일명: {}", filename, e);
+            throw new ToucheeseInternalServerErrorException("이미지 업로드 중 오류 발생: " + e.getMessage());
         }
     }
 }
