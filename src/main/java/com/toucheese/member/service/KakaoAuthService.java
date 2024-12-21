@@ -14,8 +14,9 @@ import org.springframework.web.reactive.function.client.WebClient;
 import com.toucheese.global.exception.ToucheeseBadRequestException;
 import com.toucheese.global.util.JwtTokenProvider;
 import com.toucheese.member.dto.KakaoMember;
-import com.toucheese.member.dto.KakaoMemberRequest;
-import com.toucheese.member.dto.KakaoMemberResponse;
+import com.toucheese.member.dto.SocialLoginRequest;
+import com.toucheese.member.dto.SocialLoginResponse;
+import com.toucheese.member.dto.TokenDTO;
 import com.toucheese.member.entity.Member;
 
 import lombok.RequiredArgsConstructor;
@@ -27,6 +28,7 @@ public class KakaoAuthService {
 
 	private final WebClient webClient;
 	private final MemberService memberService;
+	private final TokenService tokenService;
 	private final JwtTokenProvider jwtTokenProvider;
 
 	@Value("${kakao.app-key.rest-api-key}")
@@ -37,25 +39,22 @@ public class KakaoAuthService {
 
 	/**
 	 * 카카오 로그인 처리
-	 * @param kakaoMemberRequest 클라이언트에서 전달된 카카오 토큰 정보
+	 * @param socialLoginRequest 클라이언트에서 전달된 카카오 토큰 정보
 	 * @return 사용자 정보
 	 */
-	public KakaoMemberResponse handleKakaoLogin(KakaoMemberRequest kakaoMemberRequest, StringBuilder jwtTokenContainer) {
+	public SocialLoginResponse handleKakaoLogin(SocialLoginRequest socialLoginRequest) {
 		// 1. 카카오 사용자 정보 요청
-		KakaoMember kakaoMember = getKakaoMemberInfo(kakaoMemberRequest.accessToken()).block();
+		KakaoMember kakaoMember = getKakaoMemberInfo(socialLoginRequest.accessToken()).block();
 
 		// 2. 회원 조회 또는 생성
 		Member member = memberService.findOrCreateMember(kakaoMember);
 
 		// 3. JWT 생성
-		String jwtToken = jwtTokenProvider.createAccessToken(member.getId().toString(), member.getRole());
-		jwtTokenContainer.append(jwtToken); // JWT 토큰 저장
+		String deviceId = socialLoginRequest.deviceId();
+		TokenDTO tokenDTO = tokenService.loginMemberToken(member, deviceId);
 
 		// 4. 첫 로그인 여부 확인 및 사용자 정보 반환
-		return KakaoMemberResponse.builder()
-			.nickname(kakaoMember.nickname())
-			.isFirstLogin(member.isFirstLogin())
-			.build();
+		return SocialLoginResponse.from(member, tokenDTO);
 	}
 
 	/**
