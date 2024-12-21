@@ -1,18 +1,20 @@
 package com.toucheese.conceptstudio.service;
 
-import com.toucheese.conceptstudio.dto.StudioResponse;
-import com.toucheese.conceptstudio.repository.ConceptStudioRepository;
-import com.toucheese.global.config.ImageConfig;
-import com.toucheese.studio.entity.Location;
-import com.toucheese.studio.repository.StudioRepositoryImpl;
-import lombok.RequiredArgsConstructor;
+import java.util.List;
+
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
+import com.toucheese.conceptstudio.dto.StudioResponse;
+import com.toucheese.conceptstudio.repository.ConceptStudioRepository;
+import com.toucheese.global.config.ImageConfig;
+import com.toucheese.global.util.PageUtils;
+import com.toucheese.studio.entity.Location;
+import com.toucheese.studio.repository.StudioRepositoryImpl;
+
+import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
@@ -22,11 +24,9 @@ public class ConceptStudioService {
 	private final StudioRepositoryImpl studioRepositoryImpl;
 	private final ImageConfig imageConfig;
 
-	private static final int PAGE_SIZE = 10;
-
 	@Transactional(readOnly = true)
 	public Page<StudioResponse> getStudiosByConceptId(Long conceptId, int page) {
-		Pageable pageable = PageRequest.of(page, PAGE_SIZE);
+		Pageable pageable = PageUtils.createPageable(page);
 		return conceptStudioRepository.findByConceptId(conceptId, pageable).map( conceptStudio ->
 				StudioResponse.of(conceptStudio.getStudio(), imageConfig.getResizedImageBaseUrl())
 		);
@@ -43,7 +43,7 @@ public class ConceptStudioService {
 	 */
 	@Transactional(readOnly = true)
 	public Page<StudioResponse> getFilteredStudiosOrderByName(int page, Long conceptId, Integer price, Float rating, List<Location> locations) {
-		Pageable pageable = PageRequest.of(page, PAGE_SIZE);
+		Pageable pageable = PageUtils.createPageable(page);
 		return studioRepositoryImpl.getFilteredStudiosOrderByName(price, rating, locations, conceptId, pageable)
 				.map(studio -> StudioResponse.of(studio, imageConfig.getResizedImageBaseUrl()));
 	}

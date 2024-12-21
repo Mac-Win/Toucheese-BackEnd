@@ -1,7 +1,5 @@
 package com.toucheese.studio.entity;
 
-import java.time.LocalDate;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -30,10 +28,6 @@ public class OperatingHour {
 	private String closeTime;
 
 	private Integer term;
-
-	private LocalDate create_date;
-
-	private LocalDate update_date;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "studio_id")

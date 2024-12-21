@@ -7,6 +7,8 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.toucheese.product.dto.AddOptionResponse;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 public record CartResponse(
 	Long cartId,
 	String studioImage,
@@ -18,6 +20,7 @@ public record CartResponse(
 	Integer personnel,          // 예약 인원
 	LocalDate reservationDate,
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm")// 예약 날짜
+	@Schema(type = "string", example = "19:00")
 	LocalTime reservationTime,  // 예약 시간
 	Integer totalPrice,         // 전체 가격
 	List<SelectAddOptionResponse> selectAddOptions, // 선택한 추가 옵션 정보

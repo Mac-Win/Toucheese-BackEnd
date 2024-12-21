@@ -9,6 +9,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.toucheese.global.config.ImageConfig;
 import com.toucheese.global.exception.ToucheeseBadRequestException;
 import com.toucheese.member.entity.Member;
 import com.toucheese.member.service.MemberService;
@@ -44,6 +45,7 @@ public class CartService {
 	private final MemberService memberService;
 	private final ReservationService reservationService;
 	private final ApplicationEventPublisher eventPublisher;
+	private final ImageConfig imageConfig;
 
 	@Transactional
 	public void createCart(CartRequest cartRequest, Long memberId) {
@@ -136,9 +138,9 @@ public class CartService {
 
 			return new CartResponse(
 				cart.getId(),
-				cart.getStudio().getProfileImage(),
+				imageConfig.getResizedImageBaseUrl() + cart.getStudio().getProfileImage(),
 				cart.getStudio().getName(),
-				cart.getProduct().getProductImage(),
+				imageConfig.getResizedImageBaseUrl() +cart.getProduct().getProductImage(),
 				cart.getProduct().getName(),
 				cart.getProduct().getStandard(),
 				cart.getProduct().getPrice(),
@@ -157,7 +159,7 @@ public class CartService {
 			new CheckoutCartItemsResponse(
 				cart.getId(),
 				cart.getStudio().getName(),
-				cart.getProduct().getProductImage(),
+				imageConfig.getResizedImageBaseUrl() + cart.getProduct().getProductImage(),
 				cart.getProduct().getName(),
 				cart.getProduct().getPrice(),
 				cart.getPersonnel(),

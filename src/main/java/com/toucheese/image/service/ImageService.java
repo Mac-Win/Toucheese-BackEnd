@@ -4,9 +4,12 @@ import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.toucheese.global.exception.ToucheeseInternalServerErrorException;
 import com.toucheese.image.entity.*;
 import com.toucheese.image.repository.FacilityImageRepository;
+import com.toucheese.image.repository.QuestionImageRepository;
 import com.toucheese.image.repository.ReviewImageRepository;
 import com.toucheese.image.repository.StudioImageRepository;
 import com.toucheese.image.util.S3ImageUtil;
+import com.toucheese.question.entity.Question;
+import com.toucheese.question.service.QuestionReadService;
 import com.toucheese.review.entity.Review;
 import com.toucheese.review.service.ReviewService;
 import com.toucheese.studio.entity.Studio;
@@ -38,6 +41,9 @@ public class ImageService {
     private final ReviewImageRepository reviewImageRepository;
 
     private final FacilityImageRepository facilityImageRepository;
+
+    private final QuestionReadService questionReadService;
+    private final QuestionImageRepository questionImageRepository;
 
     private final ImageInfoService imageInfoService;
 
@@ -71,6 +77,7 @@ public class ImageService {
                 case STUDIO -> saveStudioImage(entityId, imageInfo, extension);
                 case REVIEW -> saveReviewImage(entityId, imageInfo, extension);
                 case FACILITY -> saveFacilityImage(entityId, imageInfo, extension);
+                case QUESTION -> saveQuestionImage(entityId, imageInfo, extension);
                 default -> throw new IllegalArgumentException("Unsupported image type: " + imageType);
             }
         }
@@ -107,6 +114,17 @@ public class ImageService {
                 .imageInfo(imageInfo)
                 .build();
         facilityImageRepository.save(facilityImage);
+    }
+
+    private void saveQuestionImage(Long questionId, ImageInfo imageInfo, String extension) {
+        Question question = questionReadService.findQuestionById(questionId);
+        QuestionImage questionImage = QuestionImage.builder()
+                .question(question)
+                .originalPath(buildFilePath(imageInfo.getUploadFilename(), extension))
+                .resizedPath(buildFilePath(imageInfo.getUploadFilename(), RESIZED_EXTENSION))
+                .imageInfo(imageInfo)
+                .build();
+        questionImageRepository.save(questionImage);
     }
 
     /**

@@ -6,6 +6,7 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 
 public record CartRequest(
@@ -18,6 +19,7 @@ public record CartRequest(
 	Integer totalPrice,
 	LocalDate createDate,
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm")
+	@Schema(type = "string", example = "19:00")
 	LocalTime createTime,
 	@NotNull(message = "인원은 필수입니다.")
 	Integer personnel,
