@@ -1,32 +1,22 @@
 package com.toucheese.image.service;
 
+import static com.toucheese.image.util.FilenameUtil.extractFileExtension;
+import static com.toucheese.image.util.MetadataUtil.createMetadata;
+
 import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.toucheese.global.exception.ToucheeseBadRequestException;
 import com.toucheese.global.exception.ToucheeseInternalServerErrorException;
-import com.toucheese.image.entity.*;
-import com.toucheese.image.repository.FacilityImageRepository;
-import com.toucheese.image.repository.QuestionImageRepository;
-import com.toucheese.image.repository.ReviewImageRepository;
-import com.toucheese.image.repository.StudioImageRepository;
+import com.toucheese.image.entity.ImageInfo;
+import com.toucheese.image.entity.ImageType;
 import com.toucheese.image.util.S3ImageUtil;
-import com.toucheese.question.entity.Question;
-import com.toucheese.question.service.QuestionReadService;
-import com.toucheese.review.entity.Review;
-import com.toucheese.review.service.ReviewService;
-import com.toucheese.studio.entity.Studio;
-import com.toucheese.studio.service.StudioService;
 import jakarta.servlet.http.HttpServletRequest;
+import java.io.IOException;
+import java.util.List;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.io.IOException;
-import java.util.List;
-import java.util.Objects;
-
-import static com.toucheese.image.util.FilenameUtil.buildFilePath;
-import static com.toucheese.image.util.FilenameUtil.extractFileExtension;
-import static com.toucheese.image.util.MetadataUtil.createMetadata;
 
 @Service
 @RequiredArgsConstructor
@@ -34,20 +24,8 @@ public class ImageService {
 
     private final S3ImageUtil s3ImageUtil;
 
-    private final StudioService studioService;
-    private final StudioImageRepository studioImageRepository;
-
-    private final ReviewService reviewService;
-    private final ReviewImageRepository reviewImageRepository;
-
-    private final FacilityImageRepository facilityImageRepository;
-
-    private final QuestionReadService questionReadService;
-    private final QuestionImageRepository questionImageRepository;
-
+    private final ImageFacade imageFacade;
     private final ImageInfoService imageInfoService;
-
-    private static final String RESIZED_EXTENSION = ".webp";
 
     /**
      * 기존 이미지를 업로드하기 위한 메서드
@@ -74,57 +52,13 @@ public class ImageService {
             uploadImage(uploadFile, imageInfo.getUploadFilename() + extension, createMetadata(uploadFile));
 
             switch (imageType) {
-                case STUDIO -> saveStudioImage(entityId, imageInfo, extension);
-                case REVIEW -> saveReviewImage(entityId, imageInfo, extension);
-                case FACILITY -> saveFacilityImage(entityId, imageInfo, extension);
-                case QUESTION -> saveQuestionImage(entityId, imageInfo, extension);
-                default -> throw new IllegalArgumentException("Unsupported image type: " + imageType);
+                case STUDIO -> imageFacade.saveStudioImage(entityId, imageInfo, extension);
+                case REVIEW -> imageFacade.saveReviewImage(entityId, imageInfo, extension);
+                case FACILITY -> imageFacade.saveFacilityImage(entityId, imageInfo, extension);
+                case QUESTION -> imageFacade.saveQuestionImage(entityId, imageInfo, extension);
+                default -> throw new ToucheeseBadRequestException(imageType + ": 존재하지 않는 형식 입니다.");
             }
         }
-    }
-
-    private void saveStudioImage(Long studioId, ImageInfo imageInfo, String extension) {
-        Studio studio = studioService.findStudioById(studioId);
-        StudioImage studioImage = StudioImage.builder()
-                .studio(studio)
-                .originalPath(buildFilePath(imageInfo.getUploadFilename(), extension))
-                .resizedPath(buildFilePath(imageInfo.getUploadFilename(), RESIZED_EXTENSION))
-                .imageInfo(imageInfo)
-                .build();
-        studioImageRepository.save(studioImage);
-    }
-
-    private void saveReviewImage(Long reviewId, ImageInfo imageInfo, String extension) {
-        Review review = reviewService.findReviewById(reviewId);
-        ReviewImage reviewImage = ReviewImage.builder()
-                .review(review)
-                .originalPath(buildFilePath(imageInfo.getUploadFilename(), extension))
-                .resizedPath(buildFilePath(imageInfo.getUploadFilename(), RESIZED_EXTENSION))
-                .imageInfo(imageInfo)
-                .build();
-        reviewImageRepository.save(reviewImage);
-    }
-
-    private void saveFacilityImage(Long studioId, ImageInfo imageInfo, String extension) {
-        Studio studio = studioService.findStudioById(studioId);
-        FacilityImage facilityImage = FacilityImage.builder()
-                .studio(studio)
-                .originalPath(buildFilePath(imageInfo.getUploadFilename(), extension))
-                .resizedPath(buildFilePath(imageInfo.getUploadFilename(), RESIZED_EXTENSION))
-                .imageInfo(imageInfo)
-                .build();
-        facilityImageRepository.save(facilityImage);
-    }
-
-    private void saveQuestionImage(Long questionId, ImageInfo imageInfo, String extension) {
-        Question question = questionReadService.findQuestionById(questionId);
-        QuestionImage questionImage = QuestionImage.builder()
-                .question(question)
-                .originalPath(buildFilePath(imageInfo.getUploadFilename(), extension))
-                .resizedPath(buildFilePath(imageInfo.getUploadFilename(), RESIZED_EXTENSION))
-                .imageInfo(imageInfo)
-                .build();
-        questionImageRepository.save(questionImage);
     }
 
     /**
