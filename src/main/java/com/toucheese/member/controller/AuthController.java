@@ -33,28 +33,28 @@ public class AuthController {
 	public ResponseEntity<SocialLoginResponse> kakaoLogin(@Valid @RequestBody SocialLoginRequest socialLoginRequest) {
 		SocialLoginResponse socialLoginResponse = kakaoAuthService.handleKakaoLogin(socialLoginRequest);
 
+		String jwtAccessToken = kakaoAuthService.getGeneratedAccessToken(socialLoginRequest);
+
 		return ApiResponse.accessTokenResponse(
 			socialLoginResponse,
-			socialLoginRequest.accessToken());
+			jwtAccessToken);
 	}
 
 	@GetMapping("/kakao/callback")
 	public ResponseEntity<SocialLoginResponse> kakaoCallback(@RequestParam String code) {
-		// 1. 카카오 Access Token 요청
 		String accessToken = kakaoAuthService.getAccessTokenFromKakao(code);
 
-		// 2. 사용자 정보 및 JWT 생성
 		SocialLoginRequest socialLoginRequest = SocialLoginRequest.builder()
 			.accessToken(accessToken)
 			.build();
 
-		// 3. 서비스 계층에서 JWT 생성
 		SocialLoginResponse socialLoginResponse = kakaoAuthService.handleKakaoLogin(socialLoginRequest);
 
-		// 4. JWT를 헤더에만 포함
+		String jwtAccessToken = kakaoAuthService.getGeneratedAccessToken(socialLoginRequest);
+		
 		return ApiResponse.accessTokenResponse(
 			socialLoginResponse,
-			socialLoginRequest.accessToken());
+			jwtAccessToken);
 	}
 
 }
