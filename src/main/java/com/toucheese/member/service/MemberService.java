@@ -1,13 +1,17 @@
 package com.toucheese.member.service;
 
+import java.security.Principal;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.toucheese.global.exception.ToucheeseBadRequestException;
+import com.toucheese.global.util.PrincipalUtils;
 import com.toucheese.member.dto.AuthProvider;
 import com.toucheese.member.dto.KakaoMember;
 import com.toucheese.member.dto.LoginRequest;
 import com.toucheese.member.dto.MemberContactInfoResponse;
+import com.toucheese.member.dto.MemberFirstLoginUpdateRequest;
 import com.toucheese.member.dto.MemberTokenResponse;
 import com.toucheese.member.dto.TokenDTO;
 import com.toucheese.member.entity.Member;
@@ -101,5 +105,14 @@ public class MemberService {
             member.markAsLoggedIn();
             memberRepository.save(member); // 업데이트
         }
+    }
+
+    @Transactional
+    public void memberFirstLoginUpdate(MemberFirstLoginUpdateRequest request, Principal principal) {
+        Long MemberId = PrincipalUtils.extractMemberId(principal);
+
+        Member member = findMemberById(MemberId);
+
+        member.firstLoginUpdate(request);
     }
 }
