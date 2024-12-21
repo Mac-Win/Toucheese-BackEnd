@@ -38,7 +38,7 @@ public class AuthController {
 			socialLoginRequest.accessToken());
 	}
 
-	@GetMapping("/naver")
+	@GetMapping("/kakao/callback")
 	public ResponseEntity<SocialLoginResponse> kakaoCallback(@RequestParam String code) {
 		// 1. 카카오 Access Token 요청
 		String accessToken = kakaoAuthService.getAccessTokenFromKakao(code);
