@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.toucheese.global.data.ApiResponse;
+import com.toucheese.member.dto.KakaoCodeRequest;
 import com.toucheese.member.dto.SocialLoginRequest;
 import com.toucheese.member.dto.SocialLoginResponse;
 import com.toucheese.member.service.KakaoAuthService;
@@ -51,7 +52,25 @@ public class AuthController {
 		SocialLoginResponse socialLoginResponse = kakaoAuthService.handleKakaoLogin(socialLoginRequest);
 
 		String jwtAccessToken = kakaoAuthService.getGeneratedAccessToken(socialLoginRequest);
-		
+
+		return ApiResponse.accessTokenResponse(
+			socialLoginResponse,
+			jwtAccessToken);
+	}
+
+	@PostMapping("/kakao/callback")
+	public ResponseEntity<SocialLoginResponse> kakaoLogin(@RequestBody KakaoCodeRequest kakaoCodeRequest) {
+		String code = kakaoCodeRequest.code();
+		String accessToken = kakaoAuthService.getAccessTokenFromKakao(code);
+
+		SocialLoginRequest socialLoginRequest = SocialLoginRequest.builder()
+			.accessToken(accessToken)
+			.build();
+
+		SocialLoginResponse socialLoginResponse = kakaoAuthService.handleKakaoLogin(socialLoginRequest);
+
+		String jwtAccessToken = kakaoAuthService.getGeneratedAccessToken(socialLoginRequest);
+
 		return ApiResponse.accessTokenResponse(
 			socialLoginResponse,
 			jwtAccessToken);
