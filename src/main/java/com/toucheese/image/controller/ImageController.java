@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
@@ -40,11 +41,11 @@ public class ImageController {
      * @param uploadFiles 업로드 요청 파일 목록
      * @param studioId 스튜디오 ID
      */
-    @PostMapping("/v2/studios/images")
+    @PostMapping("/v2/studios/{studioId}/images")
     @Operation(summary = "스튜디오 이미지 업로드를 위한 API", description = "이미지 업로드 및 DB 내 데이터 적재")
     public void studioImageUpload(
             @RequestPart List<MultipartFile> uploadFiles,
-            @RequestParam Long studioId
+            @PathVariable Long studioId
     ) {
         imageService.uploadImageWithDetails(uploadFiles, studioId, ImageType.STUDIO);
     }
@@ -54,11 +55,11 @@ public class ImageController {
      * @param uploadFiles 업로드 요청 파일 목록
      * @param reviewId 리뷰 ID
      */
-    @PostMapping("/v2/reviews/images")
+    @PostMapping("/v2/reviews/{reviewId}/images")
     @Operation(summary = "리뷰 이미지 업로드를 위한 API", description = "이미지 업로드 및 DB 내 데이터 적재")
     public void reviewImageUpload(
             @RequestPart List<MultipartFile> uploadFiles,
-            @RequestParam Long reviewId
+            @PathVariable Long reviewId
     ) {
         imageService.uploadImageWithDetails(uploadFiles, reviewId, ImageType.REVIEW);
     }
@@ -68,11 +69,11 @@ public class ImageController {
      * @param uploadFiles 업로드 요청 파일 목록
      * @param studioId 스튜디오 ID
      */
-    @PostMapping("/v2/facilities/images")
+    @PostMapping("/v2/facilities/{studioId}/images")
     @Operation(summary = "시설 이미지 업로드를 위한 API", description = "이미지 업로드 및 DB 내 데이터 적재")
     public void facilityImageUpload(
             @RequestPart List<MultipartFile> uploadFiles,
-            @RequestParam Long studioId
+            @PathVariable Long studioId
     ) {
         imageService.uploadImageWithDetails(uploadFiles, studioId, ImageType.FACILITY);
     }
@@ -82,11 +83,11 @@ public class ImageController {
      * @param uploadFiles 업로드 요청 파일 목록
      * @param questionId 문의 ID
      */
-    @PostMapping("/v2/questions/images")
+    @PostMapping("/v2/questions/{questionId}/images")
     @Operation(summary = "문의 이미지 업로드를 위한 API", description = "이미지 업로드 및 DB 내 데이터 적재")
     public void questionImageUpload(
             @RequestPart List<MultipartFile> uploadFiles,
-            @RequestParam Long questionId
+            @PathVariable Long questionId
     ) {
         imageService.uploadImageWithDetails(uploadFiles, questionId, ImageType.FACILITY);
     }
