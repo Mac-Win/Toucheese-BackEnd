@@ -2,6 +2,7 @@ package com.toucheese.question.dto;
 
 import com.toucheese.question.entity.AnswerStatus;
 import com.toucheese.question.entity.Question;
+import java.util.List;
 import lombok.Builder;
 
 import java.time.LocalDate;
@@ -13,9 +14,10 @@ public record QuestionDetailResponse (
         String content,
         LocalDate createDate,
         AnswerResponse answerResponse,
-        AnswerStatus answerStatus
+        AnswerStatus answerStatus,
+        List<String> imageUrls
 ){
-    public static QuestionDetailResponse of(Question question) {
+    public static QuestionDetailResponse of(Question question, String baseUrl) {
         AnswerResponse answerResponse = null;
         if (question.getAnswer() != null && question.getAnswerStatus() == AnswerStatus.답변완료) {
             answerResponse = AnswerResponse.of(question.getAnswer());
@@ -27,6 +29,10 @@ public record QuestionDetailResponse (
                 .createDate(question.getCreateDate())
                 .answerResponse(answerResponse)
                 .answerStatus(question.getAnswerStatus())
+                .imageUrls(question.getQuestionImages().stream()
+                        .map(questionImage -> baseUrl + questionImage.getResizedPath())
+                        .toList()
+                )
                 .build();
     }
 }

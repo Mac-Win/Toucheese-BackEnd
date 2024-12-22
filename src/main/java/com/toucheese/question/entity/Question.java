@@ -1,8 +1,10 @@
 package com.toucheese.question.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.toucheese.image.entity.QuestionImage;
 import com.toucheese.member.entity.Member;
 import jakarta.persistence.*;
+import java.util.List;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -38,6 +40,9 @@ public class Question {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "answer_id")
     private Answer answer;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "question")
+    private List<QuestionImage> questionImages;
 
     public void update(String title, String content) {
         this.title = title;
