@@ -63,7 +63,7 @@ public class ImageService {
 
     /**
      * 요청받은 이미지 업로드
-     * @param request 요청 정보 (InputStream, Metadata)
+     * @param request 요청 정보
      * @param filename 업로드 할 파일 이름
      */
     private void uploadImage(HttpServletRequest request, String filename) {
@@ -77,7 +77,7 @@ public class ImageService {
 
     /**
      * 요청받은 이미지 업로드
-     * @param uploadFile 업로드 요청 파일 (inputStream, uploadFile)
+     * @param uploadFile 업로드 요청 파일
      * @param filename 생성된 파일 이름
      */
     private void uploadImage(MultipartFile uploadFile, String filename) {

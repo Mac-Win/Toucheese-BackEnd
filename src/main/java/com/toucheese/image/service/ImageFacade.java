@@ -36,6 +36,12 @@ public class ImageFacade {
 
     private static final String RESIZED_EXTENSION = ".webp";
 
+    /**
+     * 스튜디오 이미지 저장
+     * @param studioId 스튜디오 ID
+     * @param imageInfo 이미지 정보
+     * @param extension 기존 이미지에서 추출한 확장자
+     */
     @Transactional
     public void saveStudioImage(Long studioId, ImageInfo imageInfo, String extension) {
         Studio studio = studioService.findStudioById(studioId);
@@ -48,6 +54,12 @@ public class ImageFacade {
         studioImageRepository.save(studioImage);
     }
 
+    /**
+     * 리뷰 이미지 저장
+     * @param reviewId 리뷰 ID
+     * @param imageInfo 이미지 정보
+     * @param extension 기존 이미지에서 추출한 확장자
+     */
     @Transactional
     public void saveReviewImage(Long reviewId, ImageInfo imageInfo, String extension) {
         Review review = reviewService.findReviewById(reviewId);
@@ -60,6 +72,12 @@ public class ImageFacade {
         reviewImageRepository.save(reviewImage);
     }
 
+    /**
+     * 시설 이미지 저장
+     * @param studioId 스튜디오 ID
+     * @param imageInfo 이미지 정보
+     * @param extension 기존 이미지에서 추출한 확장자
+     */
     @Transactional
     public void saveFacilityImage(Long studioId, ImageInfo imageInfo, String extension) {
         Studio studio = studioService.findStudioById(studioId);
@@ -72,6 +90,12 @@ public class ImageFacade {
         facilityImageRepository.save(facilityImage);
     }
 
+    /**
+     * 문의 이미지 저장
+     * @param questionId 문의 ID
+     * @param imageInfo 이미지 정보
+     * @param extension 기존 이미지에서 추출한 확장자
+     */
     @Transactional
     public void saveQuestionImage(Long questionId, ImageInfo imageInfo, String extension) {
         Question question = questionReadService.findQuestionById(questionId);
