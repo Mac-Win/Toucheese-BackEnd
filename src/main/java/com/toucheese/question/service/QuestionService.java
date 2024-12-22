@@ -1,5 +1,14 @@
 package com.toucheese.question.service;
 
+import java.security.Principal;
+import java.time.LocalDate;
+import java.time.ZoneId;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.toucheese.global.config.ImageConfig;
 import com.toucheese.global.util.PageUtils;
 import com.toucheese.member.entity.Member;
@@ -10,12 +19,8 @@ import com.toucheese.question.entity.AnswerStatus;
 import com.toucheese.question.entity.Question;
 import com.toucheese.question.repository.QuestionRepository;
 import com.toucheese.question.util.QuestionUtil;
-import java.security.Principal;
+
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -33,6 +38,7 @@ public class QuestionService {
                 .content(questionRequest.content())
                 .member(member)
                 .answerStatus(AnswerStatus.답변대기)
+                .createDate(LocalDate.now(ZoneId.of("Asia/Seoul")))
                 .build();
 
         return questionRepository.save(question);

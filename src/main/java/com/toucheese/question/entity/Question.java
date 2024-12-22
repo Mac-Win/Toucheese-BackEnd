@@ -1,14 +1,29 @@
 package com.toucheese.question.entity;
 
+import java.time.LocalDate;
+import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.toucheese.image.entity.QuestionImage;
 import com.toucheese.member.entity.Member;
-import jakarta.persistence.*;
-import java.util.List;
-import lombok.*;
-import org.hibernate.annotations.CreationTimestamp;
 
-import java.time.LocalDate;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 
 @Entity @Getter
@@ -25,7 +40,6 @@ public class Question {
     private String content;
 
     @Column(nullable = false, updatable = false)
-    @CreationTimestamp
     @JsonFormat(pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
     private LocalDate createDate;
 
