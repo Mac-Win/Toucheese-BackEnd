@@ -5,6 +5,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.reactive.function.BodyInserters;
@@ -42,6 +43,7 @@ public class KakaoAuthService {
 	 * @param socialLoginRequest 클라이언트에서 전달된 카카오 토큰 정보
 	 * @return 사용자 정보
 	 */
+	@Transactional
 	public SocalLoginCombinedResponse handleKakaoLogin(SocialLoginRequest socialLoginRequest) {
 		KakaoMember kakaoMember = getKakaoMemberInfo(socialLoginRequest.accessToken()).block();
 

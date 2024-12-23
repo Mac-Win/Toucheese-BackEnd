@@ -53,7 +53,7 @@ public class Member {
     private AuthProvider authProvider;
 
     @Column(nullable = false)
-    private boolean isFirstLogin; // 첫 로그인 여부 체크
+    private boolean isFirstLogin;
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
@@ -63,9 +63,6 @@ public class Member {
     @Builder.Default
     private List<Reservation> reservations = new ArrayList<>();
 
-    public void markAsLoggedIn() {
-        this.isFirstLogin = false; // 첫 로그인을 처리
-    }
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     private List<Question> questions = new ArrayList<>();
@@ -73,5 +70,6 @@ public class Member {
 	public void firstLoginUpdate(MemberFirstLoginUpdateRequest request) {
 		this.name = request.name();
 		this.phone = request.phone();
+		this.isFirstLogin = false;
 	}
 }

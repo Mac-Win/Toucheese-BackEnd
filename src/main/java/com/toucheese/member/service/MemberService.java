@@ -100,13 +100,6 @@ public class MemberService {
         return memberRepository.save(member);
     }
 
-    public void markMemberAsLoggedIn(Member member) {
-        if (member.isFirstLogin()) {
-            member.markAsLoggedIn();
-            memberRepository.save(member); // 업데이트
-        }
-    }
-
     @Transactional
     public void memberFirstLoginUpdate(MemberFirstLoginUpdateRequest request, Principal principal) {
         Long MemberId = PrincipalUtils.extractMemberId(principal);
