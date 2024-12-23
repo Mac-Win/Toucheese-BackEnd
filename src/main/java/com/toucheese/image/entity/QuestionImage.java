@@ -25,7 +25,7 @@ public class QuestionImage {
     @Column(nullable = false)
     private String resizedPath;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "image_info_id")
     private ImageInfo imageInfo;
 
