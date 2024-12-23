@@ -67,6 +67,7 @@ public class Member {
         this.isFirstLogin = false; // 첫 로그인을 처리
     }
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
     private List<Question> questions = new ArrayList<>();
 
 	public void firstLoginUpdate(MemberFirstLoginUpdateRequest request) {

@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.toucheese.global.data.ApiResponse;
+import com.toucheese.member.dto.SocalLoginCombinedResponse;
 import com.toucheese.member.dto.SocialLoginRequest;
 import com.toucheese.member.dto.SocialLoginResponse;
 import com.toucheese.member.service.KakaoAuthService;
@@ -16,7 +17,9 @@ import com.toucheese.member.service.KakaoAuthService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/v1/auth")
@@ -31,13 +34,12 @@ public class AuthController {
 	 */
 	@PostMapping("/kakao")
 	public ResponseEntity<SocialLoginResponse> kakaoLogin(@Valid @RequestBody SocialLoginRequest socialLoginRequest) {
-		SocialLoginResponse socialLoginResponse = kakaoAuthService.handleKakaoLogin(socialLoginRequest);
-
-		String jwtAccessToken = kakaoAuthService.getGeneratedAccessToken(socialLoginRequest);
+		SocalLoginCombinedResponse socalLoginCombinedResponse = kakaoAuthService.handleKakaoLogin(socialLoginRequest);
+		log.info("SocialLoginRequest: {}", socialLoginRequest);
 
 		return ApiResponse.accessTokenResponse(
-			socialLoginResponse,
-			jwtAccessToken);
+			socalLoginCombinedResponse.socialLoginResponse(),
+			socalLoginCombinedResponse.accessToken());
 	}
 
 	@GetMapping("/kakao/callback")
@@ -48,13 +50,11 @@ public class AuthController {
 			.accessToken(accessToken)
 			.build();
 
-		SocialLoginResponse socialLoginResponse = kakaoAuthService.handleKakaoLogin(socialLoginRequest);
-
-		String jwtAccessToken = kakaoAuthService.getGeneratedAccessToken(socialLoginRequest);
+		SocalLoginCombinedResponse socalLoginCombinedResponse = kakaoAuthService.handleKakaoLogin(socialLoginRequest);
 
 		return ApiResponse.accessTokenResponse(
-			socialLoginResponse,
-			jwtAccessToken);
+			socalLoginCombinedResponse.socialLoginResponse(),
+			socalLoginCombinedResponse.accessToken());
 	}
 
 }

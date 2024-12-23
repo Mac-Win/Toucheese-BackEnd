@@ -12,6 +12,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import com.toucheese.global.exception.ToucheeseBadRequestException;
 import com.toucheese.member.dto.KakaoMember;
+import com.toucheese.member.dto.SocalLoginCombinedResponse;
 import com.toucheese.member.dto.SocialLoginRequest;
 import com.toucheese.member.dto.SocialLoginResponse;
 import com.toucheese.member.dto.TokenDTO;
@@ -41,7 +42,7 @@ public class KakaoAuthService {
 	 * @param socialLoginRequest 클라이언트에서 전달된 카카오 토큰 정보
 	 * @return 사용자 정보
 	 */
-	public SocialLoginResponse handleKakaoLogin(SocialLoginRequest socialLoginRequest) {
+	public SocalLoginCombinedResponse handleKakaoLogin(SocialLoginRequest socialLoginRequest) {
 		KakaoMember kakaoMember = getKakaoMemberInfo(socialLoginRequest.accessToken()).block();
 
 		Member member = memberService.findOrCreateMember(kakaoMember);
@@ -49,7 +50,7 @@ public class KakaoAuthService {
 		String deviceId = socialLoginRequest.deviceId();
 		TokenDTO tokenDTO = tokenService.loginMemberToken(member, deviceId);
 
-		return SocialLoginResponse.from(member, tokenDTO);
+		return new SocalLoginCombinedResponse(SocialLoginResponse.from(member, tokenDTO), tokenDTO.accessToken());
 	}
 
 	/**
@@ -104,14 +105,5 @@ public class KakaoAuthService {
 		}
 
 		return (String) response.get("access_token");
-	}
-
-	public String getGeneratedAccessToken(SocialLoginRequest socialLoginRequest) {
-		KakaoMember kakaoMember = getKakaoMemberInfo(socialLoginRequest.accessToken()).block();
-		Member member = memberService.findOrCreateMember(kakaoMember);
-		String deviceId = socialLoginRequest.deviceId();
-		TokenDTO tokenDTO = tokenService.loginMemberToken(member, deviceId);
-
-		return tokenDTO.accessToken(); // 내부에서 생성한 JWT Access Token 반환
 	}
 }

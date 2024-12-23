@@ -1,10 +1,12 @@
 package com.toucheese.member.repository;
 
-import com.toucheese.member.entity.Token;
 import java.util.Optional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
+
+import com.toucheese.member.entity.Token;
 
 public interface TokenRepository extends JpaRepository<Token, Long> {
 
-    Optional<Token> findByMemberIdAndDeviceId(Long memberId, String deviceId);
+    Optional<Token> findByDeviceId(String deviceId);
 }

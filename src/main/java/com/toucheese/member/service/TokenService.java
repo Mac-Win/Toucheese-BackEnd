@@ -1,21 +1,21 @@
 package com.toucheese.member.service;
 
-import com.toucheese.global.data.JwtValidateStatus;
-import com.toucheese.member.dto.MemberTokenResponse;
-import com.toucheese.member.dto.ReissueRequest;
-import com.toucheese.member.dto.TokenDTO;
+import java.util.UUID;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.toucheese.global.data.JwtValidateStatus;
 import com.toucheese.global.exception.ToucheeseUnAuthorizedException;
 import com.toucheese.global.util.JwtTokenProvider;
+import com.toucheese.member.dto.MemberTokenResponse;
+import com.toucheese.member.dto.ReissueRequest;
+import com.toucheese.member.dto.TokenDTO;
 import com.toucheese.member.entity.Member;
 import com.toucheese.member.entity.Token;
 import com.toucheese.member.repository.TokenRepository;
 
 import lombok.RequiredArgsConstructor;
-
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -34,7 +34,7 @@ public class TokenService {
     public MemberTokenResponse reissueAccessToken(String accessToken, ReissueRequest reissueRequest) {
         String memberId = jwtTokenProvider.getClaims(accessToken).getSubject();
         String deviceId = reissueRequest.deviceId();
-        Token token = findTokenByMemberIdAndDeviceId(Long.parseLong(memberId), deviceId);
+        Token token = findTokenByDeviceId(deviceId);
 
         String refreshToken = token.getRefreshToken();
         checkRefreshToken(refreshToken, reissueRequest.refreshToken()); // refreshToken 검증
@@ -58,15 +58,14 @@ public class TokenService {
 
     /**
      * 회원 정보와 기기 정보를 통해 해당되는 토큰을 검색
-     * @param memberId 회원 아이디
      * @param deviceId 기기 아이디
      * @return 토큰 정보
      */
     @Transactional(readOnly = true)
-    public Token findTokenByMemberIdAndDeviceId(Long memberId, String deviceId) {
-        return tokenRepository.findByMemberIdAndDeviceId(memberId, deviceId)
-                .orElseThrow(ToucheeseUnAuthorizedException::new);
-    }
+	public Token findTokenByDeviceId(String deviceId) {
+		return tokenRepository.findByDeviceId(deviceId)
+			.orElseThrow(ToucheeseUnAuthorizedException::new);
+	}
 
     /**
      * 로그인 시 회원 토큰 처리 메서드
@@ -82,7 +81,7 @@ public class TokenService {
             deviceId = UUID.randomUUID().toString();
             saveToken(member, deviceId, tokenDTO);
         } else {
-            Token token = findTokenByMemberIdAndDeviceId(member.getId(), deviceId);
+            Token token = findTokenByDeviceId(deviceId);
             token.updateRefreshToken(tokenDTO.refreshToken());
         }
 
@@ -95,7 +94,7 @@ public class TokenService {
      * @return true / false
      */
     private boolean validDeviceId(String deviceId) {
-        return deviceId == null || deviceId.isEmpty();
+        return deviceId == null || deviceId.isBlank();
     }
 
     /**
