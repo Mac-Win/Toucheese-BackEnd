@@ -6,11 +6,13 @@ import java.time.ZoneId;
 import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
-import com.toucheese.global.config.ImageConfig;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.toucheese.global.config.ImageConfig;
 import com.toucheese.global.exception.ToucheeseBadRequestException;
 import com.toucheese.studio.dto.CalendarDayResponse;
 import com.toucheese.studio.dto.StudioDetailResponse;
@@ -63,21 +65,23 @@ public class StudioService {
 	 */
 	@Transactional(readOnly = true)
 	public List<CalendarDayResponse> getMonthlyCalendar(Long studioId, String yearMonth) {
-		// 연도와 월 기본값 설정 (서울 기준 현재 날짜)
 		YearMonth targetYearMonth = (yearMonth != null && !yearMonth.isEmpty())
-			? YearMonth.parse(yearMonth) // "2024-12" → YearMonth 객체로 변환
-			: YearMonth.now(ZoneId.of("Asia/Seoul")); // 입력값 없으면 현재 날짜 기준
+			? YearMonth.parse(yearMonth)
+			: YearMonth.now(ZoneId.of("Asia/Seoul"));
 
-		List<CalendarDayResponse> calendarDays = new ArrayList<>();
-
-		// 해당 월의 시작일과 종료일 계산
 		LocalDate firstDay = targetYearMonth.atDay(1);
 		LocalDate lastDay = firstDay.with(TemporalAdjusters.lastDayOfMonth());
 
-		// 날짜별 처리
+		// 스튜디오의 요일별 영업시간 한 번에 조회
+		Map<String, OperatingHour> operatingHours = operatingHourRepository.findByStudioId(studioId)
+			.stream()
+			.collect(Collectors.toMap(OperatingHour::getDayOfWeek, oh -> oh));
+
+		// 날짜별로 CalendarDayResponse 생성
+		List<CalendarDayResponse> calendarDays = new ArrayList<>();
 		for (LocalDate date = firstDay; !date.isAfter(lastDay); date = date.plusDays(1)) {
 			String dayOfWeek = DateUtils.getDayOfWeekFromDate(date.toString());
-			OperatingHour operatingHour = operatingHourRepository.findByStudioIdAndDayOfWeek(studioId, dayOfWeek);
+			OperatingHour operatingHour = operatingHours.get(dayOfWeek);
 
 			calendarDays.add(CalendarDayResponse.of(date, operatingHour));
 		}
