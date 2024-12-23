@@ -2,10 +2,10 @@ package com.toucheese.question.dto;
 
 import com.toucheese.question.entity.AnswerStatus;
 import com.toucheese.question.entity.Question;
-import java.util.List;
 import lombok.Builder;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Builder
 public record QuestionDetailResponse (
@@ -15,6 +15,7 @@ public record QuestionDetailResponse (
         LocalDate createDate,
         AnswerResponse answerResponse,
         AnswerStatus answerStatus,
+        String authorName,
         List<String> imageUrls
 ){
     public static QuestionDetailResponse of(Question question, String baseUrl) {
@@ -29,6 +30,7 @@ public record QuestionDetailResponse (
                 .createDate(question.getCreateDate())
                 .answerResponse(answerResponse)
                 .answerStatus(question.getAnswerStatus())
+                .authorName(question.getMember().getName())
                 .imageUrls(question.getQuestionImages().stream()
                         .map(questionImage -> baseUrl + questionImage.getResizedPath())
                         .toList()
