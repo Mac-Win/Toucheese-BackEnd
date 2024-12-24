@@ -2,6 +2,8 @@ package com.toucheese.question.service;
 
 import com.toucheese.global.config.ImageConfig;
 import com.toucheese.global.util.PageUtils;
+import com.toucheese.image.entity.ImageType;
+import com.toucheese.image.service.ImageService;
 import com.toucheese.member.entity.Member;
 import com.toucheese.question.dto.QuestionDetailResponse;
 import com.toucheese.question.dto.QuestionRequest;
@@ -24,9 +26,10 @@ public class QuestionService {
     private final ImageConfig imageConfig;
     private final QuestionRepository questionRepository;
     private final QuestionReadService questionReadService;
+    private final ImageService imageService;
 
     @Transactional
-    public Question createQuestion(QuestionRequest questionRequest, Principal principal) {
+    public void createQuestion(QuestionRequest questionRequest, Principal principal) {
         Member member = questionReadService.findMemberByPrincipal(principal);
         Question question = Question.builder()
                 .title(questionRequest.title())
@@ -35,7 +38,9 @@ public class QuestionService {
                 .answerStatus(AnswerStatus.답변대기)
                 .build();
 
-        return questionRepository.save(question);
+        question = questionRepository.save(question);
+
+        imageService.uploadImageWithDetails(questionRequest.uploadFiles(), question.getId(), ImageType.QUESTION);
     }
 
     @Transactional(readOnly = true)
