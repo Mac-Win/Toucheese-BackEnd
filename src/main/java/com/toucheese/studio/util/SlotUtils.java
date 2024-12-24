@@ -26,10 +26,10 @@ public class SlotUtils {
 			return startTimeSlots; // 24시간 슬롯 반환
 		}
 
-		// term이 60분 고정이므로 end 이전까지만 슬롯 추가
+		// end 이전까지만 슬롯 추가
 		while (!start.plusMinutes(term).isAfter(end)) {
 			startTimeSlots.add(start.format(formatter));
-			start = start.plusMinutes(60); // 60분씩 증가
+			start = start.plusMinutes(term); // 60분씩 증가
 
 			// start가 하루를 초과하지 않도록 보장
 			if (start.equals(LocalTime.MIDNIGHT)) { // 00:00으로 순환되었을 경우 종료
