@@ -44,11 +44,7 @@ public class AuthController {
 
 	@GetMapping("/kakao/callback")
 	public ResponseEntity<SocialLoginResponse> kakaoCallback(@RequestParam String code) {
-		String accessToken = kakaoAuthService.getAccessTokenFromKakao(code);
-
-		SocialLoginRequest socialLoginRequest = SocialLoginRequest.builder()
-			.accessToken(accessToken)
-			.build();
+		SocialLoginRequest socialLoginRequest = kakaoAuthService.getAccessTokenFromKakao(code);
 
 		SocalLoginCombinedResponse socalLoginCombinedResponse = kakaoAuthService.handleKakaoLogin(socialLoginRequest);
 

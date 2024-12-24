@@ -20,10 +20,12 @@ import com.toucheese.member.dto.TokenDTO;
 import com.toucheese.member.entity.Member;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Mono;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class KakaoAuthService {
 
 	private final WebClient kakaoApiClient; // 사용자 정보 조회용 WebClient
@@ -36,7 +38,6 @@ public class KakaoAuthService {
 
 	@Value("${kakao.redirect-uri}")
 	private String redirectUri;
-
 
 	/**
 	 * 카카오 로그인 처리
@@ -65,16 +66,18 @@ public class KakaoAuthService {
 			.uri("/v2/user/me")
 			.headers(headers -> headers.setBearerAuth(accessToken))
 			.retrieve()
-			.bodyToMono(new ParameterizedTypeReference<Map<String, Object>>() {})
+			.bodyToMono(new ParameterizedTypeReference<Map<String, Object>>() {
+			})
 			.flatMap(response -> {
 				Object propertiesObj = response.get("properties");
 				Object kakaoAccountObj = response.get("kakao_account");
 
-				if (propertiesObj instanceof Map<?, ?> properties && kakaoAccountObj instanceof Map<?, ?> kakaoAccount) {
+				if (propertiesObj instanceof Map<?, ?> properties
+					&& kakaoAccountObj instanceof Map<?, ?> kakaoAccount) {
 					return Mono.just(new KakaoMember(
 						response.get("id").toString(),
-						(String) properties.get("nickname"),
-						(String) kakaoAccount.get("email")
+						(String)properties.get("nickname"),
+						(String)kakaoAccount.get("email")
 					));
 				}
 
@@ -85,10 +88,9 @@ public class KakaoAuthService {
 	/**
 	 * 카카오 Access Token 요청
 	 * @param code 인증 코드
-	 * @return Access Token
+	 * @return Access Token, idToken
 	 */
-	// 카카오 Access Token 요청
-	public String getAccessTokenFromKakao(String code) {
+	public SocialLoginRequest getAccessTokenFromKakao(String code) {
 		MultiValueMap<String, String> formData = new LinkedMultiValueMap<>();
 		formData.add("grant_type", "authorization_code");
 		formData.add("client_id", restApiKey);
@@ -99,13 +101,29 @@ public class KakaoAuthService {
 			.uri("/oauth/token")
 			.body(BodyInserters.fromFormData(formData))
 			.retrieve()
-			.bodyToMono(new ParameterizedTypeReference<Map<String, Object>>() {})
+			.bodyToMono(new ParameterizedTypeReference<Map<String, Object>>() {
+			})
 			.block();
 
-		if (response == null || !response.containsKey("access_token")) {
-			throw new ToucheeseBadRequestException("카카오로부터 유효한 액세스 토큰을 받지 못했습니다.");
+		log.error("카카오 API 응답: {}", response);
+
+		if (response == null || response.isEmpty()) {
+			throw new ToucheeseBadRequestException("카카오로부터 응답이 없거나 데이터가 비어 있습니다.");
 		}
 
-		return (String) response.get("access_token");
+		String accessToken = (String) response.get("access_token");
+		if (accessToken == null || accessToken.isEmpty()) {
+			throw new ToucheeseBadRequestException("카카오로부터 유효한 액세스 토큰을 받지 못했습니다. 응답: " + response);
+		}
+
+		String idToken = (String) response.get("id_token");
+		if (idToken == null || idToken.isEmpty()) {
+			throw new ToucheeseBadRequestException("카카오로부터 유효한 ID 토큰을 받지 못했습니다. 응답: " + response);
+		}
+
+		return SocialLoginRequest.builder()
+			.accessToken(accessToken)
+			.idToken(idToken)
+			.build();
 	}
 }
