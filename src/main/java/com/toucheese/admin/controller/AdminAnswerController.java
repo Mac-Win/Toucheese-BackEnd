@@ -4,6 +4,7 @@ import com.toucheese.admin.service.AdminAnswerService;
 import com.toucheese.global.data.ApiResponse;
 import com.toucheese.question.dto.AnswerRequest;
 import com.toucheese.question.dto.AnswerResponse;
+import com.toucheese.question.dto.QuestionDetailResponse;
 import com.toucheese.question.dto.QuestionResponse;
 import com.toucheese.question.entity.Answer;
 import io.swagger.v3.oas.annotations.Operation;
@@ -33,8 +34,8 @@ public class AdminAnswerController {
     // 특정 문의글 조회
     @Operation(summary = "특정 문의글 조회", description = "관리자가 특정 문의글을 조회할 수 있습니다.")
     @GetMapping("/{questionId}")
-    public ResponseEntity<QuestionResponse> getQuestionById(@PathVariable Long questionId) {
-        QuestionResponse question = adminAnswerService.getQuestionById(questionId);
+    public ResponseEntity<QuestionDetailResponse> getQuestionById(@PathVariable Long questionId) {
+        QuestionDetailResponse question = adminAnswerService.getQuestionDetail(questionId);
         return ApiResponse.getObjectSuccess(question);
     }
 

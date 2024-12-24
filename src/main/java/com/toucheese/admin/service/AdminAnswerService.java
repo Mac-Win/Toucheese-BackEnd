@@ -4,6 +4,7 @@ import com.toucheese.global.exception.ToucheeseBadRequestException;
 import com.toucheese.global.util.PageUtils;
 import com.toucheese.question.dto.AnswerRequest;
 import com.toucheese.question.dto.AnswerResponse;
+import com.toucheese.question.dto.QuestionDetailResponse;
 import com.toucheese.question.dto.QuestionResponse;
 import com.toucheese.question.entity.Answer;
 import com.toucheese.question.entity.AnswerStatus;
@@ -48,6 +49,11 @@ public class AdminAnswerService {
     public QuestionResponse getQuestionById(Long questionId) {
         Question question = questionReadService.findQuestionById(questionId);
         return QuestionResponse.of(question);
+    }
+    @Transactional(readOnly = true)
+    public QuestionDetailResponse getQuestionDetail(Long questionId) {
+        Question question = questionReadService.findQuestionById(questionId);
+        return QuestionDetailResponse.of(question);
     }
 
     @Transactional
