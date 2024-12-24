@@ -5,6 +5,7 @@ import com.toucheese.question.entity.Question;
 import lombok.Builder;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Builder
 public record QuestionResponse (
@@ -13,9 +14,10 @@ public record QuestionResponse (
         String content,
         LocalDate createDate,
         AnswerStatus answerStatus,
-        String authorName
+        String authorName,
+        List<String> imageUrls
 ){
-    public static QuestionResponse of(Question question) {
+    public static QuestionResponse of(Question question, String baseUrl) {
         return QuestionResponse.builder()
                 .id(question.getId())
                 .title(question.getTitle())
@@ -23,6 +25,10 @@ public record QuestionResponse (
                 .createDate(question.getCreateDate())
                 .answerStatus(question.getAnswerStatus())
                 .authorName(question.getMember().getName())
+                .imageUrls(question.getQuestionImages().stream()
+                        .map(questionImage -> baseUrl + questionImage.getResizedPath())
+                        .toList()
+                )
                 .build();
     }
 }

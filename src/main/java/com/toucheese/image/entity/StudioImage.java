@@ -20,23 +20,21 @@ public class StudioImage {
     private Studio studio;
 
     @Column(nullable = false)
-    private String filename;
-
-    @Column(nullable = false)
-    private String uploadFilename;
-
-    @Column(nullable = false)
     private String originalPath;
 
     @Column(nullable = false)
     private String resizedPath;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "image_info_id")
+    private ImageInfo imageInfo;
+
     @Builder
-    public StudioImage(Studio studio, String filename, String uploadFilename, String originalPath, String resizedPath) {
+
+    public StudioImage(Studio studio, String originalPath, String resizedPath, ImageInfo imageInfo) {
         this.studio = studio;
-        this.filename = filename;
-        this.uploadFilename = uploadFilename;
         this.originalPath = originalPath;
         this.resizedPath = resizedPath;
+        this.imageInfo = imageInfo;
     }
 }

@@ -4,20 +4,23 @@ import com.toucheese.global.data.ApiResponse;
 import com.toucheese.question.dto.QuestionDetailResponse;
 import com.toucheese.question.dto.QuestionRequest;
 import com.toucheese.question.dto.QuestionResponse;
-import com.toucheese.question.entity.Question;
 import com.toucheese.question.service.QuestionService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import java.security.Principal;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.*;
-
-import javax.print.attribute.standard.PrinterName;
-import java.security.Principal;
-import java.util.List;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
@@ -39,8 +42,8 @@ public class QuestionController {
         """
     )
     public ResponseEntity<?> createQuestion(@RequestBody QuestionRequest questionRequest, Principal principal) {
-        Question question = questionService.createQuestion(questionRequest, principal);
-        return ApiResponse.createdSuccess("문의하기글이 성공적으로 생성되었습니다.");
+        questionService.createQuestion(questionRequest, principal);
+        return ApiResponse.createdSuccess("문의하기 글이 성공적으로 생성되었습니다.");
     }
 
     @GetMapping("/{questionId}")
@@ -60,7 +63,7 @@ public class QuestionController {
         """
     )
     public ResponseEntity<QuestionDetailResponse> getQuestionById(@PathVariable Long questionId, Principal principal){
-        QuestionDetailResponse response = questionService.findQuestionDetailById(questionId, principal);
+        QuestionDetailResponse response = questionService.findQuestionDetailById(questionId);
         return ApiResponse.getObjectSuccess(response);
     }
 
@@ -93,8 +96,8 @@ public class QuestionController {
         """
     )
     public ResponseEntity<?> updateQuestion(@PathVariable Long questionId, @RequestBody QuestionRequest questionRequest, Principal principal) {
-        QuestionResponse response = questionService.updateQuestion(questionId, questionRequest, principal);
-        return ApiResponse.updatedSuccess("문의하기글이 성공적으로 수정되었습니다.");
+        questionService.updateQuestion(questionId, questionRequest, principal);
+        return ApiResponse.updatedSuccess("문의하기 글이 성공적으로 수정되었습니다.");
     }
 
     // 게시글 삭제
@@ -108,6 +111,6 @@ public class QuestionController {
     )
     public ResponseEntity<?> deleteQuestion(@PathVariable Long questionId, Principal principal) {
         questionService.deleteQuestion(questionId, principal);
-        return ApiResponse.deletedSuccess("문의하기글이 성공적으로 삭제되었습니다.");
+        return ApiResponse.deletedSuccess("문의하기 글이 성공적으로 삭제되었습니다.");
     }
 }

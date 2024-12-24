@@ -20,23 +20,20 @@ public class QuestionImage {
     private Question question;
 
     @Column(nullable = false)
-    private String filename;
-
-    @Column(nullable = false)
-    private String uploadFilename;
-
-    @Column(nullable = false)
     private String originalPath;
 
     @Column(nullable = false)
     private String resizedPath;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "image_info_id")
+    private ImageInfo imageInfo;
+
     @Builder
-    public QuestionImage(Question question, String filename, String uploadFilename, String originalPath, String resizedPath) {
+    public QuestionImage(Question question, String originalPath, String resizedPath, ImageInfo imageInfo) {
         this.question = question;
-        this.filename = filename;
-        this.uploadFilename = uploadFilename;
         this.originalPath = originalPath;
         this.resizedPath = resizedPath;
+        this.imageInfo = imageInfo;
     }
 }
