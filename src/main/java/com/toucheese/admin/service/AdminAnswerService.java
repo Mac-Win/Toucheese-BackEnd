@@ -4,6 +4,7 @@ import com.toucheese.global.config.ImageConfig;
 import com.toucheese.global.exception.ToucheeseBadRequestException;
 import com.toucheese.global.util.PageUtils;
 import com.toucheese.question.dto.AnswerRequest;
+import com.toucheese.question.dto.QuestionDetailResponse;
 import com.toucheese.question.dto.QuestionResponse;
 import com.toucheese.question.entity.Answer;
 import com.toucheese.question.entity.Question;
@@ -31,6 +32,11 @@ public class AdminAnswerService {
                 .orElseThrow(() -> new ToucheeseBadRequestException("해당 답변이 존재하지 않습니다."));
     }
 
+    private Answer findAnswerByAnswerId(Long answerId) {
+        return answerRepository.findById(answerId)
+                .orElseThrow(() -> new ToucheeseBadRequestException("해당 답변이 존재하지 않습니다."));
+    }
+
     @Transactional(readOnly = true)
     public Page<QuestionResponse> getAllQuestions(int page) {
         Pageable pageable = PageUtils.createPageable(page);
@@ -41,9 +47,9 @@ public class AdminAnswerService {
     }
 
     @Transactional(readOnly = true)
-    public QuestionResponse getQuestionById(Long questionId) {
+    public QuestionDetailResponse findQuestionDetail(Long questionId) {
         Question question = questionReadService.findQuestionById(questionId);
-        return QuestionResponse.of(question, imageConfig.getResizedImageBaseUrl());
+        return QuestionDetailResponse.of(question, imageConfig.getResizedImageBaseUrl());
     }
 
     @Transactional
@@ -72,8 +78,11 @@ public class AdminAnswerService {
 
     // 답변 삭제
     @Transactional
-    public void deleteAnswer(Long questionId) {
-        Answer answer = findAnswerByQuestionId(questionId);
+    public void deleteAnswer(Long answerId) {
+        Answer answer = findAnswerByAnswerId(answerId);
+
+        Question question = answer.getQuestion();
+        question.resetAnswer();
 
         answerRepository.delete(answer);  // 답변 삭제
     }

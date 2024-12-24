@@ -4,6 +4,7 @@ import com.toucheese.admin.service.AdminAnswerService;
 import com.toucheese.global.data.ApiResponse;
 import com.toucheese.question.dto.AnswerRequest;
 import com.toucheese.question.dto.AnswerResponse;
+import com.toucheese.question.dto.QuestionDetailResponse;
 import com.toucheese.question.dto.QuestionResponse;
 import com.toucheese.question.entity.Answer;
 import io.swagger.v3.oas.annotations.Operation;
@@ -33,8 +34,8 @@ public class AdminAnswerController {
     // 특정 문의글 조회
     @Operation(summary = "특정 문의글 조회", description = "관리자가 특정 문의글을 조회할 수 있습니다.")
     @GetMapping("/{questionId}")
-    public ResponseEntity<QuestionResponse> getQuestionById(@PathVariable Long questionId) {
-        QuestionResponse question = adminAnswerService.getQuestionById(questionId);
+    public ResponseEntity<QuestionDetailResponse> getQuestionById(@PathVariable Long questionId) {
+        QuestionDetailResponse question = adminAnswerService.findQuestionDetail(questionId);
         return ApiResponse.getObjectSuccess(question);
     }
 
@@ -56,9 +57,9 @@ public class AdminAnswerController {
 
     // 답변 삭제
     @Operation(summary = "답변 삭제", description = "관리자가 답변을 삭제합니다. 삭제 후 문의글 상태는 '답변대기'로 변경됩니다.")
-    @DeleteMapping("/{questionId}/answers")
-    public ResponseEntity<?> deleteAnswer(@PathVariable Long questionId) {
-        adminAnswerService.deleteAnswer(questionId);
+    @DeleteMapping("/answers/{answerId}")
+    public ResponseEntity<?> deleteAnswer(@PathVariable Long answerId) {
+        adminAnswerService.deleteAnswer(answerId);
         return ApiResponse.deletedSuccess("답변이 성공적으로 삭제되었습니다.");
     }
 }
