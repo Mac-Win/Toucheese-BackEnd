@@ -7,6 +7,7 @@ import com.toucheese.cart.entity.Cart;
 import com.toucheese.question.entity.Question;
 import com.toucheese.reservation.entity.Reservation;
 
+import com.toucheese.review.entity.Review;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -48,5 +49,8 @@ public class Member {
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Question> questions = new ArrayList<>();
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+    private List<Review> reviews = new ArrayList<>();
 
 }

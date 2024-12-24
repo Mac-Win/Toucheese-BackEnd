@@ -1,12 +1,6 @@
 package com.toucheese.image.service;
 
-import static com.toucheese.image.util.FilenameUtil.buildFilePath;
-
-import com.toucheese.image.entity.FacilityImage;
-import com.toucheese.image.entity.ImageInfo;
-import com.toucheese.image.entity.QuestionImage;
-import com.toucheese.image.entity.ReviewImage;
-import com.toucheese.image.entity.StudioImage;
+import com.toucheese.image.entity.*;
 import com.toucheese.image.repository.FacilityImageRepository;
 import com.toucheese.image.repository.QuestionImageRepository;
 import com.toucheese.image.repository.ReviewImageRepository;
@@ -14,19 +8,21 @@ import com.toucheese.image.repository.StudioImageRepository;
 import com.toucheese.question.entity.Question;
 import com.toucheese.question.service.QuestionReadService;
 import com.toucheese.review.entity.Review;
-import com.toucheese.review.service.ReviewService;
+import com.toucheese.review.service.ReviewQueryService;
 import com.toucheese.studio.entity.Studio;
 import com.toucheese.studio.service.StudioService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import static com.toucheese.image.util.FilenameUtil.buildFilePath;
+
 @Component
 @RequiredArgsConstructor
 public class ImageFacade {
 
     private final StudioService studioService;
-    private final ReviewService reviewService;
+    private final ReviewQueryService reviewQueryService;
     private final QuestionReadService questionReadService;
 
     private final StudioImageRepository studioImageRepository;
@@ -62,7 +58,7 @@ public class ImageFacade {
      */
     @Transactional
     public void saveReviewImage(Long reviewId, ImageInfo imageInfo, String extension) {
-        Review review = reviewService.findReviewById(reviewId);
+        Review review = reviewQueryService.findReviewById(reviewId);
         ReviewImage reviewImage = ReviewImage.builder()
                 .review(review)
                 .originalPath(buildFilePath(imageInfo.getUploadFilename(), extension))

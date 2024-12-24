@@ -11,23 +11,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class ReviewService {
+public class ReviewQueryService {
 
     private final ImageConfig imageConfig;
     private final ReviewRepository reviewRepository;
-
-    @Transactional(readOnly = true)
-    public List<ReviewResponse> getReviewsByStudioId(Long studioId) {
-        List<Review> reviews = reviewRepository.findAllByStudioId(studioId);
-
-        return reviews.stream()
-                .map(review -> ReviewResponse.of(review, imageConfig.getResizedImageBaseUrl()))
-                .toList();
-    }
 
     @Transactional(readOnly = true)
     public Review findReviewById(Long reviewId) {
@@ -42,6 +32,15 @@ public class ReviewService {
     }
 
     @Transactional(readOnly = true)
+    public List<ReviewResponse> getReviewsByStudioId(Long studioId) {
+        List<Review> reviews = reviewRepository.findAllByStudioId(studioId);
+
+        return reviews.stream()
+                .map(review -> ReviewResponse.of(review, imageConfig.getResizedImageBaseUrl()))
+                .toList();
+    }
+
+    @Transactional(readOnly = true)
     public List<ReviewResponse> getReviewsByProductId(Long productId) {
         List<Review> reviews = reviewRepository.findAllByProductId(productId);
 
@@ -49,6 +48,4 @@ public class ReviewService {
                 .map(review -> ReviewResponse.of(review, imageConfig.getResizedImageBaseUrl()))
                 .toList();
     }
-
-
 }
