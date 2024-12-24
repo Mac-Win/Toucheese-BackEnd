@@ -56,9 +56,9 @@ public class AdminAnswerController {
 
     // 답변 삭제
     @Operation(summary = "답변 삭제", description = "관리자가 답변을 삭제합니다. 삭제 후 문의글 상태는 '답변대기'로 변경됩니다.")
-    @DeleteMapping("/{questionId}/answers")
-    public ResponseEntity<?> deleteAnswer(@PathVariable Long questionId) {
-        adminAnswerService.deleteAnswer(questionId);
+    @DeleteMapping("/answers/{answerId}")
+    public ResponseEntity<?> deleteAnswer(@PathVariable Long answerId) {
+        adminAnswerService.deleteAnswer(answerId);
         return ApiResponse.deletedSuccess("답변이 성공적으로 삭제되었습니다.");
     }
 }

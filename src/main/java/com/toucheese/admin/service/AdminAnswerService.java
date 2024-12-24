@@ -32,6 +32,10 @@ public class AdminAnswerService {
         return answerRepository.findByQuestionId(questionId)
                 .orElseThrow(() -> new ToucheeseBadRequestException("해당 답변이 존재하지 않습니다."));
     }
+    private Answer findAnswerByAnswerId(Long answerId) {
+        return answerRepository.findById(answerId)
+                .orElseThrow(() -> new ToucheeseBadRequestException("해당 답변이 존재하지 않습니다."));
+    }
 
     @Transactional(readOnly = true)
     public Page<QuestionResponse> getAllQuestions(int page) {
@@ -72,9 +76,12 @@ public class AdminAnswerService {
 
     // 답변 삭제
     @Transactional
-    public void deleteAnswer(Long questionId) {
-        Answer answer = findAnswerByQuestionId(questionId);
+    public void deleteAnswer(Long answerId) {
+        Answer answer = findAnswerByAnswerId(answerId);
 
-        answerRepository.delete(answer);  // 답변 삭제
+        Question question = answer.getQuestion();
+        question.resetAnswer();
+
+        answerRepository.delete(answer);
     }
 }
