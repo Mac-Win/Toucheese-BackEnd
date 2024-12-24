@@ -2,8 +2,10 @@ package com.toucheese.admin.controller;
 
 import com.toucheese.admin.service.AdminAnswerService;
 import com.toucheese.global.data.ApiResponse;
+import com.toucheese.question.dto.AnswerRequest;
 import com.toucheese.question.dto.AnswerResponse;
 import com.toucheese.question.dto.QuestionResponse;
+import com.toucheese.question.entity.Answer;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -39,16 +41,16 @@ public class AdminAnswerController {
     // 답변 작성
     @Operation(summary = "답변 작성", description = "관리자가 답변을 작성합니다. 답변 작성 후 문의글 상태는 '답변완료'로 변경됩니다.")
     @PostMapping("/{questionId}/answers")
-    public ResponseEntity<?> addAnswer(@PathVariable Long questionId, @RequestBody String content) {
-        adminAnswerService.addAnswer(questionId, content);
+    public ResponseEntity<?> addAnswer(@PathVariable Long questionId, @RequestBody AnswerRequest request) {
+        adminAnswerService.addAnswer(questionId, request.title(), request.content());
         return ApiResponse.createdSuccess("답변이 성공적으로 생성되었습니다.");
     }
 
     // 답변 수정
     @Operation(summary = "답변 수정", description = "관리자가 기존 답변을 수정합니다.")
     @PutMapping("/{questionId}/answers")
-    public ResponseEntity<?> updateAnswer(@PathVariable Long questionId, @RequestBody String content) {
-        adminAnswerService.updateAnswer(questionId, content);
+    public ResponseEntity<?> updateAnswer(@PathVariable Long questionId, @RequestBody AnswerRequest request) {
+        adminAnswerService.updateAnswer(questionId, request);
         return ApiResponse.updatedSuccess("답변이 성공적으로 수정되었습니다.");
     }
 

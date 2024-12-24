@@ -3,23 +3,24 @@ package com.toucheese.admin.service;
 import com.toucheese.global.config.ImageConfig;
 import com.toucheese.global.exception.ToucheeseBadRequestException;
 import com.toucheese.global.util.PageUtils;
+import com.toucheese.question.dto.AnswerRequest;
 import com.toucheese.question.dto.QuestionResponse;
 import com.toucheese.question.entity.Answer;
 import com.toucheese.question.entity.Question;
 import com.toucheese.question.repository.AnswerRepository;
 import com.toucheese.question.repository.QuestionRepository;
 import com.toucheese.question.service.QuestionReadService;
-import java.time.LocalDate;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+
 @Service
 @RequiredArgsConstructor
 public class AdminAnswerService {
-
     private final ImageConfig imageConfig;
     private final QuestionRepository questionRepository;
     private final AnswerRepository answerRepository;
@@ -33,7 +34,6 @@ public class AdminAnswerService {
     @Transactional(readOnly = true)
     public Page<QuestionResponse> getAllQuestions(int page) {
         Pageable pageable = PageUtils.createPageable(page);
-
         Page<Question> questions = questionRepository.findAll(pageable);
         return questions.map(question ->
                 QuestionResponse.of(question, imageConfig.getResizedImageBaseUrl())
@@ -47,12 +47,14 @@ public class AdminAnswerService {
     }
 
     @Transactional
-    public void addAnswer(Long questionId, String content) {
+    public void addAnswer(Long questionId, String title, String content) {
+
         Question question = questionReadService.findQuestionById(questionId);
 
         Answer answer = answerRepository.save(
                 Answer.builder()
                 .question(question)
+                .title(title)
                 .content(content)
                 .createDate(LocalDate.now())
                 .build()
@@ -63,9 +65,9 @@ public class AdminAnswerService {
 
     // 답변 수정
     @Transactional
-    public void updateAnswer(Long questionId, String content) {
+    public void updateAnswer(Long questionId, AnswerRequest answerRequest) {
         Answer answer = findAnswerByQuestionId(questionId);
-        answer.updateAnswer(content);
+        answer.updateAnswer(answerRequest.title(), answerRequest.content());
     }
 
     // 답변 삭제

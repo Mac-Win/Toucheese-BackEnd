@@ -89,6 +89,6 @@ public class ImageController {
             @RequestPart List<MultipartFile> uploadFiles,
             @PathVariable Long questionId
     ) {
-        imageService.uploadImageWithDetails(uploadFiles, questionId, ImageType.FACILITY);
+        imageService.uploadImageWithDetails(uploadFiles, questionId, ImageType.QUESTION);
     }
 }
