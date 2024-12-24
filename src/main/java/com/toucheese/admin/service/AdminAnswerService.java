@@ -47,7 +47,7 @@ public class AdminAnswerService {
     }
 
     @Transactional(readOnly = true)
-    public QuestionDetailResponse getQuestionDetail(Long questionId) {
+    public QuestionDetailResponse findQuestionDetail(Long questionId) {
         Question question = questionReadService.findQuestionById(questionId);
         return QuestionDetailResponse.of(question, imageConfig.getResizedImageBaseUrl());
     }

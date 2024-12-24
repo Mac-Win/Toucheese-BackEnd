@@ -35,7 +35,7 @@ public class AdminAnswerController {
     @Operation(summary = "특정 문의글 조회", description = "관리자가 특정 문의글을 조회할 수 있습니다.")
     @GetMapping("/{questionId}")
     public ResponseEntity<QuestionDetailResponse> getQuestionById(@PathVariable Long questionId) {
-        QuestionDetailResponse question = adminAnswerService.getQuestionDetail(questionId);
+        QuestionDetailResponse question = adminAnswerService.findQuestionDetail(questionId);
         return ApiResponse.getObjectSuccess(question);
     }
 
