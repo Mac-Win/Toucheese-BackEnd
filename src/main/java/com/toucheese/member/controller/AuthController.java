@@ -35,7 +35,6 @@ public class AuthController {
 	@PostMapping("/kakao")
 	public ResponseEntity<SocialLoginResponse> kakaoLogin(@Valid @RequestBody SocialLoginRequest socialLoginRequest) {
 		SocalLoginCombinedResponse socalLoginCombinedResponse = kakaoAuthService.handleKakaoLogin(socialLoginRequest);
-		log.info("SocialLoginRequest: {}", socialLoginRequest);
 
 		return ApiResponse.accessTokenResponse(
 			socalLoginCombinedResponse.socialLoginResponse(),
