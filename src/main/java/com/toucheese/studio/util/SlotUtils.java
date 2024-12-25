@@ -5,6 +5,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.toucheese.global.exception.ToucheeseBadRequestException;
+
 public class SlotUtils {
 
 	public static List<String> createStartTimeSlots(String openTime, String closeTime, Integer term) {
@@ -14,10 +16,7 @@ public class SlotUtils {
 		LocalTime start = LocalTime.parse(openTime, formatter);
 		LocalTime end = LocalTime.parse(closeTime, formatter);
 
-		// 입력값 검증: openTime이 closeTime보다 이후일 경우 예외 처리
-		if (!start.isBefore(end)) {
-			throw new IllegalArgumentException("Open time must be before close time.");
-		}
+		validateTimeInputs(start, end);
 
 		if (start.equals(LocalTime.MIDNIGHT) && end.equals(LocalTime.MIDNIGHT)) {
 			for (int hour = 0; hour < 24; hour++) {
@@ -38,5 +37,11 @@ public class SlotUtils {
 		}
 
 		return startTimeSlots;
+	}
+
+	private static void validateTimeInputs(LocalTime start, LocalTime end) {
+		if (!start.isBefore(end)) {
+			throw new ToucheeseBadRequestException("Open time must be before close time.");
+		}
 	}
 }
