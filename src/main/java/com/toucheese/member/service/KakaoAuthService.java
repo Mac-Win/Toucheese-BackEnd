@@ -105,11 +105,7 @@ public class KakaoAuthService {
 			})
 			.block();
 
-		log.error("카카오 API 응답: {}", response);
-
-		if (response == null || response.isEmpty()) {
-			throw new ToucheeseBadRequestException("카카오로부터 응답이 없거나 데이터가 비어 있습니다.");
-		}
+		validateResponse(response);
 
 		String accessToken = (String) response.get("access_token");
 		if (accessToken == null || accessToken.isEmpty()) {
@@ -125,5 +121,14 @@ public class KakaoAuthService {
 			.accessToken(accessToken)
 			.idToken(idToken)
 			.build();
+	}
+
+	private void validateResponse(Map<String, Object> response) {
+		if (response == null || response.isEmpty()) {
+			throw new ToucheeseBadRequestException("카카오로부터 응답이 없거나 데이터가 비어 있습니다.");
+		}
+		if (!response.containsKey("access_token") || !response.containsKey("id_token")) {
+			throw new ToucheeseBadRequestException("카카오 응답에 필요한 필드가 포함되지 않았습니다: " + response);
+		}
 	}
 }
