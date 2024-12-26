@@ -1,14 +1,21 @@
 package com.toucheese.member.service;
 
-import com.toucheese.member.dto.LoginRequest;
-import com.toucheese.member.dto.TokenDTO;
+import java.security.Principal;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.toucheese.global.exception.ToucheeseBadRequestException;
-import com.toucheese.member.dto.MemberTokenResponse;
+import com.toucheese.global.util.PrincipalUtils;
+import com.toucheese.member.dto.AuthProvider;
+import com.toucheese.member.dto.KakaoMember;
+import com.toucheese.member.dto.LoginRequest;
 import com.toucheese.member.dto.MemberContactInfoResponse;
+import com.toucheese.member.dto.MemberFirstLoginUpdateRequest;
+import com.toucheese.member.dto.MemberTokenResponse;
+import com.toucheese.member.dto.TokenDTO;
 import com.toucheese.member.entity.Member;
+import com.toucheese.member.entity.Role;
 import com.toucheese.member.repository.MemberRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -65,5 +72,40 @@ public class MemberService {
     @Transactional(readOnly = true)
     public MemberContactInfoResponse findMemberContactInfo(Long memberId) {
         return MemberContactInfoResponse.of(findMemberById(memberId));
+    }
+
+
+
+
+
+    /**
+     * 카카오 사용자 정보를 기반으로 회원 조회 또는 생성
+     * @param kakaoMember 카카오 사용자 정보
+     * @return 회원 엔티티
+     */
+    public Member findOrCreateMember(KakaoMember kakaoMember) {
+        return memberRepository.findByEmail(kakaoMember.email())
+            .orElseGet(() -> createMember(kakaoMember));
+    }
+
+    private Member createMember(KakaoMember kakaoMember) {
+        Member member = Member.builder()
+            .email(kakaoMember.email())
+            .name(kakaoMember.nickname())
+            .password(null) // 소셜 로그인 사용자는 비밀번호 없음
+            .role(Role.USER)
+            .authProvider(AuthProvider.KAKAO)
+            .isFirstLogin(true) // 처음 생성되는 경우 true로 설정
+            .build();
+        return memberRepository.save(member);
+    }
+
+    @Transactional
+    public void memberFirstLoginUpdate(MemberFirstLoginUpdateRequest request, Principal principal) {
+        Long MemberId = PrincipalUtils.extractMemberId(principal);
+
+        Member member = findMemberById(MemberId);
+
+        member.firstLoginUpdate(request);
     }
 }

@@ -1,6 +1,5 @@
 package com.toucheese.global.config;
 
-import com.toucheese.global.advice.CustomAuthenticationEntryPoint;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -15,6 +14,7 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import com.toucheese.global.advice.CustomAuthenticationEntryPoint;
 import com.toucheese.global.util.JwtAuthenticationFilter;
 
 import lombok.RequiredArgsConstructor;
@@ -44,6 +44,8 @@ public class SecurityConfig {
 					.requestMatchers(HttpMethod.POST, "/v1/members/**").permitAll()
 					.requestMatchers(HttpMethod.POST, "/v1/messages/**").permitAll()
 					.requestMatchers(HttpMethod.POST, "/v1/tokens/reissue").permitAll()
+					.requestMatchers(HttpMethod.GET, "/v1/auth/**").permitAll()
+					.requestMatchers(HttpMethod.POST, "/v1/auth/**").permitAll()
 					.requestMatchers("/swagger", "/swagger-ui.html", "/swagger-ui/**", "/api-docs", "/api-docs/**",
 						"/v3/api-docs/**").permitAll()
 					.requestMatchers("/v1/admin/**").hasAuthority("ADMIN")

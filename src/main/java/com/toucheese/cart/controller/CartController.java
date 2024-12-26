@@ -27,6 +27,7 @@ import com.toucheese.member.dto.MemberContactInfoResponse;
 import com.toucheese.member.service.MemberService;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -91,7 +92,15 @@ public class CartController {
 		return ApiResponse.getObjectSuccess(cartService.findCartList(memberId));
 	}
 
-	@Operation(summary = "해당 장바구니 삭제", description = "해당하는 장바구니를 삭제합니다.")
+	@Operation(summary = "해당 장바구니 삭제", description = "해당하는 장바구니를 삭제합니다.",
+		parameters = {
+			@Parameter(
+				name = "cartId",
+				description = "삭제할 장바구니 항목 ID들 (콤마로 구분)",
+				required = true,
+				example = "1,2,3"
+			)
+		})
 	@DeleteMapping("/carts/{cartId}")
 	public ResponseEntity<?> deleteCart(@PathVariable String cartId, Principal principal) {
 		Long memberId = PrincipalUtils.extractMemberId(principal);
