@@ -1,5 +1,12 @@
 package com.toucheese.admin.service;
 
+import java.time.LocalDate;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.toucheese.global.config.ImageConfig;
 import com.toucheese.global.exception.ToucheeseBadRequestException;
 import com.toucheese.global.util.PageUtils;
@@ -11,13 +18,8 @@ import com.toucheese.question.entity.Question;
 import com.toucheese.question.repository.AnswerRepository;
 import com.toucheese.question.repository.QuestionRepository;
 import com.toucheese.question.service.QuestionReadService;
-import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
+import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
@@ -26,11 +28,6 @@ public class AdminAnswerService {
     private final QuestionRepository questionRepository;
     private final AnswerRepository answerRepository;
     private final QuestionReadService questionReadService;
-
-    private Answer findAnswerByQuestionId(Long questionId) {
-        return answerRepository.findByQuestionId(questionId)
-                .orElseThrow(() -> new ToucheeseBadRequestException("해당 답변이 존재하지 않습니다."));
-    }
 
     private Answer findAnswerByAnswerId(Long answerId) {
         return answerRepository.findById(answerId)
@@ -59,7 +56,6 @@ public class AdminAnswerService {
 
         Answer answer = answerRepository.save(
                 Answer.builder()
-                .question(question)
                 .title(title)
                 .content(content)
                 .createDate(LocalDate.now())
@@ -71,8 +67,8 @@ public class AdminAnswerService {
 
     // 답변 수정
     @Transactional
-    public void updateAnswer(Long questionId, AnswerRequest answerRequest) {
-        Answer answer = findAnswerByQuestionId(questionId);
+    public void updateAnswer(Long answerId, AnswerRequest answerRequest) {
+        Answer answer = findAnswerByAnswerId(answerId);
         answer.updateAnswer(answerRequest.title(), answerRequest.content());
     }
 
@@ -81,7 +77,7 @@ public class AdminAnswerService {
     public void deleteAnswer(Long answerId) {
         Answer answer = findAnswerByAnswerId(answerId);
 
-        Question question = answer.getQuestion();
+        Question question = questionRepository.findByAnswerId(answerId);
         question.resetAnswer();
 
         answerRepository.delete(answer);  // 답변 삭제
