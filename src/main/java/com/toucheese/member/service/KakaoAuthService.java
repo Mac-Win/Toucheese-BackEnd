@@ -108,14 +108,8 @@ public class KakaoAuthService {
 		validateResponse(response);
 
 		String accessToken = (String) response.get("access_token");
-		if (accessToken == null || accessToken.isEmpty()) {
-			throw new ToucheeseBadRequestException("카카오로부터 유효한 액세스 토큰을 받지 못했습니다. 응답: " + response);
-		}
 
 		String idToken = (String) response.get("id_token");
-		if (idToken == null || idToken.isEmpty()) {
-			throw new ToucheeseBadRequestException("카카오로부터 유효한 ID 토큰을 받지 못했습니다. 응답: " + response);
-		}
 
 		return SocialLoginRequest.builder()
 			.accessToken(accessToken)
