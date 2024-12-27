@@ -31,13 +31,14 @@ public class TokenService {
      * @return 재발급 된 AccessToken 및 로그인 정보
      */
     @Transactional
-    public MemberTokenResponse reissueAccessToken(String accessToken, ReissueRequest reissueRequest) {
-        String memberId = jwtTokenProvider.getClaims(accessToken).getSubject();
+    public MemberTokenResponse reissueAccessToken(ReissueRequest reissueRequest) {
         String deviceId = reissueRequest.deviceId();
         Token token = findTokenByDeviceId(deviceId);
 
         String refreshToken = token.getRefreshToken();
         checkRefreshToken(refreshToken, reissueRequest.refreshToken()); // refreshToken 검증
+
+        String memberId = jwtTokenProvider.getClaims(refreshToken).getSubject();
 
         // DENIED, EXPIRED 되지 않았다면 AccessToken 재발급
         Member member = token.getMember();

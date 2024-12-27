@@ -33,11 +33,9 @@ public class TokenController {
     @PostMapping("/reissue")
     @Operation(summary = "토큰 재발급", description = "만료된 AccessToken을 재발급 합니다.")
     public ResponseEntity<LoginResponse> reissueToken(
-            HttpServletRequest request,
             @RequestBody @Valid ReissueRequest reissueRequest
     ) {
-        String accessToken = tokenUtils.getTokenFromAuthorizationHeader(request);
-        MemberTokenResponse memberTokenResponse = tokenService.reissueAccessToken(accessToken, reissueRequest);
+        MemberTokenResponse memberTokenResponse = tokenService.reissueAccessToken(reissueRequest);
         return ApiResponse.accessTokenResponse(
                 LoginResponse.of(memberTokenResponse),
                 memberTokenResponse.tokenDTO().accessToken()

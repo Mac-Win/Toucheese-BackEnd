@@ -75,11 +75,11 @@ public class JwtTokenProvider {
      * @return 토큰 내 정보
      */
     public Claims getClaims(String token) {
-        return Jwts.parser()
-                .verifyWith(secretKey)
-                .build()
-                .parseSignedClaims(token)
-                .getPayload();
+            return Jwts.parser()
+                    .verifyWith(secretKey)
+                    .build()
+                    .parseSignedClaims(token)
+                    .getPayload();
     }
 
     /**
