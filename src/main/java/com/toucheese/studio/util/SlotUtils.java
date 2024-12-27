@@ -40,6 +40,7 @@ public class SlotUtils {
 	}
 
 	private static void validateTimeInputs(LocalTime start, LocalTime end) {
+		if (start.equals(LocalTime.MIDNIGHT) && end.equals(LocalTime.MIDNIGHT)) return;
 		if (!start.isBefore(end)) {
 			throw new ToucheeseBadRequestException("Open time must be before close time.");
 		}
