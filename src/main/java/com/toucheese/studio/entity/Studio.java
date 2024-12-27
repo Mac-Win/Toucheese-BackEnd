@@ -50,9 +50,6 @@ public class Studio {
     private Location location;
 
     @Column(columnDefinition = "TEXT")
-    private String description;
-
-    @Column(columnDefinition = "TEXT")
     private String notice;
 
     @OneToMany(mappedBy = "studio", fetch = FetchType.LAZY, cascade = CascadeType.ALL)

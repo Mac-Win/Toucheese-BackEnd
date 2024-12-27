@@ -13,7 +13,6 @@ public record StudioDetailResponse(
 	Long id,
 	String name,
 	String profileImage,
-	String description,
 	Float rating,
 	Integer reviewCount,
 	String address,
@@ -28,7 +27,6 @@ public record StudioDetailResponse(
 			.id(studio.getId())
 			.name(studio.getName())
 			.profileImage(baseUrl + studio.getProfileImage())
-			.description(studio.getDescription())
 			.rating(studio.getRating())
 			.reviewCount(studio.getReviews().size())
 			.address(studio.getAddress())
