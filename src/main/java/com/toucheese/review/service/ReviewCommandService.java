@@ -35,7 +35,9 @@ public class ReviewCommandService {
         Review review = ReviewRequest.toEntity(reviewRequest, member, studio, product);
         review = reviewRepository.save(review);
 
-        imageService.uploadImageWithDetails(reviewRequest.uploadFiles(), review.getId(), ImageType.REVIEW);
+        if (reviewRequest.uploadFiles() != null && !reviewRequest.uploadFiles().isEmpty()) {
+            imageService.uploadImageWithDetails(reviewRequest.uploadFiles(), review.getId(), ImageType.REVIEW);
+        }
     }
 
 }

@@ -40,7 +40,9 @@ public class QuestionService {
 
         question = questionRepository.save(question);
 
-        imageService.uploadImageWithDetails(questionRequest.uploadFiles(), question.getId(), ImageType.QUESTION);
+        if (questionRequest.uploadFiles() != null && !questionRequest.uploadFiles().isEmpty()) {
+            imageService.uploadImageWithDetails(questionRequest.uploadFiles(), question.getId(), ImageType.QUESTION);
+        }
     }
 
     @Transactional(readOnly = true)
