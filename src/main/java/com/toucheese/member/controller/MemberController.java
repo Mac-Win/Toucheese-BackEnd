@@ -2,6 +2,7 @@ package com.toucheese.member.controller;
 
 import java.security.Principal;
 
+import com.toucheese.global.util.PrincipalUtils;
 import com.toucheese.member.dto.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -47,7 +48,7 @@ public class MemberController {
     @GetMapping
     @Operation(summary = "내 정보 불러오기")
     public ResponseEntity<MemberResponse> getMemberInfo(Principal principal) {
-        Long memberId = Long.parseLong(principal.getName());
+        Long memberId = PrincipalUtils.extractMemberId(principal);
         return ApiResponse.getObjectSuccess(
                 MemberResponse.of(memberService.findMemberById(memberId))
         );
