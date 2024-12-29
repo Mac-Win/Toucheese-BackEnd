@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.toucheese.global.data.ApiResponse;
 import com.toucheese.global.util.PrincipalUtils;
+import com.toucheese.member.dto.FindEmailRequest;
 import com.toucheese.member.dto.LoginRequest;
 import com.toucheese.member.dto.LoginResponse;
 import com.toucheese.member.dto.MemberFirstLoginUpdateRequest;
@@ -80,5 +81,13 @@ public class MemberController {
 
         memberService.deleteMember(memberId);
         return ApiResponse.deletedSuccess("회원 탈퇴가 완료되었습니다.");
+    }
+
+    @GetMapping("/find-email")
+    @Operation(summary = "이메일 찾기")
+    public ResponseEntity<String> findEmail(@RequestBody @Valid FindEmailRequest findEmailRequest) {
+
+        String email = memberService.findEmail(findEmailRequest);
+        return ApiResponse.getObjectSuccess(email);
     }
 }
