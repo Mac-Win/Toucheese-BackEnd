@@ -119,4 +119,10 @@ public class MemberService {
 			.build();
 		memberRepository.save(member);
 	}
+
+	@Transactional
+	public void deleteMember(Long memberId) {
+		Member member = findMemberById(memberId);
+		memberRepository.delete(member);
+	}
 }

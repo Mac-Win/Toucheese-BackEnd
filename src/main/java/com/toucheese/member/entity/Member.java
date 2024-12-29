@@ -72,6 +72,10 @@ public class Member {
     @Builder.Default
     private List<Review> reviews = new ArrayList<>();
 
+    @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @Builder.Default
+    private List<Token> tokens = new ArrayList<>();
+
 	public void firstLoginUpdate(MemberFirstLoginUpdateRequest request) {
 		this.name = request.name();
 		this.phone = request.phone().replaceAll("(\\d{3})(\\d{3,4})(\\d{4})", "$1-$2-$3");
