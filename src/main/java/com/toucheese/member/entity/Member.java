@@ -78,7 +78,7 @@ public class Member {
 
 	public void firstLoginUpdate(MemberFirstLoginUpdateRequest request) {
 		this.name = request.name();
-		this.phone = request.phone().replaceAll("(\\d{3})(\\d{3,4})(\\d{4})", "$1-$2-$3");
+		this.phone = request.phone();
 		this.isFirstLogin = false;
 	}
 }

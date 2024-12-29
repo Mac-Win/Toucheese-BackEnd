@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.toucheese.global.exception.ToucheeseBadRequestException;
 import com.toucheese.global.util.PrincipalUtils;
 import com.toucheese.member.dto.AuthProvider;
+import com.toucheese.member.dto.FindEmailRequest;
 import com.toucheese.member.dto.KakaoMember;
 import com.toucheese.member.dto.LoginRequest;
 import com.toucheese.member.dto.MemberContactInfoResponse;
@@ -19,6 +20,7 @@ import com.toucheese.member.entity.Member;
 import com.toucheese.member.entity.Role;
 import com.toucheese.member.repository.MemberRepository;
 
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
@@ -113,7 +115,7 @@ public class MemberService {
 			.email(signupRequest.email())
 			.name(signupRequest.name())
 			.password(signupRequest.password())
-			.phone(signupRequest.phone().replaceAll("(\\d{3})(\\d{3,4})(\\d{4})", "$1-$2-$3"))
+			.phone(signupRequest.phone())
 			.role(Role.USER)
 			.authProvider(AuthProvider.LOCAL)
 			.build();
@@ -124,5 +126,14 @@ public class MemberService {
 	public void deleteMember(Long memberId) {
 		Member member = findMemberById(memberId);
 		memberRepository.delete(member);
+	}
+
+
+	@Transactional(readOnly = true)
+	public String findEmail(@Valid FindEmailRequest findEmailRequest) {
+
+		return memberRepository.findByNameAndPhone(findEmailRequest.name(), findEmailRequest.phone())
+			.map(Member::getEmail)
+			.orElseThrow(() -> new EntityNotFoundException("해당 사용자를 찾을 수 없습니다."));
 	}
 }
