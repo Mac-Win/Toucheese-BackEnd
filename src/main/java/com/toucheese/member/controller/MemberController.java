@@ -3,6 +3,7 @@ package com.toucheese.member.controller;
 import java.security.Principal;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -72,4 +73,12 @@ public class MemberController {
         return ApiResponse.createdSuccess("회원 가입이 완료되었습니다.");
     }
 
+    @DeleteMapping
+    @Operation(summary = "회원 탈퇴")
+    public ResponseEntity<?> deleteMember(Principal principal) {
+        Long memberId = PrincipalUtils.extractMemberId(principal);
+
+        memberService.deleteMember(memberId);
+        return ApiResponse.deletedSuccess("회원 탈퇴가 완료되었습니다.");
+    }
 }
