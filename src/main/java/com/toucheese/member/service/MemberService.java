@@ -14,6 +14,7 @@ import com.toucheese.member.dto.LoginRequest;
 import com.toucheese.member.dto.MemberContactInfoResponse;
 import com.toucheese.member.dto.MemberFirstLoginUpdateRequest;
 import com.toucheese.member.dto.MemberTokenResponse;
+import com.toucheese.member.dto.ResetPasswordRequest;
 import com.toucheese.member.dto.SignupRequest;
 import com.toucheese.member.dto.TokenDTO;
 import com.toucheese.member.entity.Member;
@@ -21,7 +22,6 @@ import com.toucheese.member.entity.Role;
 import com.toucheese.member.repository.MemberRepository;
 
 import jakarta.persistence.EntityNotFoundException;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -39,6 +39,12 @@ public class MemberService {
 	@Transactional(readOnly = true)
 	public Member findMemberById(Long id) {
 		return memberRepository.findById(id)
+			.orElseThrow(ToucheeseBadRequestException::new);
+	}
+
+	@Transactional(readOnly = true)
+	public Member findMemberByEmail(String email) {
+		return memberRepository.findByEmail(email)
 			.orElseThrow(ToucheeseBadRequestException::new);
 	}
 
@@ -110,7 +116,7 @@ public class MemberService {
 	}
 
 	@Transactional
-	public void createSignup(@Valid SignupRequest signupRequest) {
+	public void createSignup(SignupRequest signupRequest) {
 		Member member = Member.builder()
 			.email(signupRequest.email())
 			.name(signupRequest.name())
@@ -130,10 +136,16 @@ public class MemberService {
 
 
 	@Transactional(readOnly = true)
-	public String findEmail(@Valid FindEmailRequest findEmailRequest) {
-
+	public String findEmail(FindEmailRequest findEmailRequest) {
 		return memberRepository.findByNameAndPhone(findEmailRequest.name(), findEmailRequest.phone())
 			.map(Member::getEmail)
 			.orElseThrow(() -> new EntityNotFoundException("해당 사용자를 찾을 수 없습니다."));
+	}
+
+	@Transactional
+	public void resetPassword(ResetPasswordRequest resetPasswordRequest) {
+		Member member = findMemberByEmail(resetPasswordRequest.email());
+
+		member.passwordUpdate(resetPasswordRequest.password());
 	}
 }
