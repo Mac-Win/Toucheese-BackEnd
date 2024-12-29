@@ -81,4 +81,8 @@ public class Member {
 		this.phone = request.phone();
 		this.isFirstLogin = false;
 	}
+
+    public void passwordUpdate(String password) {
+        this.password = password;
+    }
 }

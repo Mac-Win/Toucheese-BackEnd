@@ -19,6 +19,7 @@ import com.toucheese.member.dto.LoginResponse;
 import com.toucheese.member.dto.MemberFirstLoginUpdateRequest;
 import com.toucheese.member.dto.MemberResponse;
 import com.toucheese.member.dto.MemberTokenResponse;
+import com.toucheese.member.dto.ResetPasswordRequest;
 import com.toucheese.member.dto.SignupRequest;
 import com.toucheese.member.service.MemberService;
 
@@ -83,11 +84,18 @@ public class MemberController {
         return ApiResponse.deletedSuccess("회원 탈퇴가 완료되었습니다.");
     }
 
-    @GetMapping("/find-email")
+    @GetMapping("/email/find")
     @Operation(summary = "이메일 찾기")
     public ResponseEntity<String> findEmail(@RequestBody @Valid FindEmailRequest findEmailRequest) {
 
         String email = memberService.findEmail(findEmailRequest);
         return ApiResponse.getObjectSuccess(email);
+    }
+
+    @PutMapping("/password/reset")
+    @Operation(summary = "비밀번호 변경")
+    public ResponseEntity<?> resetPassword(@RequestBody @Valid ResetPasswordRequest resetPasswordRequest) {
+        memberService.resetPassword(resetPasswordRequest);
+        return ApiResponse.updatedSuccess("비밀번호가 변경되었습니다.");
     }
 }
