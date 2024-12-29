@@ -41,6 +41,7 @@ public class SecurityConfig {
 					.requestMatchers(HttpMethod.GET, "/v1/studios/**").permitAll()
 					.requestMatchers(HttpMethod.GET, "/v1/products/**").permitAll()
 					.requestMatchers(HttpMethod.GET, "/v1/reviews/**").permitAll()
+					.requestMatchers(HttpMethod.GET, "/v1/members/find-email").permitAll()
 					.requestMatchers(HttpMethod.POST, "/v1/members/**").permitAll()
 					.requestMatchers(HttpMethod.POST, "/v1/messages/**").permitAll()
 					.requestMatchers(HttpMethod.POST, "/v1/tokens/reissue").permitAll()
