@@ -1,16 +1,29 @@
 package com.toucheese.member.entity;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.toucheese.cart.entity.Cart;
 import com.toucheese.member.dto.AuthProvider;
 import com.toucheese.member.dto.MemberFirstLoginUpdateRequest;
 import com.toucheese.question.entity.Question;
 import com.toucheese.reservation.entity.Reservation;
 import com.toucheese.review.entity.Review;
-import jakarta.persistence.*;
-import lombok.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -61,7 +74,7 @@ public class Member {
 
 	public void firstLoginUpdate(MemberFirstLoginUpdateRequest request) {
 		this.name = request.name();
-		this.phone = request.phone();
+		this.phone = request.phone().replaceAll("(\\d{3})(\\d{3,4})(\\d{4})", "$1-$2-$3");
 		this.isFirstLogin = false;
 	}
 }
