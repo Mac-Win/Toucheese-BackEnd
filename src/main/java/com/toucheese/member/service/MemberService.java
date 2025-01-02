@@ -55,8 +55,7 @@ public class MemberService {
 	 */
 	@Transactional
 	public MemberTokenResponse login(LoginRequest loginRequest) {
-		Member member = memberRepository.findByEmail(loginRequest.email())
-			.orElseThrow(() -> new ToucheeseBadRequestException("아이디 혹은 비밀번호가 잘못되었습니다."));
+		Member member = findMemberByEmail(loginRequest.email());
 
 		checkMemberPassword(member, loginRequest.password());
 		TokenDTO tokenDTO = tokenService.loginMemberToken(member, loginRequest.deviceId());
