@@ -84,7 +84,7 @@ public class MemberController {
         return ApiResponse.deletedSuccess("회원 탈퇴가 완료되었습니다.");
     }
 
-    @GetMapping("/email/find")
+    @GetMapping("/email")
     @Operation(summary = "이메일 찾기")
     public ResponseEntity<String> findEmail(@RequestBody @Valid FindEmailRequest findEmailRequest) {
 
@@ -92,7 +92,7 @@ public class MemberController {
         return ApiResponse.getObjectSuccess(email);
     }
 
-    @PutMapping("/password/reset")
+    @PutMapping("/password")
     @Operation(summary = "비밀번호 변경")
     public ResponseEntity<?> resetPassword(@RequestBody @Valid ResetPasswordRequest resetPasswordRequest) {
         memberService.resetPassword(resetPasswordRequest);
