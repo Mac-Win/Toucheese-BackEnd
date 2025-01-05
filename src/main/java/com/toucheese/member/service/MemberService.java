@@ -1,12 +1,6 @@
 package com.toucheese.member.service;
 
-import java.security.Principal;
-
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.toucheese.global.exception.ToucheeseBadRequestException;
-import com.toucheese.global.util.PrincipalUtils;
 import com.toucheese.member.dto.AuthProvider;
 import com.toucheese.member.dto.FindEmailRequest;
 import com.toucheese.member.dto.KakaoMember;
@@ -20,9 +14,10 @@ import com.toucheese.member.dto.TokenDTO;
 import com.toucheese.member.entity.Member;
 import com.toucheese.member.entity.Role;
 import com.toucheese.member.repository.MemberRepository;
-
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -106,11 +101,8 @@ public class MemberService {
 	}
 
 	@Transactional
-	public void memberFirstLoginUpdate(MemberFirstLoginUpdateRequest request, Principal principal) {
-		Long MemberId = PrincipalUtils.extractMemberId(principal);
-
-		Member member = findMemberById(MemberId);
-
+	public void memberFirstLoginUpdate(MemberFirstLoginUpdateRequest request, Long memberId) {
+		Member member = findMemberById(memberId);
 		member.firstLoginUpdate(request);
 	}
 
