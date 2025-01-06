@@ -10,7 +10,7 @@ import com.toucheese.question.service.QuestionReadService;
 import com.toucheese.review.entity.Review;
 import com.toucheese.review.service.ReviewQueryService;
 import com.toucheese.studio.entity.Studio;
-import com.toucheese.studio.service.StudioService;
+import com.toucheese.studio.service.StudioQueryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,7 +21,7 @@ import static com.toucheese.image.util.FilenameUtil.buildFilePath;
 @RequiredArgsConstructor
 public class ImageFacade {
 
-    private final StudioService studioService;
+    private final StudioQueryService studioQueryService;
     private final ReviewQueryService reviewQueryService;
     private final QuestionReadService questionReadService;
 
@@ -40,7 +40,7 @@ public class ImageFacade {
      */
     @Transactional
     public void saveStudioImage(Long studioId, ImageInfo imageInfo, String extension) {
-        Studio studio = studioService.findStudioById(studioId);
+        Studio studio = studioQueryService.findStudioById(studioId);
         StudioImage studioImage = StudioImage.builder()
                 .studio(studio)
                 .originalPath(buildFilePath(imageInfo.getUploadFilename(), extension))
@@ -76,7 +76,7 @@ public class ImageFacade {
      */
     @Transactional
     public void saveFacilityImage(Long studioId, ImageInfo imageInfo, String extension) {
-        Studio studio = studioService.findStudioById(studioId);
+        Studio studio = studioQueryService.findStudioById(studioId);
         FacilityImage facilityImage = FacilityImage.builder()
                 .studio(studio)
                 .originalPath(buildFilePath(imageInfo.getUploadFilename(), extension))

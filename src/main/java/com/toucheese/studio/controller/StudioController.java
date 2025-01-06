@@ -1,5 +1,6 @@
 package com.toucheese.studio.controller;
 
+import com.toucheese.studio.service.OperatingHourQueryService;
 import java.util.List;
 
 import com.toucheese.global.data.ApiResponse;
@@ -13,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.toucheese.studio.dto.CalendarDayResponse;
 import com.toucheese.studio.dto.StudioDetailResponse;
 import com.toucheese.studio.dto.StudioSearchResponse;
-import com.toucheese.studio.service.StudioService;
+import com.toucheese.studio.service.StudioQueryService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -26,14 +27,15 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class StudioController {
 
-	private final StudioService studioService;
+	private final StudioQueryService studioQueryService;
+	private final OperatingHourQueryService operatingHourQueryService;
 
 	@GetMapping
 	@Operation(summary = "스튜디오 검색",
 		description = "사용자가 입력한 키워드로 스튜디오를 검색합니다.",
 		parameters = @Parameter(name = "keyword", description = "검색할 키워드", required = true))
 	public ResponseEntity<List<StudioSearchResponse>> searchStudios(@RequestParam String keyword) {
-		return ApiResponse.getObjectSuccess(studioService.searchStudios(keyword));
+		return ApiResponse.getObjectSuccess(studioQueryService.searchStudios(keyword));
 	}
 
 	/**
@@ -45,7 +47,7 @@ public class StudioController {
 	@Operation(summary = "스튜디오 상세 조회",
 		description = "사용자가 클릭한 스튜디오 상세조회")
 	public ResponseEntity<StudioDetailResponse> findStudioDetailById(@PathVariable Long studioId) {
-		return ApiResponse.getObjectSuccess(studioService.findStudioDetailById(studioId));
+		return ApiResponse.getObjectSuccess(studioQueryService.findStudioDetailById(studioId));
 	}
 
 	@GetMapping("/{studioId}/calendars")
@@ -55,6 +57,7 @@ public class StudioController {
 		@PathVariable Long studioId,
 		@RequestParam(required = false) String yearMonth
 	) {
-		return ApiResponse.getObjectSuccess(studioService.getMonthlyCalendar(studioId, yearMonth));
+		return ApiResponse.getObjectSuccess(
+				operatingHourQueryService.getMonthlyCalendar(studioId, yearMonth));
 	}
 }

@@ -1,23 +1,5 @@
 package com.toucheese.cart.service;
 
-import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-
-import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import com.toucheese.global.config.ImageConfig;
-import com.toucheese.global.exception.ToucheeseBadRequestException;
-import com.toucheese.member.entity.Member;
-import com.toucheese.member.service.MemberService;
-import com.toucheese.product.dto.ProductDetailResponse;
-import com.toucheese.product.entity.AddOption;
-import com.toucheese.product.entity.Product;
-import com.toucheese.product.entity.ProductAddOption;
-import com.toucheese.product.service.ProductService;
 import com.toucheese.cart.dto.CartIdsRequest;
 import com.toucheese.cart.dto.CartRequest;
 import com.toucheese.cart.dto.CartResponse;
@@ -25,14 +7,29 @@ import com.toucheese.cart.dto.CartUpdateRequest;
 import com.toucheese.cart.dto.CheckoutCartItemsResponse;
 import com.toucheese.cart.dto.SelectAddOptionResponse;
 import com.toucheese.cart.entity.Cart;
-import com.toucheese.reservation.event.ReservationMessageEvent;
 import com.toucheese.cart.repository.CartRepository;
+import com.toucheese.global.config.ImageConfig;
+import com.toucheese.global.exception.ToucheeseBadRequestException;
 import com.toucheese.global.util.CsvUtils;
+import com.toucheese.member.entity.Member;
+import com.toucheese.member.service.MemberService;
+import com.toucheese.product.dto.ProductDetailResponse;
+import com.toucheese.product.entity.AddOption;
+import com.toucheese.product.entity.Product;
+import com.toucheese.product.entity.ProductAddOption;
+import com.toucheese.product.service.ProductService;
+import com.toucheese.reservation.event.ReservationMessageEvent;
 import com.toucheese.reservation.service.ReservationService;
 import com.toucheese.studio.entity.Studio;
-import com.toucheese.studio.service.StudioService;
-
+import com.toucheese.studio.service.StudioQueryService;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -40,7 +37,7 @@ public class CartService {
 
 	private final CartRepository cartRepository;
 	private final CartReadService cartReadService;
-	private final StudioService studioService;
+	private final StudioQueryService studioQueryService;
 	private final ProductService productService;
 	private final MemberService memberService;
 	private final ReservationService reservationService;
@@ -50,7 +47,7 @@ public class CartService {
 	@Transactional
 	public void createCart(CartRequest cartRequest, Long memberId) {
 		Product product = productService.findProductById(cartRequest.productId());
-		Studio studio = studioService.findStudioById(cartRequest.studioId());
+		Studio studio = studioQueryService.findStudioById(cartRequest.studioId());
 		Member member = memberService.findMemberById(memberId);
 
 		Cart cart = Cart.fromCartRequest(cartRequest, product, studio, member);
