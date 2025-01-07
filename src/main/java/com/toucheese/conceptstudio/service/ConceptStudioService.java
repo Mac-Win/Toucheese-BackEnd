@@ -20,9 +20,9 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ConceptStudioService {
 
+	private final ImageConfig imageConfig;
 	private final ConceptStudioRepository conceptStudioRepository;
 	private final StudioRepositoryImpl studioRepositoryImpl;
-	private final ImageConfig imageConfig;
 
 	@Transactional(readOnly = true)
 	public Page<StudioResponse> getStudiosByConceptId(Long conceptId, int page) {

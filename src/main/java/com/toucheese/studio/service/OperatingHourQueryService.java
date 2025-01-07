@@ -2,7 +2,7 @@ package com.toucheese.studio.service;
 
 import com.toucheese.studio.dto.CalendarDayResponse;
 import com.toucheese.studio.entity.OperatingHour;
-import com.toucheese.studio.repository.OperatingHourRepository;
+import com.toucheese.studio.repository.OperatingHourQueryRepository;
 import com.toucheese.studio.util.DateUtils;
 import java.time.LocalDate;
 import java.time.YearMonth;
@@ -20,7 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class OperatingHourQueryService {
 
-    private final OperatingHourRepository operatingHourRepository;
+    private final OperatingHourQueryRepository operatingHourQueryRepository;
 
     /**
      * 특정 월의 휴무일과 영업시간을 반환
@@ -39,7 +39,7 @@ public class OperatingHourQueryService {
         LocalDate lastDay = firstDay.with(TemporalAdjusters.lastDayOfMonth());
 
         // 스튜디오의 요일별 영업시간 한 번에 조회
-        Map<String, OperatingHour> operatingHours = operatingHourRepository.findByStudioId(studioId)
+        Map<String, OperatingHour> operatingHours = operatingHourQueryRepository.findByStudioId(studioId)
                 .stream()
                 .collect(Collectors.toMap(OperatingHour::getDayOfWeek, oh -> oh));
 

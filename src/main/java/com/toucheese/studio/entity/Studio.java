@@ -56,7 +56,7 @@ public class Studio {
     private List<StudioImage> studioImages;
 
     @OneToMany(mappedBy = "studio", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<FacilityImage> FacilityImages;
+    private List<FacilityImage> facilityImages;
 
     @OneToMany(mappedBy = "studio", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<ConceptStudio> conceptStudios;
