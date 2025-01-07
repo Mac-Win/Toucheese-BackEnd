@@ -27,7 +27,7 @@ public class ReservationSchedulerService {
 	public void markReservationsAsCompleted() {
 		LocalDateTime currentTime = LocalDateTime.now();
 
-		List<Reservation> reservations = reservationRepository.findAllByStatus(ReservationStatus.예약확정);
+		List<Reservation> reservations = reservationRepository.findAllByStatus(ReservationStatus.예약접수);
 
 		for (Reservation reservation : reservations) {
 			LocalDateTime reservationDateTime = LocalDateTime.of(
