@@ -6,6 +6,9 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: true
+    properties:
+      hibernate:
+        default_batch_fetch_size: 10
   servlet:
     multipart:
       max-file-size: 5MB # 한개 파일의 최대 사이즈 (default: 1MB)
