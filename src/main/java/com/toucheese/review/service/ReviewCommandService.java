@@ -10,7 +10,7 @@ import com.toucheese.review.dto.ReviewRequest;
 import com.toucheese.review.entity.Review;
 import com.toucheese.review.repository.ReviewRepository;
 import com.toucheese.studio.entity.Studio;
-import com.toucheese.studio.service.StudioService;
+import com.toucheese.studio.service.StudioQueryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,14 +22,14 @@ public class ReviewCommandService {
     private final ReviewRepository reviewRepository;
 
     private final MemberService memberService;
-    private final StudioService studioService;
+    private final StudioQueryService studioQueryService;
     private final ProductService productService;
     private final ImageService imageService;
 
     @Transactional
     public void createReview(ReviewRequest reviewRequest, Long memberId, Long studioId, Long productId) {
         Member member = memberService.findMemberById(memberId);
-        Studio studio = studioService.findStudioById(studioId);
+        Studio studio = studioQueryService.findStudioById(studioId);
         Product product = productService.findProductById(productId);
 
         Review review = ReviewRequest.toEntity(reviewRequest, member, studio, product);

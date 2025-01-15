@@ -54,7 +54,8 @@ public class MemberController {
     @PutMapping
     @Operation(summary = "첫 로그인 회원 정보 변경")
     public ResponseEntity<?> memberFirstLoginUpdate(@RequestBody @Valid MemberFirstLoginUpdateRequest request, Principal principal) {
-        memberService.memberFirstLoginUpdate(request, principal);
+        Long memberId = PrincipalUtils.extractMemberId(principal);
+        memberService.memberFirstLoginUpdate(request, memberId);
         return ApiResponse.updatedSuccess("회원 정보를 성공적으로 업데이트했습니다.");
     }
 

@@ -18,6 +18,11 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
         // 상태 코드 설정
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 
+        // 캐싱 방지 헤더 추가
+        response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+        response.setHeader("Pragma", "no-cache");
+        response.setDateHeader("Expires", 0);
+
         // 메시지 반환
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");

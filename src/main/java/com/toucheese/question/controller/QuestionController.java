@@ -1,5 +1,6 @@
 package com.toucheese.question.controller;
 
+import com.toucheese.global.util.PrincipalUtils;
 import java.security.Principal;
 
 import org.springframework.data.domain.Page;
@@ -39,7 +40,8 @@ public class QuestionController {
             @ModelAttribute QuestionRequest questionRequest,
             Principal principal
     ) {
-        questionService.createQuestion(questionRequest, principal);
+        Long memberId = PrincipalUtils.extractMemberId(principal);
+        questionService.createQuestion(questionRequest, memberId);
         return ApiResponse.createdSuccess("문의하기 글이 성공적으로 생성되었습니다.");
     }
 
@@ -77,7 +79,8 @@ public class QuestionController {
         """
     )
     public ResponseEntity<Page<QuestionResponse>> getQuestions(Principal principal, @RequestParam int page) {
-        Page<QuestionResponse> questions = questionService.findQuestions(principal, page);
+        Long memberId = PrincipalUtils.extractMemberId(principal);
+        Page<QuestionResponse> questions = questionService.findQuestions(page, memberId);
         return ApiResponse.getObjectSuccess(questions);
     }
 
@@ -93,7 +96,8 @@ public class QuestionController {
         """
     )
     public ResponseEntity<?> updateQuestion(@PathVariable Long questionId, @RequestBody QuestionRequest questionRequest, Principal principal) {
-        questionService.updateQuestion(questionId, questionRequest, principal);
+        Long memberId = PrincipalUtils.extractMemberId(principal);
+        questionService.updateQuestion(questionId, questionRequest, memberId);
         return ApiResponse.updatedSuccess("문의하기 글이 성공적으로 수정되었습니다.");
     }
 
@@ -107,7 +111,8 @@ public class QuestionController {
         """
     )
     public ResponseEntity<?> deleteQuestion(@PathVariable Long questionId, Principal principal) {
-        questionService.deleteQuestion(questionId, principal);
+        Long memberId = PrincipalUtils.extractMemberId(principal);
+        questionService.deleteQuestion(questionId, memberId);
         return ApiResponse.deletedSuccess("문의하기 글이 성공적으로 삭제되었습니다.");
     }
 }

@@ -1,21 +1,18 @@
 package com.toucheese.image.controller;
 
+import com.toucheese.image.entity.ImageType;
+import com.toucheese.image.service.ImageService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
 import java.util.List;
-
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-
-import com.toucheese.image.entity.ImageType;
-import com.toucheese.image.service.ImageService;
-
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.servlet.http.HttpServletRequest;
-import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
@@ -46,7 +43,7 @@ public class ImageController {
     @PostMapping("/v2/studios/{studioId}/images")
     @Operation(summary = "스튜디오 이미지 업로드를 위한 API", description = "이미지 업로드 및 DB 내 데이터 적재")
     public void studioImageUpload(
-            @RequestPart List<MultipartFile> uploadFiles,
+            @RequestPart(required = false) List<MultipartFile> uploadFiles,
             @PathVariable Long studioId
     ) {
         imageService.uploadImageWithDetails(uploadFiles, studioId, ImageType.STUDIO);

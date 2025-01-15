@@ -1,5 +1,6 @@
 package com.toucheese.global.config;
 
+import com.toucheese.global.advice.CustomAccessDeniedHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -26,6 +27,7 @@ import lombok.RequiredArgsConstructor;
 public class SecurityConfig {
 
 	private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
+	private final CustomAccessDeniedHandler customAccessDeniedHandler;
 	private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
 	@Bean
@@ -35,6 +37,7 @@ public class SecurityConfig {
 			.cors(cors -> cors.configurationSource(corsConfigurationSource())) // CORS 설정 추가
 			.exceptionHandling(config -> config
 					.authenticationEntryPoint(customAuthenticationEntryPoint)
+					.accessDeniedHandler(customAccessDeniedHandler)
 			)
 			.authorizeHttpRequests(requests ->
 				requests.requestMatchers(HttpMethod.GET, "/v1/concepts/**").permitAll()
