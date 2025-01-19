@@ -37,7 +37,7 @@ public class ReservationController {
 	private final ReservationCommandService reservationCommandService;
 	private final ReservationQueryService reservationQueryReadService;
 
-	@Operation(summary = "예약 기능")
+	@Operation(summary = "예약 기능", description = "여러개의 장바구니 상품을 예약할 수 있습니다. 공백문자 들어올 시 자동으로 처리됩니다.")
 	@PostMapping
 	public ResponseEntity<?> acceptReservationAfterPayment(Principal principal,
 		@RequestBody CartIdsRequest cartIdsRequest) {
