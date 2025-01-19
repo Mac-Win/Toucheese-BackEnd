@@ -37,16 +37,7 @@ public class ReservationController {
 	private final ReservationService reservationService;
 	private final ReservationReadService reservationReadService;
 
-	@Operation(
-		summary = "예약 기능",
-		description = """
-			선택한 장바구니를 결제하면 예약 테이블로 해당 데이터를 옮깁니다.
-			```json
-			{
-			    "cartIds": "1, 2, 3"    << String 입니다.
-			}
-			"""
-	)
+	@Operation(summary = "예약 기능")
 	@PostMapping
 	public ResponseEntity<?> acceptReservationAfterPayment(Principal principal,
 		@RequestBody CartIdsRequest cartIdsRequest) {
@@ -56,10 +47,7 @@ public class ReservationController {
 		return ApiResponse.createdSuccess("결제가 완료되었습니다.");
 	}
 
-	@Operation(summary = "사용자 예약 조회",
-		description = """
-		createDate = 예약날짜,
-		createTime = 예약시간""")
+	@Operation(summary = "사용자 예약 조회")
 	@GetMapping
 	public ResponseEntity<Page<ReservationResponse>> findReservations(Principal principal, @RequestParam int page) {
 		Long memberId = PrincipalUtils.extractMemberId(principal);
