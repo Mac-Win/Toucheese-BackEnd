@@ -4,7 +4,11 @@ import java.util.List;
 
 import com.toucheese.global.util.CsvUtils;
 
-public record CartIdsRequest(String cartIds) {
+import io.swagger.v3.oas.annotations.media.Schema;
+
+public record CartIdsRequest(
+	@Schema(type = "string", example = "1,2,3")
+	String cartIds) {
 	public static CartIdsRequest of(String cartIds) {
 		return new CartIdsRequest(cartIds);
 	}

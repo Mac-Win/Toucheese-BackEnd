@@ -11,7 +11,7 @@ import com.toucheese.admin.dto.AdminReservationListResponse;
 import com.toucheese.global.util.PageUtils;
 import com.toucheese.reservation.entity.Reservation;
 import com.toucheese.reservation.entity.ReservationStatus;
-import com.toucheese.reservation.service.ReservationReadService;
+import com.toucheese.reservation.service.ReservationQueryService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -19,20 +19,20 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class AdminReservationService {
 
-	private final ReservationReadService reservationReadService;
+	private final ReservationQueryService reservationQueryService;
 
 	@Transactional(readOnly = true)
 	public Page<AdminReservationListResponse> findReservations(ReservationStatus status, LocalDate createDate,
 		int page) {
 		Pageable pageable = PageUtils.createPageable(page);
 
-		return reservationReadService.findReservationsByStatusAndDate(status, createDate, pageable)
+		return reservationQueryService.findReservationsByStatusAndDate(status, createDate, pageable)
 			.map(AdminReservationListResponse::of);
 	}
 
 	@Transactional
 	public void updateReservationStatus(Long reservationId, ReservationStatus newStatus) {
-		Reservation reservation = reservationReadService.findReservationById(reservationId);
+		Reservation reservation = reservationQueryService.findReservationById(reservationId);
 
 		reservation.updateStatus(newStatus);
 	}

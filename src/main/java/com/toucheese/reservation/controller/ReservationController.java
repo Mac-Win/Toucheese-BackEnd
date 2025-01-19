@@ -20,8 +20,8 @@ import com.toucheese.global.data.ApiResponse;
 import com.toucheese.global.util.PrincipalUtils;
 import com.toucheese.reservation.dto.ReservationResponse;
 import com.toucheese.reservation.dto.ReservationUpdateRequest;
-import com.toucheese.reservation.service.ReservationReadService;
-import com.toucheese.reservation.service.ReservationService;
+import com.toucheese.reservation.service.ReservationCommandService;
+import com.toucheese.reservation.service.ReservationQueryService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -34,19 +34,10 @@ import lombok.RequiredArgsConstructor;
 @PreAuthorize("isAuthenticated()")
 public class ReservationController {
 	private final CartService cartService;
-	private final ReservationService reservationService;
-	private final ReservationReadService reservationReadService;
+	private final ReservationCommandService reservationCommandService;
+	private final ReservationQueryService reservationQueryReadService;
 
-	@Operation(
-		summary = "예약 기능",
-		description = """
-			선택한 장바구니를 결제하면 예약 테이블로 해당 데이터를 옮깁니다.
-			```json
-			{
-			    "cartIds": "1, 2, 3"    << String 입니다.
-			}
-			"""
-	)
+	@Operation(summary = "예약 기능", description = "여러개의 장바구니 상품을 예약할 수 있습니다. 공백문자 들어올 시 자동으로 처리됩니다.")
 	@PostMapping
 	public ResponseEntity<?> acceptReservationAfterPayment(Principal principal,
 		@RequestBody CartIdsRequest cartIdsRequest) {
@@ -56,15 +47,12 @@ public class ReservationController {
 		return ApiResponse.createdSuccess("결제가 완료되었습니다.");
 	}
 
-	@Operation(summary = "사용자 예약 조회",
-		description = """
-		createDate = 예약날짜,
-		createTime = 예약시간""")
+	@Operation(summary = "사용자 예약 조회")
 	@GetMapping
-	public ResponseEntity<Page<ReservationResponse>> findReservations(Principal principal, @RequestParam int page) {
+	public ResponseEntity<Page<ReservationResponse>> findReservations(Principal principal, @RequestParam(defaultValue = "0") int page) {
 		Long memberId = PrincipalUtils.extractMemberId(principal);
 
-		Page<ReservationResponse> reservations = reservationReadService.findPagedReservationsByMemberId(memberId, page);
+		Page<ReservationResponse> reservations = reservationQueryReadService.findPagedReservationsByMemberId(memberId, page);
 		return ApiResponse.getObjectSuccess(reservations);
 	}
 
@@ -77,7 +65,7 @@ public class ReservationController {
 	) {
 		Long memberId = PrincipalUtils.extractMemberId(principal);
 
-		reservationService.updateReservation(memberId, reservationId, request);
+		reservationCommandService.updateReservation(memberId, reservationId, request);
 		return ApiResponse.updatedSuccess("예약 상태를 성공적으로 업데이트했습니다.");
 	}
 

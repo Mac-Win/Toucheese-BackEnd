@@ -10,7 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.toucheese.reservation.entity.Reservation;
 import com.toucheese.reservation.entity.ReservationStatus;
-import com.toucheese.reservation.repository.ReservationRepository;
+import com.toucheese.reservation.repository.ReservationCommandRepository;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,14 +20,14 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 @Slf4j
 public class ReservationSchedulerService {
-	private final ReservationRepository reservationRepository;
+	private final ReservationCommandRepository reservationCommandRepository;
 
 	@Scheduled(cron = "0 1 * * * *")
 	@Transactional
 	public void markReservationsAsCompleted() {
 		LocalDateTime currentTime = LocalDateTime.now();
 
-		List<Reservation> reservations = reservationRepository.findAllByStatus(ReservationStatus.예약확정);
+		List<Reservation> reservations = reservationCommandRepository.findAllByStatus(ReservationStatus.예약확정);
 
 		for (Reservation reservation : reservations) {
 			LocalDateTime reservationDateTime = LocalDateTime.of(
