@@ -17,7 +17,6 @@ import com.toucheese.admin.dto.AdminReservationListResponse;
 import com.toucheese.admin.dto.UpdateReservationStatusRequest;
 import com.toucheese.admin.service.AdminReservationService;
 import com.toucheese.global.data.ApiResponse;
-import com.toucheese.global.util.PageUtils;
 import com.toucheese.reservation.entity.ReservationStatus;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -38,7 +37,7 @@ public class AdminReservationController {
 	public ResponseEntity<Page<AdminReservationListResponse>> findReservations(
 		@RequestParam(required = false) ReservationStatus status,
 		@RequestParam(required = false) LocalDate createDate,
-		@RequestParam int page
+		@RequestParam(defaultValue = "0") int page
 	) {
 		return ApiResponse.getObjectSuccess(adminReservationService.findReservations(status, createDate, page));
 	}

@@ -49,7 +49,7 @@ public class ReservationController {
 
 	@Operation(summary = "사용자 예약 조회")
 	@GetMapping
-	public ResponseEntity<Page<ReservationResponse>> findReservations(Principal principal, @RequestParam int page) {
+	public ResponseEntity<Page<ReservationResponse>> findReservations(Principal principal, @RequestParam(defaultValue = "0") int page) {
 		Long memberId = PrincipalUtils.extractMemberId(principal);
 
 		Page<ReservationResponse> reservations = reservationQueryReadService.findPagedReservationsByMemberId(memberId, page);
