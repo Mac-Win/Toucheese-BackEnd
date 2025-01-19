@@ -16,16 +16,16 @@ import com.toucheese.reservation.dto.ReservationUpdateRequest;
 import com.toucheese.reservation.entity.Reservation;
 import com.toucheese.reservation.entity.ReservationProductAddOption;
 import com.toucheese.reservation.entity.ReservationStatus;
-import com.toucheese.reservation.repository.ReservationRepository;
+import com.toucheese.reservation.repository.ReservationCommandRepository;
 
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class ReservationService {
+public class ReservationCommandService {
 
-	private final ReservationRepository reservationRepository;
-	private final ReservationReadService reservationReadService;
+	private final ReservationCommandRepository reservationCommandRepository;
+	private final ReservationQueryService reservationQueryService;
 	private final ProductService productService;
 
 	@Transactional
@@ -56,12 +56,12 @@ public class ReservationService {
 				.build();
 		}).collect(Collectors.toList());
 
-		reservationRepository.saveAll(reservations);
+		reservationCommandRepository.saveAll(reservations);
 	}
 
 	@Transactional
 	public void updateReservation(Long memberId, Long reservationId, ReservationUpdateRequest request) {
-		Reservation reservation = reservationReadService.findReservationByIdAndMemberId(reservationId, memberId);
+		Reservation reservation = reservationQueryService.findReservationByIdAndMemberId(reservationId, memberId);
 
 		reservation.updateReservationStatusAndTime(request);
 	}

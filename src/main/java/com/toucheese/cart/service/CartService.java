@@ -1,5 +1,14 @@
 package com.toucheese.cart.service;
 
+import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.toucheese.cart.dto.CartIdsRequest;
 import com.toucheese.cart.dto.CartRequest;
 import com.toucheese.cart.dto.CartResponse;
@@ -19,17 +28,11 @@ import com.toucheese.product.entity.Product;
 import com.toucheese.product.entity.ProductAddOption;
 import com.toucheese.product.service.ProductService;
 import com.toucheese.reservation.event.ReservationMessageEvent;
-import com.toucheese.reservation.service.ReservationService;
+import com.toucheese.reservation.service.ReservationCommandService;
 import com.toucheese.studio.entity.Studio;
 import com.toucheese.studio.service.StudioQueryService;
-import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
-import java.util.stream.Collectors;
+
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -40,7 +43,7 @@ public class CartService {
 	private final StudioQueryService studioQueryService;
 	private final ProductService productService;
 	private final MemberService memberService;
-	private final ReservationService reservationService;
+	private final ReservationCommandService reservationCommandService;
 	private final ApplicationEventPublisher eventPublisher;
 	private final ImageConfig imageConfig;
 
@@ -98,7 +101,7 @@ public class CartService {
 
 		validateCarts(carts);
 
-		reservationService.createReservationsFromCarts(carts);
+		reservationCommandService.createReservationsFromCarts(carts);
 		cartRepository.deleteAll(carts);
 
 		// 객체를 스프링 컨텍스트에 전달 -> 스프링 컨텍스트 해당 이벤트를 처리할 수 있는 리스너 검색하여 호출

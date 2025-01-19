@@ -20,8 +20,8 @@ import com.toucheese.global.data.ApiResponse;
 import com.toucheese.global.util.PrincipalUtils;
 import com.toucheese.reservation.dto.ReservationResponse;
 import com.toucheese.reservation.dto.ReservationUpdateRequest;
-import com.toucheese.reservation.service.ReservationReadService;
-import com.toucheese.reservation.service.ReservationService;
+import com.toucheese.reservation.service.ReservationCommandService;
+import com.toucheese.reservation.service.ReservationQueryService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -34,8 +34,8 @@ import lombok.RequiredArgsConstructor;
 @PreAuthorize("isAuthenticated()")
 public class ReservationController {
 	private final CartService cartService;
-	private final ReservationService reservationService;
-	private final ReservationReadService reservationReadService;
+	private final ReservationCommandService reservationCommandService;
+	private final ReservationQueryService reservationQueryReadService;
 
 	@Operation(summary = "예약 기능")
 	@PostMapping
@@ -52,7 +52,7 @@ public class ReservationController {
 	public ResponseEntity<Page<ReservationResponse>> findReservations(Principal principal, @RequestParam int page) {
 		Long memberId = PrincipalUtils.extractMemberId(principal);
 
-		Page<ReservationResponse> reservations = reservationReadService.findPagedReservationsByMemberId(memberId, page);
+		Page<ReservationResponse> reservations = reservationQueryReadService.findPagedReservationsByMemberId(memberId, page);
 		return ApiResponse.getObjectSuccess(reservations);
 	}
 
@@ -65,7 +65,7 @@ public class ReservationController {
 	) {
 		Long memberId = PrincipalUtils.extractMemberId(principal);
 
-		reservationService.updateReservation(memberId, reservationId, request);
+		reservationCommandService.updateReservation(memberId, reservationId, request);
 		return ApiResponse.updatedSuccess("예약 상태를 성공적으로 업데이트했습니다.");
 	}
 
